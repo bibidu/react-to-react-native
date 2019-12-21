@@ -11,6 +11,7 @@ module.exports = class ReactToReactNative {
 
     this.afterTsCompiled = '' /* typescript编译后 */
     this.afterCssCompiled = '' /* css编译器编译后 */
+    this.initialAST = {}
 
     this.initAsts()
     this.initCompilers()
@@ -60,7 +61,11 @@ module.exports = class ReactToReactNative {
     }).then((afterCssToObject) => {
 
       this.afterCssToObject = afterCssToObject
-      return this.processAST(this.afterTsCompiled)
+      
+      const ast = this.generateAST(this.afterTsCompiled)
+      this.initialAST = ast
+
+      return this.processAST(ast)
     }).then((afterProcessAST) => {
 
       this.afterProcessAST = afterProcessAST

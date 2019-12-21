@@ -10,8 +10,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@babel/parser": "^7.7.7",
+    "@babel/traverse": "^7.7.4",
+    "@babel/types": "^7.7.4",
     "postcss": "^7.0.25",
     "sass": "^1.24.0",
     "typescript": "^3.7.4"
+  },
+  "devDependencies": {
+    "@babel/generator": "^7.7.7"
   }
 }

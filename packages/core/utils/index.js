@@ -6,6 +6,7 @@ const cssToReactNative = require('./cssToReactNative')
 const externalStyleToInlineStyle = require('./externalStyleToInlineStyle')
 const findASTNode = require('./findASTNode')
 const relationTreeToHtml = require('./relationTreeToHtml')
+const generateAST = require('./generateAST')
 
 module.exports = function () {
   ;[
@@ -17,5 +18,6 @@ module.exports = function () {
     cssToReactNative,
     externalStyleToInlineStyle,
     findASTNode,
+    generateAST,
   ].forEach(util => this[util.name] = util)
 }

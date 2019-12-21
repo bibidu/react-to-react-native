@@ -6,7 +6,14 @@ const reactCompString = `
   class T extends React.Component{
     render() {
       return (
-        <div>123</div>
+        <div>
+          123
+          <div>
+          44
+          </div>
+          <div rn-text>{this.props.text}</div>
+        </div>
+        
       )
     }
   }

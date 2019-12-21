@@ -1,5 +1,12 @@
-module.exports = function processAST(code) {
-  this.log('processAST')
+const t = require('@babel/types')
+const traverse = require('@babel/traverse').default
+const visitors = require('./visitors')
+const gen = require('@babel/generator').default
 
-  return code
+module.exports = function processAST(ast) {
+  this.log('processAST')
+  visitors.forEach(visitor => traverse(ast, visitor({ ctx: this, t })))
+  const code = gen(ast, {}).code
+  console.log('fini', code)
+  return ast
 }
