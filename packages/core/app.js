@@ -45,7 +45,7 @@ module.exports = class ReactToReactNative {
   }
 
   start() {
-    Promise.all([
+    return Promise.all([
       this.typescriptCompiler(this.reactCompString),
       this.scssCompiler(this.cssString),
     ]).then(([
@@ -65,6 +65,6 @@ module.exports = class ReactToReactNative {
 
       this.afterProcessAST = afterProcessAST
       return this.package(afterProcessAST)
-    })
+    }).then(() => this)
   }
 }
