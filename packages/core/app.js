@@ -5,6 +5,10 @@ const utils = require('./utils')
 
 module.exports = class ReactToReactNative {
   constructor() {
+    /* 收集的组件信息合集 */
+    this.collections = {
+      exports: [] /* 暴露出的组件名 */
+    }
     this.reactCompString = '' /* react组件字符串 */
     this.cssString = '' /* css字符串 */
     this.cssType = '' /* scss | other */
@@ -12,6 +16,20 @@ module.exports = class ReactToReactNative {
     this.afterTsCompiled = '' /* typescript编译后 */
     this.afterCssCompiled = '' /* css编译器编译后 */
     this.initialAST = {}
+
+    this.uniqueNodeInfo = {} /* JSXElement节点的信息 */
+    this.addUniqueNodeInfo = (k, { className, id, tagName, uniqueId }) => {
+      this.uniqueNodeInfo[k] = { className, id, tagName, uniqueId }
+    }
+
+    this.fsRelations = {} /* 节点间关系 */
+    this.addFsRelation = (k, v) => {
+      const sons = this.fsRelations[k]
+      if (!sons) {
+        this.fsRelations[k] = []
+      }
+      this.fsRelations[k].push(v)
+    }
 
     this.initAsts()
     this.initCompilers()
@@ -61,13 +79,15 @@ module.exports = class ReactToReactNative {
     }).then((afterCssToObject) => {
 
       this.afterCssToObject = afterCssToObject
-      
       const ast = this.generateAST(this.afterTsCompiled)
       this.initialAST = ast
 
       return this.processAST(ast)
     }).then((afterProcessAST) => {
-
+      console.log(this.fsRelations)
+      this.pureHtmlString = this.generatePureHtmlString(this.fsRelations, this.uniqueNodeInfo)
+      console.log(this.pureHtmlString)
+      return
       this.afterProcessAST = afterProcessAST
       return this.package(afterProcessAST)
     }).then(() => this)

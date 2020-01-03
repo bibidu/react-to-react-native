@@ -2,21 +2,32 @@ const ReactToReactNative = require('../app')
 
 const reactCompString = `
   import React from 'react'
-  const t: string = '123'
+
+  function Footer() {
+    return (
+      <div>footer</div>
+    )
+  }
   class T extends React.Component{
+    renderBody() {
+      return [1, 2].map(item => (
+        <li>{item}</li>
+      ))
+    }
     render() {
       return (
-        <div>
-          123
-          <div>
-          44
+        <div id='container'>
+          <div id='container-wrapper'>
+            <ul className="title">title</ul>
+            {
+              this.renderBody()
+            }
           </div>
-          <div rn-text>{this.props.text}</div>
         </div>
-        
       )
     }
   }
+  export default T
 `
 
 const cssString = `

@@ -7,6 +7,8 @@ const externalStyleToInlineStyle = require('./externalStyleToInlineStyle')
 const findASTNode = require('./findASTNode')
 const relationTreeToHtml = require('./relationTreeToHtml')
 const generateAST = require('./generateAST')
+const generatePureHtmlString = require('./generatePureHtmlString')
+const getUniqueIdPrefix = require('./getUniqueIdPrefix')
 
 module.exports = function () {
   ;[
@@ -19,5 +21,7 @@ module.exports = function () {
     externalStyleToInlineStyle,
     findASTNode,
     generateAST,
+    generatePureHtmlString,
+    getUniqueIdPrefix,
   ].forEach(util => this[util.name] = util)
 }
