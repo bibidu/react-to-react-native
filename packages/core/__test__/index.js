@@ -5,7 +5,11 @@ const reactCompString = `
 
   function Footer() {
     return (
-      <div>footer</div>
+      <div>
+        footer
+        <span>34</span>
+        <span>343</span>
+      </div>
     )
   }
   class T extends React.Component{
@@ -18,6 +22,11 @@ const reactCompString = `
       return (
         <div id='container'>
           <div id='container-wrapper'>
+            <div>
+              footer
+              <span>34</span>
+              <span>343</span>
+            </div>
             <ul className="title">title</ul>
             {
               this.renderBody()
