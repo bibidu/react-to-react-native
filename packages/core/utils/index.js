@@ -9,6 +9,8 @@ const relationTreeToHtml = require('./relationTreeToHtml')
 const generateAST = require('./generateAST')
 const generatePureHtmlString = require('./generatePureHtmlString')
 const getUniqueIdPrefix = require('./getUniqueIdPrefix')
+const generateInjectBrowserScript = require('./generateInjectBrowserScript')
+const runInBrowser = require('./runInBrowser')
 
 module.exports = function () {
   ;[
@@ -23,5 +25,7 @@ module.exports = function () {
     generateAST,
     generatePureHtmlString,
     getUniqueIdPrefix,
+    generateInjectBrowserScript,
+    runInBrowser,
   ].forEach(util => this[util.name] = util)
 }

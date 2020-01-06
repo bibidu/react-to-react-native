@@ -15,6 +15,7 @@ module.exports = class ReactToReactNative {
 
     this.afterTsCompiled = '' /* typescript编译后 */
     this.afterCssCompiled = '' /* css编译器编译后 */
+    this.injectBrowserScript = '' /* 注入浏览器的script */
     this.initialAST = {}
 
     this.uniqueNodeInfo = {} /* JSXElement节点的信息 */
@@ -84,10 +85,17 @@ module.exports = class ReactToReactNative {
 
       return this.processAST(ast)
     }).then((afterProcessAST) => {
-      console.log(this.fsRelations)
       this.pureHtmlString = this.generatePureHtmlString(this.fsRelations, this.uniqueNodeInfo)
-      console.log(this.pureHtmlString)
-      return
+      this.injectBrowserScript = this.generateInjectBrowserScript({
+        html: this.pureHtmlString,
+        css: this.afterCssToObject
+      })
+
+      this.runInBrowser({ script: this.injectBrowserScript }).then(result => {
+        console.log(result)
+
+      })
+      
       this.afterProcessAST = afterProcessAST
       return this.package(afterProcessAST)
     }).then(() => this)

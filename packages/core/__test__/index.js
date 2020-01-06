@@ -32,7 +32,7 @@ const reactCompString = `
 
 const cssString = `
 $color: #11f;
-body {
+ul {
   color: $color;
   &:after{
     content: '';
