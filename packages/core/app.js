@@ -31,6 +31,9 @@ module.exports = class ReactToReactNative {
       this.fsRelations[k].push(v)
     }
 
+    this.uniqueTagStyle = {} /* JSXElement节点标签自带的样式, 如h1 */
+    this.addUniqueTagStyle = (uniqueId, style) => this.uniqueTagStyle[uniqueId] = style
+  
     this.initAsts()
     this.initCompilers()
     this.initUtils()
@@ -84,9 +87,8 @@ module.exports = class ReactToReactNative {
 
       return this.processAST(ast)
     }).then((afterProcessAST) => {
-      console.log(this.fsRelations)
       this.pureHtmlString = this.generatePureHtmlString(this.fsRelations, this.uniqueNodeInfo)
-      console.log(this.pureHtmlString)
+      console.log(this.ast2code(afterProcessAST))
       return
       this.afterProcessAST = afterProcessAST
       return this.package(afterProcessAST)

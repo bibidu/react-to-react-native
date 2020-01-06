@@ -9,6 +9,8 @@ const relationTreeToHtml = require('./relationTreeToHtml')
 const generateAST = require('./generateAST')
 const generatePureHtmlString = require('./generatePureHtmlString')
 const getUniqueIdPrefix = require('./getUniqueIdPrefix')
+const ast2code = require('./ast2code')
+const getJSXAttribute = require('./getJSXAttribute')
 
 module.exports = function () {
   ;[
@@ -23,5 +25,7 @@ module.exports = function () {
     generateAST,
     generatePureHtmlString,
     getUniqueIdPrefix,
+    ast2code,
+    getJSXAttribute,
   ].forEach(util => this[util.name] = util)
 }
