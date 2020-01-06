@@ -10,8 +10,24 @@ module.exports = function addTextWrapper({ ctx, t }) {
       }
     },
     JSXText(path) {
-      if (path.node.value.trim()) {
-        path.replaceWith(createSpanWrapper(t, path.node))
+      const parent = path.findParent(node => node.isJSXElement())
+      const parentIsTextNode = parent.get('openingElement').get('name').isJSXIdentifier({ name: 'span' })
+      if (path.node.value.trim() && !parentIsTextNode) {
+        if (path.node.value === path.node.value.trim()) {
+          const parentBlock = parent.node.loc.start.column
+          path.replaceWithMultiple([
+            t.JSXText(`\n${' '.repeat(parentBlock + 2)}`),
+            createSpanWrapperWithText(t, path.node.value),
+            t.JSXText(`\n${' '.repeat(parentBlock)}`),
+          ])
+        } else {
+          const [before, after] = path.node.value.split(path.node.value.trim())
+          path.replaceWithMultiple([
+            t.JSXText('' + before),
+            createSpanWrapperWithText(t, path.node.value.trim()),
+            t.JSXText('' + after),
+          ])
+        }
         path.skip()
       }
     }
@@ -31,5 +47,12 @@ const createSpanWrapper = (t, node) => t.jsxElement(
   t.jsxOpeningElement(t.jsxIdentifier('span'), [], false),
   t.jsxClosingElement(t.jsxIdentifier('span')),
   [node],
+  false
+)
+
+const createSpanWrapperWithText = (t, text) => t.jsxElement(
+  t.jsxOpeningElement(t.jsxIdentifier('span'), [], false),
+  t.jsxClosingElement(t.jsxIdentifier('span')),
+  [t.JSXText(text)],
   false
 )
