@@ -1,3 +1,5 @@
+const t = require('@babel/types')
+
 const jsxUtils = {
   name: 'jsxUtils',
 
@@ -27,6 +29,16 @@ const jsxUtils = {
     for (let attribute of attributes) {
       if (attribute.get('name').isJSXIdentifier({ name: attrName })) {
         return attribute
+      }
+    }
+  },
+
+  replaceJSXAttributeKey(path, rawAttrName, targetAttrName) {
+    const attributes = path.get('openingElement').get('attributes')
+    for (let attribute of attributes) {
+      const attrName = attribute.get('name').node.name
+      if (attrName === rawAttrName) {
+        attribute.get('name').replaceWith(t.JSXIdentifier(targetAttrName))
       }
     }
   }

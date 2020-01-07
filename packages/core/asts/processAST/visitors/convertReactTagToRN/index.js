@@ -1,19 +1,17 @@
-// 是否是用户自定义组件
+const resolves = require('./resolves')
+
 const isComponent = (tagName) => tagName.charAt(0) !== tagName.charAt(0).toLowerCase()
 
-// 收集使用到的React Native组件
 function collectRNUsingComponentName(ctx, tagName) {
   ctx.addUsingRNComponentName(tagName)
 }
 
-// 替换标签名
 function replaceTagName(path, t, newTagName) {
   const newTagPath = t.JSXIdentifier(newTagName)
   path.get('openingElement').get('name').replaceWith(newTagPath)
   path.get('closingElement').get('name').replaceWith(newTagPath)
 }
 
-// 保存标签自带样式
 function saveStyleFromTagName(path, ctx, styles) {
   if (Object.keys(styles).length) {
     const uniqueId = ctx.jsxUtils.getJSXAttributeValue(path, ctx.enums.UNIQUE_ID)
@@ -25,31 +23,15 @@ function saveStyleFromTagName(path, ctx, styles) {
 }
 
 module.exports = function convertReactTagToRN({ ctx, t }) {
-  
   function replacement(path) {
     const tagName = path.get('openingElement').get('name').node.name
     if (isComponent(tagName)) return
 
-    function _replacement() {
-      switch (tagName) {
-        case 'div': {
-          return {
-            tag: 'View'
-          }
-        }
-
-        default: {
-          return {
-            tag: 'View'
-          }
-        }
-      }
-    }
-    const { tag, styles = {} } = _replacement()
-
-    collectRNUsingComponentName(ctx, tag)
-    replaceTagName(path, t, tag)
-    saveStyleFromTagName(path, ctx, styles)
+    const { tag, styles = {} } = resolves({path, t, ctx})
+    
+    collectRNUsingComponentName(ctx, tag) // 收集使用到的React Native组件
+    replaceTagName(path, t, tag) // 替换标签名
+    saveStyleFromTagName(path, ctx, styles) // 保存标签自带样式
   }
 
   return {
