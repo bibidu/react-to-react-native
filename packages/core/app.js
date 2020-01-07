@@ -36,6 +36,13 @@ module.exports = class ReactToReactNative {
     this.uniqueTagStyle = {} /* JSXElement节点标签自带的样式, 如h1 */
     this.addUniqueTagStyle = (uniqueId, style) => this.uniqueTagStyle[uniqueId] = style
   
+    this.usingRNComponentNames = [] /* 使用到的React Native组件 */
+    this.addUsingRNComponentName = (componentName) => {
+      if (!this.usingRNComponentNames.includes(componentName)) {
+        this.usingRNComponentNames.push(componentName)
+      }
+    }
+  
     this.initAsts()
     this.initCompilers()
     this.initUtils()

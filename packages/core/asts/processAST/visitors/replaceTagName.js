@@ -3,6 +3,9 @@ module.exports = function replaceTagName({ ctx, t }) {
     const tagNamePath = path.get('openingElement').get('name')
     const { tag, styles } = getRNTagMappingFromHtml(tagNamePath.node.name)
 
+    // 收集使用到的React Native组件
+    ctx.addUsingRNComponentName(tag)
+
     // 替换标签
     const newTagPath = t.JSXIdentifier(tag)
     tagNamePath.replaceWith(newTagPath)
@@ -42,6 +45,6 @@ function getRNTagMappingFromHtml(tagName) {
       mapping.tag = 'View'
     }
   }
-
+  
   return mapping
 }
