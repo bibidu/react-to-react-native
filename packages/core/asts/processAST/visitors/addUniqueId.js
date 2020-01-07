@@ -2,14 +2,14 @@
 module.exports = function addUniqueId({ ctx, t }) {
   let id = 0
   const uniqueId = () => {
-    return ctx.getUniqueIdPrefix() + (++id)
+    return ctx.enums.UNIQUE_ID + (++id)
   }
 
   return {
     JSXElement(path) {
       const attributes = path.get('openingElement').get('attributes')
       path.node.openingElement.attributes.unshift(
-        createJSXAttribute(t, ctx.getUniqueIdPrefix(), uniqueId())
+        createJSXAttribute(t, ctx.enums.UNIQUE_ID, uniqueId())
       )
     }
   }

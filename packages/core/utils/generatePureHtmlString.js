@@ -1,8 +1,11 @@
-const getUniqueIdPrefix = require('./getUniqueIdPrefix')
 const ENTRY = 'ROOT-render'
 const TAB_SIZE = 2
 
-module.exports = function generatePureHtmlString(fsRelations, uniqueNodeInfo, key = ENTRY, tabSize = 0) {
+module.exports = function generatePureHtmlString({
+  fsRelations,
+  uniqueNodeInfo,
+  isTag,
+}, key = ENTRY, tabSize = 0) {
   let html = '', currentArray = fsRelations[key]
   
   if (key === ENTRY) {
@@ -22,16 +25,20 @@ module.exports = function generatePureHtmlString(fsRelations, uniqueNodeInfo, ke
         const idAttr = id ? ` id="${id}"` : ''
 
         html += `${block}<${tagName} uniqueId="${uniqueId}"${classAttr}${idAttr}>\n`
-        html += generatePureHtmlString(fsRelations, uniqueNodeInfo, item, tabSize + TAB_SIZE)
+        html += generatePureHtmlString({
+          fsRelations,
+          uniqueNodeInfo,
+          isTag,
+        }, item, tabSize + TAB_SIZE)
         html += `${block}</${tagName}>\n`
       } else {
-        html += generatePureHtmlString(fsRelations, uniqueNodeInfo, item, tabSize)
+        html += generatePureHtmlString({
+          fsRelations,
+          uniqueNodeInfo,
+          isTag,
+        }, item, tabSize)
       }
     }
   }
   return html
-}
-
-function isTag(uniqueId) {
-  return uniqueId.startsWith(getUniqueIdPrefix())
 }

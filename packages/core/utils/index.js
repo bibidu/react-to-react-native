@@ -5,7 +5,6 @@ const astToRelationTree = require('./astToRelationTree')
 const cssToReactNative = require('./cssToReactNative')
 const relationTreeToHtml = require('./relationTreeToHtml')
 const generatePureHtmlString = require('./generatePureHtmlString')
-const getUniqueIdPrefix = require('./getUniqueIdPrefix')
 const generateInjectBrowserScript = require('./generateInjectBrowserScript')
 const runInBrowser = require('./runInBrowser')
 const astUtils = require('./astUtils')
@@ -20,7 +19,6 @@ module.exports = function () {
     cssToReactNative,
     cssToReactNative,
     generatePureHtmlString,
-    getUniqueIdPrefix,
     generateInjectBrowserScript,
     runInBrowser,
     astUtils,

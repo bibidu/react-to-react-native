@@ -1,4 +1,12 @@
 module.exports = function addTextWrapper({ ctx, t }) {
+
+  const checkIsHaveTextNodeMark = (path) => {
+    const attrsPath = path.get('openingElement').get('attributes')
+    return Boolean(
+      attrsPath.length && attrsPath.some((attr) => attr.get('name').isJSXIdentifier({ name: ctx.enums.STATIC_MARK }))
+    )
+  }
+
   return {
     JSXExpressionContainer(path) {
       const parent = path.findParent(() => true)
@@ -34,15 +42,6 @@ module.exports = function addTextWrapper({ ctx, t }) {
       }
     }
   }
-}
-
-const STATIC_TEXT = 'rn-text'
-
-const checkIsHaveTextNodeMark = (path) => {
-  const attrsPath = path.get('openingElement').get('attributes')
-  return Boolean(
-    attrsPath.length && attrsPath.some((attr) => attr.get('name').isJSXIdentifier({ name: STATIC_TEXT }))
-  )
 }
 
 const createSpanWrapper = (t, node) => t.jsxElement(

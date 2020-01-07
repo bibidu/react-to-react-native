@@ -76,7 +76,7 @@ module.exports = function astToRelationTree({ ctx, t }) {
   function getJSXUniqueId(path) {
     const attributes = path.get('openingElement').get('attributes')
     for (let attr of attributes) {
-      if (attr.get('name').isJSXIdentifier({ name: ctx.getUniqueIdPrefix() })) {
+      if (attr.get('name').isJSXIdentifier({ name: ctx.enums.UNIQUE_ID })) {
         return attr.get('value').node.value
       }
     }
@@ -111,7 +111,7 @@ module.exports = function astToRelationTree({ ctx, t }) {
     const attributes = openingElement.get('attributes')
     for (let attr of attributes) {
       ;['className', 'id', 'uniqueId'].forEach(attrName => {
-        const key = attrName === 'uniqueId' ? ctx.getUniqueIdPrefix() : attrName
+        const key = attrName === 'uniqueId' ? ctx.enums.UNIQUE_ID : attrName
         if (attr.get('name').isJSXIdentifier({ name: key })) {
           result[attrName] = getJSXElementAttrValuePath(attr.get('value'))
         }

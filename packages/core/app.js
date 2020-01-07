@@ -1,10 +1,13 @@
 const asts = require('./asts')
 const compilers = require('./compilers')
 const utils = require('./utils')
+const enums = require('./config/enums')
 
 
 module.exports = class ReactToReactNative {
   constructor() {
+    this.enums = enums /* 枚举字段 */
+
     /* 收集的组件信息合集 */
     this.collections = {
       exports: [] /* 暴露出的组件名 */
@@ -99,7 +102,11 @@ module.exports = class ReactToReactNative {
       return this.processAST(ast)
     }).then((afterProcessAST) => {
       this.afterProcessAST = afterProcessAST
-      this.pureHtmlString = this.generatePureHtmlString(this.fsRelations, this.uniqueNodeInfo)
+      this.pureHtmlString = this.generatePureHtmlString({
+        fsRelations: this.fsRelations,
+        uniqueNodeInfo: this.uniqueNodeInfo,
+        isTag: (uniqueId) => uniqueId.startsWith(this.enums.UNIQUE_ID)
+      })
       this.injectBrowserScript = this.generateInjectBrowserScript({
         html: this.pureHtmlString,
         css: this.afterCssToObject

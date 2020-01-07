@@ -14,7 +14,7 @@ module.exports = function collectInfo({ ctx, t }) {
         const isObjectExpression = isExpression && styleAttr.get('expression').isObjectExpression()
         if (isObjectExpression) {
           const objStyle = ctx.astUtils.objAstToObj(styleAttr.get('expression'))
-          const uniqueIdPrefix = ctx.getUniqueIdPrefix()
+          const uniqueIdPrefix = ctx.enums.UNIQUE_ID
           const uniqueId = ctx.jsxUtils.getJSXAttributeValue(path, uniqueIdPrefix)
           ctx.addInitialInlineStyle(uniqueId.node.value, objStyle)
         }
