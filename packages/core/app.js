@@ -106,10 +106,10 @@ module.exports = class ReactToReactNative {
       })
       return this.runInBrowser({ script: this.injectBrowserScript })
     }).then((result) => {
-      console.log(this.initialInlineStyle)
-      console.log(this.astUtils.ast2code(this.afterProcessAST))
-      return
       return this.package(this.afterProcessAST)
+    }).then((result) => {
+      console.log('==result==')
+      console.log(this.astUtils.ast2code(result))
     })
     .then(() => this)
   }
