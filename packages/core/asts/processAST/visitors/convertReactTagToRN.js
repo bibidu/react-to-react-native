@@ -13,7 +13,7 @@ module.exports = function convertReactTagToRN({ ctx, t }) {
 
     // 保存标签自带样式
     if (Object.keys(styles).length) {
-      const uniqueId = ctx.getJSXAttribute(path, ctx.getUniqueIdPrefix())
+      const uniqueId = ctx.jsxUtils.getJSXAttributeValue(path, ctx.getUniqueIdPrefix())
       if (!uniqueId || !uniqueId.node || !uniqueId.node.value) {
         ctx.error('不存在uniqueId')
       }
