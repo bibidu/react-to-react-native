@@ -1,4 +1,4 @@
-module.exports = function replaceTagName({ ctx, t }) {
+module.exports = function convertReactTagToRN({ ctx, t }) {
   function replaceAndSaveTagStyle(path) {
     const tagNamePath = path.get('openingElement').get('name')
     const { tag, styles } = getRNTagMappingFromHtml(tagNamePath.node.name)

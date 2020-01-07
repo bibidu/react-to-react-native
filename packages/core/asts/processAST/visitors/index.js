@@ -3,5 +3,5 @@ module.exports = [
   require('./addTextWrapper'),
   require('./addUniqueId'),
   require('./astToRelationTree'),
-  require('./replaceTagName'),
+  require('./convertReactTagToRN'),
 ]
