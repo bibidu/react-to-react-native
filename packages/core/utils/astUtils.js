@@ -1,3 +1,4 @@
+const parser = require('@babel/parser')
 const generator = require('@babel/generator').default
 
 const astUtils = {
@@ -24,6 +25,20 @@ const astUtils = {
    */
   ast2code(ast) {
     return generator(ast).code
+  },
+
+  /**
+   * 源代码转AST
+   * @param {*} code 
+   */
+  code2ast(code) {
+    const ast = parser.parse(code, {
+      sourceType: "module",
+      plugins: [
+        "jsx",
+      ]
+    })
+    return ast
   }
 }
 

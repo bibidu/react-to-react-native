@@ -93,7 +93,7 @@ module.exports = class ReactToReactNative {
     }).then((afterCssToObject) => {
 
       this.afterCssToObject = afterCssToObject
-      const ast = this.generateAST(this.afterTsCompiled)
+      const ast = this.astUtils.code2ast(this.afterTsCompiled)
       this.initialAST = ast
 
       return this.processAST(ast)
