@@ -11,8 +11,8 @@ const generatePureHtmlString = require('./generatePureHtmlString')
 const getUniqueIdPrefix = require('./getUniqueIdPrefix')
 const generateInjectBrowserScript = require('./generateInjectBrowserScript')
 const runInBrowser = require('./runInBrowser')
-const ast2code = require('./ast2code')
 const getJSXAttribute = require('./getJSXAttribute')
+const astUtils = require('./astUtils')
 
 module.exports = function () {
   ;[
@@ -29,7 +29,7 @@ module.exports = function () {
     getUniqueIdPrefix,
     generateInjectBrowserScript,
     runInBrowser,
-    ast2code,
     getJSXAttribute,
+    astUtils,
   ].forEach(util => this[util.name] = util)
 }
