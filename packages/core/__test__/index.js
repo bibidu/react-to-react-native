@@ -7,7 +7,7 @@ const reactCompString = `
     return (
       <div>
         footer
-        <span>34</span>
+        <span style={{background: 'red', fontSize: 13}}>34</span>
         <span>343</span>
       </div>
     )

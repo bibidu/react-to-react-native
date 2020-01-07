@@ -42,6 +42,8 @@ module.exports = class ReactToReactNative {
         this.usingRNComponentNames.push(componentName)
       }
     }
+    this.initialInlineStyle = {} /* 组件最初的内联样式 */
+    this.addInitialInlineStyle = (uniqueId, inlineStyle) => this.initialInlineStyle[uniqueId] = inlineStyle
   
     this.initAsts()
     this.initCompilers()
@@ -104,8 +106,8 @@ module.exports = class ReactToReactNative {
       })
       return this.runInBrowser({ script: this.injectBrowserScript })
     }).then((result) => {
-      console.log(result)
-      console.log(this.ast2code(this.afterProcessAST))
+      console.log(this.initialInlineStyle)
+      // console.log(this.ast2code(this.afterProcessAST))
       return
       return this.package(this.afterProcessAST)
     })

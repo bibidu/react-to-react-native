@@ -1,7 +1,7 @@
 module.exports = [
-  require('./collectInfo'),
   require('./addTextWrapper'),
   require('./addUniqueId'),
+  require('./collectInfo'),
   require('./astToRelationTree'),
   require('./convertReactTagToRN'),
 ]
