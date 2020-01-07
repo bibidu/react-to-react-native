@@ -16,7 +16,8 @@ module.exports = class ReactToReactNative {
     this.afterTsCompiled = '' /* typescript编译后 */
     this.afterCssCompiled = '' /* css编译器编译后 */
     this.injectBrowserScript = '' /* 注入浏览器的script */
-    this.initialAST = {}
+    this.initialAST = {} /* visitors遍历前最初的ast */
+    this.afterProcessAST = {} /* processAST.visitors遍历后的ast */
 
     this.uniqueNodeInfo = {} /* JSXElement节点的信息 */
     this.addUniqueNodeInfo = (k, { className, id, tagName, uniqueId }) => {
@@ -88,21 +89,19 @@ module.exports = class ReactToReactNative {
 
       return this.processAST(ast)
     }).then((afterProcessAST) => {
+      this.afterProcessAST = afterProcessAST
       this.pureHtmlString = this.generatePureHtmlString(this.fsRelations, this.uniqueNodeInfo)
       this.injectBrowserScript = this.generateInjectBrowserScript({
         html: this.pureHtmlString,
         css: this.afterCssToObject
       })
-
-      this.runInBrowser({ script: this.injectBrowserScript }).then(result => {
-        console.log(result)
-
-      })
-      
-      console.log(this.ast2code(afterProcessAST))
+      return this.runInBrowser({ script: this.injectBrowserScript })
+    }).then((result) => {
+      console.log(result)
+      console.log(this.ast2code(this.afterProcessAST))
       return
-      this.afterProcessAST = afterProcessAST
-      return this.package(afterProcessAST)
-    }).then(() => this)
+      return this.package(this.afterProcessAST)
+    })
+    .then(() => this)
   }
 }
