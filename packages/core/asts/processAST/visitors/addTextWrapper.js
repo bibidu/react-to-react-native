@@ -1,12 +1,14 @@
 module.exports = function addTextWrapper({ ctx, t }) {
   return {
     JSXExpressionContainer(path) {
-      const parent = path.findParent(node => node.isJSXElement())
-      const parentIsTextNode = parent.get('openingElement').get('name').isJSXIdentifier({ name: 'span' })
-      const hasTextNodeMark = checkIsHaveTextNodeMark(parent)
-      if (hasTextNodeMark && !parentIsTextNode) {
-        path.replaceWith(createSpanWrapper(t, path.node))
-        path.skip()
+      const parent = path.findParent(() => true)
+      if (parent.isJSXElement()) {
+        const parentIsTextNode = parent.get('openingElement').get('name').isJSXIdentifier({ name: 'span' })
+        const hasTextNodeMark = checkIsHaveTextNodeMark(parent)
+        if (hasTextNodeMark && !parentIsTextNode) {
+          path.replaceWith(createSpanWrapper(t, path.node))
+          path.skip()
+        }
       }
     },
     JSXText(path) {

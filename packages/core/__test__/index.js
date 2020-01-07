@@ -1,44 +1,28 @@
 const ReactToReactNative = require('../app')
 const fs = require('fs')
 
-// const reactCompString = `
-//   import React from 'react'
+const reactCompString = `
+  import React from 'react'
 
-//   function Footer() {
-//     return (
-//       <div>
-//         footer
-//         <span style={{background: 'red', fontSize: 13}}>34</span>
-//         <span>343</span>
-//       </div>
-//     )
-//   }
-//   class T extends React.Component{
-//     renderBody() {
-//       return [1, 2].map(item => (
-//         <li>{item}</li>
-//       ))
-//     }
-//     render() {
-//       return (
-//         <div id='container'>
-//           <div id='container-wrapper'>
-//             <div>
-//               footer
-//               <span>34</span>
-//               <span>343</span>
-//             </div>
-//             <ul className="title">title</ul>
-//             {
-//               this.renderBody()
-//             }
-//           </div>
-//         </div>
-//       )
-//     }
-//   }
-//   export default T
-// `
+  class T extends React.Component{
+    renderBody() {
+      return [1, 2].map(item => (
+        <li>{item}</li>
+      ))
+    }
+    render() {
+      return (
+        <button
+          onClick={() => {}}
+          rn-text
+        >
+          <span style={{color: 'green'}}>{text}</span>
+        </button>
+      )
+    }
+  }
+  export default T
+`
 
 // const cssString = `
 // $color: #11f;
@@ -53,7 +37,7 @@ const fs = require('fs')
 const COMPONENT_NAME = 'BUTTON'
 const testPath = `/Users/duxianzhang/Desktop/company/tz-component-template/src/${COMPONENT_NAME}/index.js`
 
-const reactCompString = fs.readFileSync(testPath, 'utf8')
+// const reactCompString = fs.readFileSync(testPath, 'utf8')
 const cssString = ''
 console.log(reactCompString)
 new ReactToReactNative()
