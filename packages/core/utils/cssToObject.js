@@ -37,6 +37,7 @@ function replaceUnsupportStyle(style) {
 const isRule = node => node.type === 'rule'
 const isDecl = node => node.type === 'decl'
 const isComment = node => node.type === 'comment'
+const matchStableNameRE = /stable\:(\s)*((\w|\-\_)+)/
 
 const css2obj = postcss.plugin('css2obj', opts => {
   const { callback } = opts
@@ -51,7 +52,10 @@ const css2obj = postcss.plugin('css2obj', opts => {
         obj[node.parent.selector][node.prop] = node.value
       }
       if (isComment(node)) {
-        stable[node.parent.selector] = node.text
+        const matches = node.text.match(matchStableNameRE)
+        if (matches && matches.length >= 2) {
+          stable[node.parent.selector] = matches[2]
+        }
       }
     })
     callback(obj, stable)
