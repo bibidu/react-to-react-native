@@ -11,6 +11,7 @@ module.exports = function resolveCssPath({ ctx, t }) {
           const cssAbsolutePath = path.resolve(path.dirname(ctx.reactCompPath), maybeCssPath)
           const cssString = fs.readFileSync(cssAbsolutePath, 'utf8')
           ctx.addCssString(cssAbsolutePath, cssString)
+          p.remove()
         }
       }
     }
