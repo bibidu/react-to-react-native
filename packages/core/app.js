@@ -23,6 +23,7 @@ module.exports = class ReactToReactNative {
     this.afterCssToObject = {} /* css-to-object后的css对象 */
     this.pureHtmlString = '' /* 注入浏览器前的纯html */
     this.injectBrowserScript = '' /* 注入浏览器的script */
+    this.externalToInlineStyle = {} /* 外联转内联的样式 */
     this.initialAST = {} /* visitors遍历前最初的ast */
     this.afterProcessAST = {} /* processAST.visitors遍历后的ast */
     this.afterPackageCode = '' /* package阶段后生成的组件code */
@@ -119,10 +120,10 @@ module.exports = class ReactToReactNative {
           html: this.pureHtmlString,
           css: this.afterCssToObject
         })
-
+        this.log('runInBrowser')
         return this.runInBrowser({ script: this.injectBrowserScript })
-      }).then(result => {
-
+      }).then(externalToInlineStyle => {
+        this.externalToInlineStyle = externalToInlineStyle
         return this.package(this.afterProcessAST)
       }).then(result => {
         this.afterPackageCode = result
@@ -137,7 +138,7 @@ module.exports = class ReactToReactNative {
             this.log(`输出到'${this.outputPath}' -> success`)
           }
         }
-        console.log(this.pureHtmlString)
+        console.log(this.externalToInlineStyle)
         return finalResult
       })
       // .then(() => this)
