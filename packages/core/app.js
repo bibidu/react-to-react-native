@@ -20,6 +20,8 @@ module.exports = class ReactToReactNative {
 
     this.afterTsCompiled = '' /* typescript编译后 */
     this.afterCssCompiled = '' /* css编译器编译后 */
+    this.afterCssToObject = {} /* css-to-object后的css对象 */
+    this.pureHtmlString = '' /* 注入浏览器前的纯html */
     this.injectBrowserScript = '' /* 注入浏览器的script */
     this.initialAST = {} /* visitors遍历前最初的ast */
     this.afterProcessAST = {} /* processAST.visitors遍历后的ast */
@@ -104,7 +106,7 @@ module.exports = class ReactToReactNative {
         return this.scssCompiler(this.cssString)
       }).then(afterCssCompiled => {
         this.afterCssCompiled = afterCssCompiled
-
+        
         return this.cssToObject(this.afterCssCompiled)
       }).then(afterCssToObject => {
         this.afterCssToObject = afterCssToObject
@@ -136,7 +138,6 @@ module.exports = class ReactToReactNative {
             this.log(`输出到'${this.outputPath}' -> success`)
           }
         }
-
         return finalResult
       })
       // .then(() => this)
