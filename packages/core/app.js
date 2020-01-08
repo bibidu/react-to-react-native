@@ -22,6 +22,7 @@ module.exports = class ReactToReactNative {
     this.injectBrowserScript = '' /* 注入浏览器的script */
     this.initialAST = {} /* visitors遍历前最初的ast */
     this.afterProcessAST = {} /* processAST.visitors遍历后的ast */
+    this.afterPackageCode = '' /* package阶段后生成的组件code */
 
     this.uniqueNodeInfo = {} /* JSXElement节点的信息 */
     this.addUniqueNodeInfo = (k, { className, id, tagName, uniqueId }) => {
@@ -124,10 +125,14 @@ module.exports = class ReactToReactNative {
 
         return this.package(this.afterProcessAST)
       }).then(result => {
-        console.log('==result==')
-        console.log(this.astUtils.ast2code(result))
-        console.log(this.afterCssToObject)
+        this.afterPackageCode = result
+
+        const finalResult = this.generateReactNativeComponent({
+          ctx: this
+        })
+
+        return finalResult
       })
-      .then(() => this)
+      // .then(() => this)
   }
 }

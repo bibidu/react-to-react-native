@@ -9,6 +9,7 @@ const generateInjectBrowserScript = require('./generateInjectBrowserScript')
 const runInBrowser = require('./runInBrowser')
 const astUtils = require('./astUtils')
 const jsxUtils = require('./jsxUtils')
+const generateReactNativeComponent = require('./generateReactNativeComponent')
 
 module.exports = function () {
   ;[
@@ -23,5 +24,6 @@ module.exports = function () {
     runInBrowser,
     astUtils,
     jsxUtils,
+    generateReactNativeComponent,
   ].forEach(util => this[util.name] = util)
 }

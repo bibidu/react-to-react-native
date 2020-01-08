@@ -44,7 +44,10 @@ new ReactToReactNative()
     reactCompPath,
     // reactCompString,
     // cssString,
-  }).start().then((ctx) => {
+  }).start().then((finalResult) => {
+    console.log('=========finalResult=========')
+    console.log()
+    console.log(finalResult)
     // console.log(ctx.afterTsCompiled)
     // console.log(ctx.afterCssCompiled)
   })
