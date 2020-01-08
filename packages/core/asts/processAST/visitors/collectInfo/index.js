@@ -1,5 +1,8 @@
+const isCSSPath = (value) => /(css|scss)(\;*)$/.test(value)
+
 module.exports = function collectInfo({ ctx, t }) {
-  return {
+  const visitor = {}
+  Object.assign(visitor, {
     ExportDefaultDeclaration(path) {
       const { name } = path.get('declaration').node
       // 收集导出的组件名
@@ -9,7 +12,7 @@ module.exports = function collectInfo({ ctx, t }) {
     JSXElement(path) {
       const styleAttr = ctx.jsxUtils.getJSXAttributeValue(path, 'style')
       if (styleAttr) {
-        // 暂只支持style={{[string]: string | any}}内联样式
+        // 1. style={{[string]: string | any}}内联样式
         const isExpression = styleAttr.isJSXExpressionContainer()
         const isObjectExpression = isExpression && styleAttr.get('expression').isObjectExpression()
         if (isObjectExpression) {
@@ -21,8 +24,10 @@ module.exports = function collectInfo({ ctx, t }) {
         // 删除style属性
         ctx.jsxUtils.getJSXAttribute(path, 'style').remove()
       }
-    }
-  }
+    },
+  })
+
+  return visitor
 }
 
 

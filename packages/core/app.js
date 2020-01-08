@@ -12,6 +12,7 @@ module.exports = class ReactToReactNative {
     this.collections = {
       exports: [] /* 暴露出的组件名 */
     }
+    this.reactCompPath = '' /* react组件绝对路径 */
     this.reactCompString = '' /* react组件字符串 */
     this.cssString = '' /* css字符串 */
     this.cssType = '' /* scss | other */
@@ -66,13 +67,15 @@ module.exports = class ReactToReactNative {
   }
 
   init({
-    reactCompString,
+    reactCompPath = '',
+    reactCompString = '',
     cssString = '',
     cssType = 'scss' 
   } = {}) {
-    if (!reactCompString) {
+    if (!reactCompPath && !reactCompString) {
       this.error('expected the type of reactCompString is react component string!')
     }
+    this.reactCompPath = reactCompPath
     this.reactCompString = reactCompString
     this.cssString = cssString
     this.cssType = cssType
@@ -81,6 +84,9 @@ module.exports = class ReactToReactNative {
   }
 
   start() {
+    if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {
+      this.reactCompString = require('fs').readFileSync(this.reactCompPath, 'utf8')
+    }
     return Promise.all([
       this.typescriptCompiler(this.reactCompString),
       this.scssCompiler(this.cssString),

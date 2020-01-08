@@ -35,15 +35,15 @@ const fs = require('fs')
 // }
 // `
 const COMPONENT_NAME = 'BUTTON'
-const testPath = `/Users/duxianzhang/Desktop/company/tz-component-template/src/${COMPONENT_NAME}/index.js`
+const reactCompPath = `/Users/duxianzhang/Desktop/company/tz-component-template/src/${COMPONENT_NAME}/index.js`
+// const reactCompString = ''
+// const cssString = ''
 
-const reactCompString = fs.readFileSync(testPath, 'utf8')
-const cssString = ''
-console.log(reactCompString)
 new ReactToReactNative()
   .init({
-    reactCompString,
-    cssString,
+    reactCompPath,
+    // reactCompString,
+    // cssString,
   }).start().then((ctx) => {
     // console.log(ctx.afterTsCompiled)
     // console.log(ctx.afterCssCompiled)
