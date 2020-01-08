@@ -163,6 +163,11 @@ module.exports = function astToRelationTree({ ctx, t }) {
         tagName,
         uniqueId,
       })
+
+      // 临时方案：对于自定义的组件，默认从当前文件的Class中进行匹配
+      if (tagName.charAt(0) !== tagName.charAt(0).toLowerCase()) {
+        ctx.addFsRelation(getCurrentFileUniqueName(path), `Class-${tagName}`)
+      }
     },
 
     ClassMethod(path) {

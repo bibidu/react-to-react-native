@@ -115,7 +115,6 @@ module.exports = class ReactToReactNative {
           uniqueNodeInfo: this.uniqueNodeInfo,
           isTag: (uniqueId) => uniqueId.startsWith(this.enums.UNIQUE_ID)
         })
-        // use
         this.injectBrowserScript = this.generateInjectBrowserScript({
           html: this.pureHtmlString,
           css: this.afterCssToObject
@@ -138,6 +137,7 @@ module.exports = class ReactToReactNative {
             this.log(`输出到'${this.outputPath}' -> success`)
           }
         }
+        console.log(this.pureHtmlString)
         return finalResult
       })
       // .then(() => this)
