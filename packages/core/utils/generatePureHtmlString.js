@@ -1,6 +1,8 @@
 const ENTRY = 'ROOT-render'
 const TAB_SIZE = 2
 
+const isUserComponent = (tagName) => tagName.charAt(0) !== tagName.charAt(0).toLowerCase()
+
 module.exports = function generatePureHtmlString({
   fsRelations,
   uniqueNodeInfo,
@@ -24,13 +26,19 @@ module.exports = function generatePureHtmlString({
         const classAttr = className ? ` class="${className}"` : ''
         const idAttr = id ? ` id="${id}"` : ''
 
-        html += `${block}<${tagName} uniqueId="${uniqueId}"${classAttr}${idAttr}>\n`
+        if (!isUserComponent(tagName)) {
+          html += `${block}<${tagName} uniqueId="${uniqueId}"${classAttr}${idAttr}>\n`
+        }
+
         html += generatePureHtmlString({
           fsRelations,
           uniqueNodeInfo,
           isTag,
         }, item, tabSize + TAB_SIZE)
-        html += `${block}</${tagName}>\n`
+
+        if (!isUserComponent(tagName)) {
+          html += `${block}</${tagName}>\n`
+        }
       } else {
         html += generatePureHtmlString({
           fsRelations,
