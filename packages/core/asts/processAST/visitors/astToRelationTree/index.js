@@ -113,35 +113,41 @@ module.exports = function astToRelationTree({ ctx, t }) {
       ;['className', 'id', 'uniqueId'].forEach(attrName => {
         const key = attrName === 'uniqueId' ? ctx.enums.UNIQUE_ID : attrName
         if (attr.get('name').isJSXIdentifier({ name: key })) {
-          result[attrName] = getAllStaticAttrValue(attr.get('value'))
+          result[attrName] = getAllStaticAttrValue(attr.get('value')).trim()
         }
       })
     }
     return result
   }
 
-  function getAllStaticAttrValue(JSXElementAttrValuePath) {
-    // className="title"
-    if (JSXElementAttrValuePath.isStringLiteral()) {
-      return JSXElementAttrValuePath.node.value
+  function getAllStaticAttrValue(attrValuePath) {
+    // className="title" or className="title1 title2"
+    if (attrValuePath.isStringLiteral()) {
+      return attrValuePath.node.value
     }
-    if (JSXElementAttrValuePath.isJSXExpressionContainer()) {
-      const expression = JSXElementAttrValuePath.get('expression')
-      // className={"title"}
+    if (attrValuePath.isJSXExpressionContainer()) {
+      const expression = attrValuePath.get('expression')
+      // className={"title"} or className={"title1 title2"}
       if (expression.isStringLiteral()) {
         return expression.node.value
       }
+      // className={`title1 ${activeClassName} title2`}
       if (expression.isTemplateLiteral()) {
-        const quasis = expression.quasis
-        // className={`title ${activeClassName}`}
-        if (quasis.length !== 1) {
-          ctx.error('暂不支持在className、id上含有多个quasis的TemplateLiteral')
-        } else {
-          return quasis[0].value.raw
+        return getQuasisStaticValueInTemplateLiteral(expression)
+      }
+      // className={['title1 title2']}
+      if (expression.isArrayExpression()) {
+        const validValue = expression.get('elements.0')
+        if (validValue.isStringLiteral()) {
+          return validValue.node.value
+        }
+        // className={[`title1 ${other} title2`]}
+        if (validValue.isTemplateLiteral()) {
+          return getQuasisStaticValueInTemplateLiteral(validValue)
         }
       }
     }
-    return 'nullnull'
+    return ''
   }
 
   return {
@@ -180,4 +186,14 @@ module.exports = function astToRelationTree({ ctx, t }) {
       }
     }
   }
+}
+
+function getQuasisStaticValueInTemplateLiteral(templateLiteralPath){
+  const quasis = templateLiteralPath.get('quasis')
+  let value = ''
+  for (let item of quasis) {
+    const current = item.get('value').node.raw
+    current && (value += `${current} `)
+  }
+  return value
 }
