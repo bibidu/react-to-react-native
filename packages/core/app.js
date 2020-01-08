@@ -15,6 +15,7 @@ module.exports = class ReactToReactNative {
     this.reactCompPath = '' /* react组件绝对路径 */
     this.reactCompString = '' /* react组件字符串 */
     this.cssString = '' /* css字符串 */
+    this.addCssString = (mark, cssString) => this.cssString += `\n/* ${mark}*/\n` + cssString
     this.cssType = '' /* scss | other */
 
     this.afterTsCompiled = '' /* typescript编译后 */
