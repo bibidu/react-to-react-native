@@ -11,9 +11,10 @@ module.exports = class ReactToReactNative {
     this.collections = {
       exports: [] /* 暴露出的组件名 */
     }
-    this.reactCompPath = '' /* react组件绝对路径 */
-    this.reactCompString = '' /* react组件字符串 */
-    this.cssString = '' /* css字符串 */
+    this.reactCompPath = '' /* 输入react组件绝对路径 */
+    this.outputPath = '' /* 输出react-native组件绝对路径 */
+    this.reactCompString = '' /* 输入react组件字符串 */
+    this.cssString = '' /* 输入css字符串 */
     this.addCssString = (mark, cssString) => this.cssString += `\n/* ${mark}*/\n` + cssString
     this.cssType = '' /* scss | other */
 
@@ -70,6 +71,7 @@ module.exports = class ReactToReactNative {
   init({
     reactCompPath = '',
     reactCompString = '',
+    outputPath = '',
     cssString = '',
     cssType = 'scss' 
   } = {}) {
@@ -77,6 +79,7 @@ module.exports = class ReactToReactNative {
       this.error('expected the type of reactCompString is react component string!')
     }
     this.reactCompPath = reactCompPath
+    this.outputPath = outputPath
     this.reactCompString = reactCompString
     this.cssString = cssString
     this.cssType = cssType
@@ -87,11 +90,7 @@ module.exports = class ReactToReactNative {
 
     return this
   }
-// this.scssCompiler(this.cssString)
-      // this.afterCssToObject = afterCssToObject
-      // this.afterCssCompiled = afterCssCompiled
 
-      // return this.cssToObject(afterCssCompiled)
   start() {
     return this.typescriptCompiler(this.reactCompString)
       .then(afterTsCompiled => {
@@ -130,6 +129,13 @@ module.exports = class ReactToReactNative {
         const finalResult = this.generateReactNativeComponent({
           ctx: this
         })
+
+        if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {
+          if (this.outputPath) {
+            require('fs').writeFileSync(this.outputPath, finalResult, 'utf8')
+            this.log(`输出到'${this.outputPath}' -> success`)
+          }
+        }
 
         return finalResult
       })

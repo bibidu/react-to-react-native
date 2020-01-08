@@ -36,12 +36,14 @@ const fs = require('fs')
 // `
 const COMPONENT_NAME = 'BUTTON'
 const reactCompPath = `/Users/duxianzhang/Desktop/company/tz-component-template/src/${COMPONENT_NAME}/index.js`
+const outputPath = `/Users/duxianzhang/Desktop/company/tz-component-template/dist_react_native/index.js`
 // const reactCompString = ''
 // const cssString = ''
 
 new ReactToReactNative()
   .init({
     reactCompPath,
+    outputPath,
     // reactCompString,
     // cssString,
   }).start().then((finalResult) => {
