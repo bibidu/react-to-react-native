@@ -42,8 +42,8 @@ module.exports = class ReactToReactNative {
       this.fsRelations[k].push(v)
     }
 
-    this.uniqueTagStyle = {} /* JSXElement节点标签自带的样式, 如h1 */
-    this.addUniqueTagStyle = (uniqueId, style) => this.uniqueTagStyle[uniqueId] = style
+    this.tagSelfStyle = {} /* JSXElement节点标签自带的样式, 如h1 */
+    this.addTagSelfStyle = (uniqueId, style) => this.tagSelfStyle[uniqueId] = style
   
     this.usingRNComponentNames = [] /* 使用到的React Native组件 */
     this.addUsingRNComponentName = (componentName) => {
@@ -139,6 +139,8 @@ module.exports = class ReactToReactNative {
           }
         }
         console.log(this.externalToInlineStyle)
+        console.log(this.initialInlineStyle)
+        console.log(this.tagSelfStyle)
         return finalResult
       })
       // .then(() => this)

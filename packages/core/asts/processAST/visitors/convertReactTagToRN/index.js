@@ -18,7 +18,7 @@ function saveStyleFromTagName(path, ctx, styles) {
     if (!uniqueId || !uniqueId.node || !uniqueId.node.value) {
       ctx.error('不存在uniqueId')
     }
-    ctx.addUniqueTagStyle(uniqueId.node.value, styles)
+    ctx.addTagSelfStyle(uniqueId.node.value, styles)
   }
 }
 
