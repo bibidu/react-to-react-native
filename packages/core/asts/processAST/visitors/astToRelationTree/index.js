@@ -113,14 +113,14 @@ module.exports = function astToRelationTree({ ctx, t }) {
       ;['className', 'id', 'uniqueId'].forEach(attrName => {
         const key = attrName === 'uniqueId' ? ctx.enums.UNIQUE_ID : attrName
         if (attr.get('name').isJSXIdentifier({ name: key })) {
-          result[attrName] = getJSXElementAttrValuePath(attr.get('value'))
+          result[attrName] = getAllStaticAttrValue(attr.get('value'))
         }
       })
     }
     return result
   }
 
-  function getJSXElementAttrValuePath(JSXElementAttrValuePath) {
+  function getAllStaticAttrValue(JSXElementAttrValuePath) {
     // className="title"
     if (JSXElementAttrValuePath.isStringLiteral()) {
       return JSXElementAttrValuePath.node.value
