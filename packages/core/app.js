@@ -3,7 +3,6 @@ const compilers = require('./compilers')
 const utils = require('./utils')
 const enums = require('./config/enums')
 
-
 module.exports = class ReactToReactNative {
   constructor() {
     this.enums = enums /* 枚举字段 */
@@ -81,50 +80,54 @@ module.exports = class ReactToReactNative {
     this.cssString = cssString
     this.cssType = cssType
 
-    return this
-  }
-
-  start() {
     if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {
       this.reactCompString = require('fs').readFileSync(this.reactCompPath, 'utf8')
     }
-    return Promise.all([
-      this.typescriptCompiler(this.reactCompString),
-      this.scssCompiler(this.cssString),
-    ]).then(([
-      afterTsCompiled,
-      afterCssCompiled
-    ]) => {
 
-      this.afterTsCompiled = afterTsCompiled
-      this.afterCssCompiled = afterCssCompiled
+    return this
+  }
+// this.scssCompiler(this.cssString)
+      // this.afterCssToObject = afterCssToObject
+      // this.afterCssCompiled = afterCssCompiled
 
-      return this.cssToObject(afterCssCompiled)
-    }).then((afterCssToObject) => {
+      // return this.cssToObject(afterCssCompiled)
+  start() {
+    return this.typescriptCompiler(this.reactCompString)
+      .then(afterTsCompiled => {
+        this.afterTsCompiled = afterTsCompiled
+        this.initialAST = this.astUtils.code2ast(this.afterTsCompiled)
 
-      this.afterCssToObject = afterCssToObject
-      const ast = this.astUtils.code2ast(this.afterTsCompiled)
-      this.initialAST = ast
+        return this.processAST(this.initialAST)
+      }).then(afterProcessAST => {
+        this.afterProcessAST = afterProcessAST
 
-      return this.processAST(ast)
-    }).then((afterProcessAST) => {
-      this.afterProcessAST = afterProcessAST
-      this.pureHtmlString = this.generatePureHtmlString({
-        fsRelations: this.fsRelations,
-        uniqueNodeInfo: this.uniqueNodeInfo,
-        isTag: (uniqueId) => uniqueId.startsWith(this.enums.UNIQUE_ID)
+        return this.scssCompiler(this.cssString)
+      }).then(afterCssCompiled => {
+        this.afterCssCompiled = afterCssCompiled
+
+        return this.cssToObject(this.afterCssCompiled)
+      }).then(afterCssToObject => {
+        this.afterCssToObject = afterCssToObject
+        this.pureHtmlString = this.generatePureHtmlString({
+          fsRelations: this.fsRelations,
+          uniqueNodeInfo: this.uniqueNodeInfo,
+          isTag: (uniqueId) => uniqueId.startsWith(this.enums.UNIQUE_ID)
+        })
+        // use
+        this.injectBrowserScript = this.generateInjectBrowserScript({
+          html: this.pureHtmlString,
+          css: this.afterCssToObject
+        })
+
+        return this.runInBrowser({ script: this.injectBrowserScript })
+      }).then(result => {
+
+        return this.package(this.afterProcessAST)
+      }).then(result => {
+        console.log('==result==')
+        console.log(this.astUtils.ast2code(result))
+        console.log(this.afterCssToObject)
       })
-      this.injectBrowserScript = this.generateInjectBrowserScript({
-        html: this.pureHtmlString,
-        css: this.afterCssToObject
-      })
-      return this.runInBrowser({ script: this.injectBrowserScript })
-    }).then((result) => {
-      return this.package(this.afterProcessAST)
-    }).then((result) => {
-      console.log('==result==')
-      console.log(this.astUtils.ast2code(result))
-    })
-    .then(() => this)
+      .then(() => this)
   }
 }
