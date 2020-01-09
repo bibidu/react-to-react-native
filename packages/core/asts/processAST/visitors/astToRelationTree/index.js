@@ -132,13 +132,9 @@ module.exports = function astToRelationTree({ ctx, t }) {
         const key = attrName === 'uniqueId' ? ctx.enums.UNIQUE_ID : attrName
         if (attr.get('name').isJSXIdentifier({ name: key })) {
           const { staticExpression, activeExpression } = getAttrValueExactly(attr.get('value'))
+          const activeKey = 'active' + attrName.replace(/^\w/, (_) => _.toUpperCase())
           result[attrName] = staticExpression
-          if (attrName === 'className') {
-            result['activeClassName'] = activeExpression
-          }
-          if (attrName === 'id') {
-            result['activeId'] = activeExpression
-          }
+          result[activeKey] = activeExpression
         }
       })
     }
