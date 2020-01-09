@@ -1,13 +1,17 @@
 module.exports = function generateReactNativeComponent({
   ctx
 }) {
-  const rnUsingComponentName = ctx.usingRNComponentNames
-  const usingCode = genUsingComponentCode(rnUsingComponentName)
+  const {
+    usingRNComponentNames,
+    mixinedAllStyle,
+  } = ctx
+  const usingCode = genUsingComponentCode(usingRNComponentNames)
+  const styleSheet = genStyleSheet(mixinedAllStyle)
   const component = ctx.astUtils.ast2code(ctx.afterPackageCode)
-
   const result = [
     usingCode,
     component,
+    styleSheet,
   ].join('\n')
 
   return result
@@ -19,4 +23,8 @@ function genUsingComponentCode(rnUsingComponentName) {
   AppRegistry,
   StyleSheet,
   ${componentStr}\n} from 'react-native'`
+}
+
+function genStyleSheet(finalStyleObject) {
+  return 'const style = ' + JSON.stringify(finalStyleObject, null, 2)
 }
