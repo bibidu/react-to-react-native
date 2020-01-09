@@ -10,6 +10,7 @@ const runInBrowser = require('./runInBrowser')
 const astUtils = require('./astUtils')
 const jsxUtils = require('./jsxUtils')
 const generateReactNativeComponent = require('./generateReactNativeComponent')
+const mixinAllStyle = require('./mixinAllStyle')
 
 module.exports = function () {
   ;[
@@ -25,5 +26,6 @@ module.exports = function () {
     astUtils,
     jsxUtils,
     generateReactNativeComponent,
+    mixinAllStyle,
   ].forEach(util => this[util.name] = util)
 }
