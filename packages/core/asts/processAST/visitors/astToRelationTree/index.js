@@ -18,6 +18,22 @@
  * @param {*} param0 
  */
 module.exports = function astToRelationTree({ ctx, t }) {
+  function getQuasisStaticValueInTemplateLiteral(templateLiteralPath){
+    const quasis = templateLiteralPath.get('quasis')
+    let value = ''
+    for (let item of quasis) {
+      const current = item.get('value').node.raw
+      current && (value += `${current} `)
+    }
+    return value
+  }
+
+  function getQuasisActiveValueInTemplateLiteral(templateLiteralPath) {
+    const expressions = templateLiteralPath.get('expressions')
+    const expressionCodeArr = expressions.map(exp => ctx.astUtils.ast2code(exp.node))
+    return expressionCodeArr
+  }
+
   function getParentNodeName(path) {
     const parentNode = path.findParent((p) => (
       p.isJSXElement() ||
@@ -105,7 +121,9 @@ module.exports = function astToRelationTree({ ctx, t }) {
     const result = {
       tagName,
       className: '',
+      activeClassName: '',
       id: '',
+      activeId: '',
       uniqueId: '',
     }
     const attributes = openingElement.get('attributes')
@@ -113,41 +131,54 @@ module.exports = function astToRelationTree({ ctx, t }) {
       ;['className', 'id', 'uniqueId'].forEach(attrName => {
         const key = attrName === 'uniqueId' ? ctx.enums.UNIQUE_ID : attrName
         if (attr.get('name').isJSXIdentifier({ name: key })) {
-          result[attrName] = getAllStaticAttrValue(attr.get('value')).trim()
+          const { staticExpression, activeExpression } = getAttrValueExactly(attr.get('value'))
+          result[attrName] = staticExpression
+          if (attrName === 'className') {
+            result['activeClassName'] = activeExpression
+          }
+          if (attrName === 'id') {
+            result['activeId'] = activeExpression
+          }
         }
       })
     }
     return result
   }
 
-  function getAllStaticAttrValue(attrValuePath) {
+  function getAttrValueExactly(attrValuePath) {
+    let staticExpression = '', activeExpression = ''
     // className="title" or className="title1 title2"
     if (attrValuePath.isStringLiteral()) {
-      return attrValuePath.node.value
+      staticExpression = attrValuePath.node.value.trim()
     }
     if (attrValuePath.isJSXExpressionContainer()) {
       const expression = attrValuePath.get('expression')
       // className={"title"} or className={"title1 title2"}
       if (expression.isStringLiteral()) {
-        return expression.node.value
+        staticExpression = expression.node.value.trim()
       }
       // className={`title1 ${activeClassName} title2`}
       if (expression.isTemplateLiteral()) {
-        return getQuasisStaticValueInTemplateLiteral(expression)
+        staticExpression = getQuasisStaticValueInTemplateLiteral(expression).trim()
+        activeExpression = getQuasisActiveValueInTemplateLiteral(expression)
       }
       // className={['title1 title2']}
       if (expression.isArrayExpression()) {
         const validValue = expression.get('elements.0')
         if (validValue.isStringLiteral()) {
-          return validValue.node.value
+          staticExpression = validValue.node.value.trim()
         }
         // className={[`title1 ${other} title2`]}
         if (validValue.isTemplateLiteral()) {
-          return getQuasisStaticValueInTemplateLiteral(validValue)
+          staticExpression = getQuasisStaticValueInTemplateLiteral(validValue).trim()
+          activeExpression = getQuasisActiveValueInTemplateLiteral(validValue)
         }
       }
     }
-    return ''
+    return {
+      staticExpression,
+      activeExpression,
+    }
   }
 
   return {
@@ -156,12 +187,21 @@ module.exports = function astToRelationTree({ ctx, t }) {
       ctx.addFsRelation(parentNodeName, getCurrentFileUniqueName(path))
 
       const nodeInfo = extractJSXNodeInfo(path)
-      const { className, id, tagName, uniqueId, } = nodeInfo
+      const {
+        className,
+        id,
+        tagName,
+        uniqueId,
+        activeClassName,
+        activeId,
+      } = nodeInfo
       ctx.addUniqueNodeInfo(uniqueId, {
         className,
         id,
         tagName,
         uniqueId,
+        activeClassName,
+        activeId,
       })
 
       // 临时方案：对于自定义的组件，默认从当前文件的Class中进行匹配
@@ -191,14 +231,4 @@ module.exports = function astToRelationTree({ ctx, t }) {
       }
     }
   }
-}
-
-function getQuasisStaticValueInTemplateLiteral(templateLiteralPath){
-  const quasis = templateLiteralPath.get('quasis')
-  let value = ''
-  for (let item of quasis) {
-    const current = item.get('value').node.raw
-    current && (value += `${current} `)
-  }
-  return value
 }

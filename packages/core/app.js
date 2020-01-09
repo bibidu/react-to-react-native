@@ -30,8 +30,8 @@ module.exports = class ReactToReactNative {
     this.afterPackageCode = '' /* package阶段后生成的组件code */
 
     this.uniqueNodeInfo = {} /* JSXElement节点的信息 */
-    this.addUniqueNodeInfo = (k, { className, id, tagName, uniqueId }) => {
-      this.uniqueNodeInfo[k] = { className, id, tagName, uniqueId }
+    this.addUniqueNodeInfo = (k, { className, id, tagName, uniqueId, activeClassName, activeId, }) => {
+      this.uniqueNodeInfo[k] = { className, id, tagName, uniqueId, activeClassName, activeId, }
     }
 
     this.fsRelations = {} /* 节点间关系 */
