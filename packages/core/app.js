@@ -116,11 +116,13 @@ module.exports = class ReactToReactNative {
         this.pureHtmlString = this.generatePureHtmlString({
           fsRelations: this.fsRelations,
           uniqueNodeInfo: this.uniqueNodeInfo,
-          isTag: (uniqueId) => uniqueId.startsWith(this.enums.UNIQUE_ID)
+          isTag: (uniqueId) => uniqueId.startsWith(this.enums.UNIQUE_ID),
+          uniqueIdName: this.enums.HTML_UNIQUE_ID_ATTRNAME,
         })
         this.injectBrowserScript = this.generateInjectBrowserScript({
           html: this.pureHtmlString,
-          css: this.afterCssToObject
+          css: this.afterCssToObject,
+          uniqueIdName: this.enums.HTML_UNIQUE_ID_ATTRNAME,
         })
         this.log('runInBrowser')
         return this.runInBrowser({ script: this.injectBrowserScript })

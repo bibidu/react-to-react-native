@@ -1,4 +1,8 @@
-module.exports = function generateInjectBrowserScript({ html, css }) {
+module.exports = function generateInjectBrowserScript({
+  html,
+  css,
+  uniqueIdName,
+}) {
   const { externalStyle } = css
   const script = `document.body.innerHTML = \`${html}\`
   document.body.appendChild(create('div', { id: 'result' }))
@@ -6,8 +10,9 @@ module.exports = function generateInjectBrowserScript({ html, css }) {
   const output = {}
   Object.entries(styles).forEach(([ selector, style ]) => {
     const el = element(selector)
+    console.log(el)
     if (el) {
-      const uniqueId = attr(el, 'uniqueId')
+      const uniqueId = attr(el, '${uniqueIdName}')
       if (uniqueId) {
         output[uniqueId] = style
       }
