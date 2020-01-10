@@ -1,5 +1,18 @@
 const transform = require('css-to-react-native').default
 
+const shouldDeleteAttrNames = [
+  'text-shadow'
+]
+
+function deleteUnSupportAttr(obj) {
+  const attrNames = Object.keys(obj)
+  attrNames.forEach(attrName => {
+    if (shouldDeleteAttrNames.includes(attrName)) {
+      delete obj[attrName]
+    }
+  })
+}
+
 module.exports = function transformMixinedStyle(mixinedAllStyle) {
   Object.entries(mixinedAllStyle).forEach(([ uniqueId, style]) => {
     mixinedAllStyle[uniqueId] = _transform(style)
@@ -8,8 +21,9 @@ module.exports = function transformMixinedStyle(mixinedAllStyle) {
 }
 
 function _transform(obj) {
+  deleteUnSupportAttr(obj)
+  const arrayStyle = objStyleToTransformArray(obj)
   try {
-    const arrayStyle = objStyleToTransformArray(obj)
     const result = transform(arrayStyle)
     return result
   } catch (error) {
