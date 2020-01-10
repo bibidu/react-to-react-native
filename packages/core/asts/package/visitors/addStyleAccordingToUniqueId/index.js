@@ -35,7 +35,11 @@ module.exports = function addStyleAccordingToUniqueId({ ctx, t }) {
       } = ctx.uniqueNodeInfo[uniqueId]
       if (!activeClassName) activeClassName = []
       if (!activeId) activeId = []
-      const activeExpressionArray = activeClassName.concat(activeId)
+      const mixinExpression = ctx.finalStyleObject[uniqueId] ? [{
+        node: t.stringLiteral(uniqueId)
+      }] : []
+      // 临时方案: 暂不考虑动态、非动态的样式优先级
+      const activeExpressionArray = activeClassName.concat(activeId).concat(mixinExpression)
 
       if (activeExpressionArray.length) {
         const attributeValuePath = createArrayCallInJSXExpression(activeExpressionArray)
