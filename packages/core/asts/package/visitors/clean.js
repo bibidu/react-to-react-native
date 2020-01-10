@@ -9,7 +9,9 @@ module.exports = function clean({ ctx, t }) {
 
       // 移除标记
       const marks = [
-        ctx.enums.STATIC_MARK
+        ctx.enums.STATIC_MARK,
+        'className',
+        'id',
       ]
       const attributes = path.get('openingElement').get('attributes')
       for (let attribute of attributes) {
