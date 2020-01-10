@@ -2,14 +2,10 @@ module.exports = function clean({ ctx, t }) {
 
   return {
     JSXElement(path) {
-      const uniqueIdPrefix = ctx.enums.UNIQUE_ID
-      const uniqueIdAttr = ctx.jsxUtils.getJSXAttribute(path, uniqueIdPrefix)
-      // 移除uniqueId
-      uniqueIdAttr.remove()
-
       // 移除标记
       const marks = [
         ctx.enums.STATIC_MARK,
+        ctx.enums.UNIQUE_ID,
         'className',
         'id',
       ]

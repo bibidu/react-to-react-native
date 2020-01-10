@@ -24,6 +24,7 @@ module.exports = function addStyleAccordingToUniqueId({ ctx, t }) {
         false
       )]
     )
+
     return t.jsxExpressionContainer(
       activeExpressionArray.length === 1 ? singleExpression : multiExpression
     )
