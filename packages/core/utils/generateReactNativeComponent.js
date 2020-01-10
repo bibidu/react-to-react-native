@@ -1,6 +1,18 @@
 module.exports = function generateReactNativeComponent({
   ctx
 }) {
+  function genUsingComponentCode(rnUsingComponentName) {
+    const componentStr = rnUsingComponentName.join(',\n  ')
+    return `import {
+    AppRegistry,
+    StyleSheet,
+    ${componentStr}\n} from 'react-native'`
+  }
+  
+  function genStyleSheet(finalStyleObject) {
+    return `const ${ctx.enums.STYLESHEET_NAME} = ` + JSON.stringify(finalStyleObject, null, 2)
+  }
+
   const {
     usingRNComponentNames,
     finalStyleObject,
@@ -15,16 +27,4 @@ module.exports = function generateReactNativeComponent({
   ].join('\n')
 
   return result
-}
-
-function genUsingComponentCode(rnUsingComponentName) {
-  const componentStr = rnUsingComponentName.join(',\n  ')
-  return `import {
-  AppRegistry,
-  StyleSheet,
-  ${componentStr}\n} from 'react-native'`
-}
-
-function genStyleSheet(finalStyleObject) {
-  return 'const style = ' + JSON.stringify(finalStyleObject, null, 2)
 }

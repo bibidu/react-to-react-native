@@ -29,8 +29,7 @@ module.exports = function astToRelationTree({ ctx, t }) {
   }
 
   function getQuasisActiveValueInTemplateLiteral(templateLiteralPath) {
-    const expressions = templateLiteralPath.get('expressions')
-    const expressionCodeArr = expressions.map(exp => ctx.astUtils.ast2code(exp.node))
+    const expressionCodeArr = templateLiteralPath.get('expressions')
     return expressionCodeArr
   }
 

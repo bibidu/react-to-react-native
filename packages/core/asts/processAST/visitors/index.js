@@ -4,6 +4,7 @@
   require('./collectInfo'),
   require('./astToRelationTree'),
   require('./convertReactTagToRN'),
+  require('./addStyleAccordingToUniqueId'),
 ]
 
 if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {
