@@ -3,10 +3,10 @@ module.exports = function generateReactNativeComponent({
 }) {
   const {
     usingRNComponentNames,
-    mixinedAllStyle,
+    finalStyleObject,
   } = ctx
   const usingCode = genUsingComponentCode(usingRNComponentNames)
-  const styleSheet = genStyleSheet(mixinedAllStyle)
+  const styleSheet = genStyleSheet(finalStyleObject)
   const component = ctx.astUtils.ast2code(ctx.afterPackageCode)
   const result = [
     usingCode,

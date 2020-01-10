@@ -1,5 +1,3 @@
-const transform = require('./cssToReactNative')
-
 function merge(...objs) {
   const mixins = {}
   for (let obj of objs) {

@@ -2,7 +2,7 @@ const log = require('./log')
 const error = require('./error')
 const cssToObject = require('./cssToObject')
 const astToRelationTree = require('./astToRelationTree')
-const cssToReactNative = require('./cssToReactNative')
+const transformMixinedStyle = require('./transformMixinedStyle')
 const relationTreeToHtml = require('./relationTreeToHtml')
 const generatePureHtmlString = require('./generatePureHtmlString')
 const generateInjectBrowserScript = require('./generateInjectBrowserScript')
@@ -18,8 +18,7 @@ module.exports = function () {
     error,
     cssToObject,
     astToRelationTree,
-    cssToReactNative,
-    cssToReactNative,
+    transformMixinedStyle,
     generatePureHtmlString,
     generateInjectBrowserScript,
     runInBrowser,
