@@ -12,13 +12,23 @@ function merge(...objs) {
   return mixins
 }
 
+function extractStableStyle({ externalStyle, stableClassNames }) {
+  const stableStyle = {}
+  Object.entries(stableClassNames).forEach(([k, selector]) => {
+    stableStyle[selector] = externalStyle[k]
+  })
+  return stableStyle
+}
+
 module.exports = function mixinAllStyle({
   external,
   inline,
   self,
+  cssObject,
 }) {
   // 临时方案: 按照内联样式 > 外联样式 > 自身样式进行merge
   const mixins = merge(self, external, inline)
-
-  return mixins
+  // 提取stableStyle
+  const stableStyle = extractStableStyle(cssObject)
+  return Object.assign({}, mixins, stableStyle)
 }

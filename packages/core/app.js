@@ -134,6 +134,7 @@ module.exports = class ReactToReactNative {
           external: this.externalToInlineStyle,
           inline: this.initialInlineStyle,
           self: this.tagSelfStyle,
+          cssObject: this.afterCssToObject
         })
       }).then((mixinedStyle) => {
         this.mixinedAllStyle = mixinedStyle
