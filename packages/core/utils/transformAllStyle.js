@@ -13,7 +13,7 @@ function deleteUnSupportAttr(obj) {
   })
 }
 
-module.exports = function transformMixinedStyle(mixinedAllStyle) {
+module.exports = function transformAllStyle(mixinedAllStyle) {
   Object.entries(mixinedAllStyle).forEach(([ uniqueId, style]) => {
     mixinedAllStyle[uniqueId] = _transform(style)
   })

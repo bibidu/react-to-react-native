@@ -2,13 +2,13 @@ const log = require('./log')
 const error = require('./error')
 const cssToObject = require('./cssToObject')
 const astToRelationTree = require('./astToRelationTree')
-const transformMixinedStyle = require('./transformMixinedStyle')
+const transformAllStyle = require('./transformAllStyle')
 const relationTreeToHtml = require('./relationTreeToHtml')
 const generatePureHtmlString = require('./generatePureHtmlString')
 const astUtils = require('./astUtils')
 const jsxUtils = require('./jsxUtils')
 const generateReactNativeComponent = require('./generateReactNativeComponent')
-const mixinAllStyle = require('./mixinAllStyle')
+const mixinStyleExceptInherit = require('./mixinStyleExceptInherit')
 const convertExternalToInline = require('./convertExternalToInline')
 
 module.exports = function () {
@@ -17,12 +17,12 @@ module.exports = function () {
     error,
     cssToObject,
     astToRelationTree,
-    transformMixinedStyle,
+    transformAllStyle,
     generatePureHtmlString,
     astUtils,
     jsxUtils,
     generateReactNativeComponent,
-    mixinAllStyle,
+    mixinStyleExceptInherit,
     convertExternalToInline,
   ].forEach(util => this[util.name] = util)
 }

@@ -20,7 +20,7 @@ function extractStableStyle({ externalStyle, stableClassNames }) {
   return stableStyle
 }
 
-module.exports = function mixinAllStyle({
+module.exports = function mixinStyleExceptInherit({
   external,
   inline,
   self,

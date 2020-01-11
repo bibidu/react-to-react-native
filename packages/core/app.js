@@ -24,7 +24,7 @@ module.exports = class ReactToReactNative {
     this.pureHtmlString = '' /* 注入浏览器前的纯html */
     this.injectBrowserScript = '' /* 注入浏览器的script */
     this.externalToInlineStyle = {} /* 外联转内联的样式 */
-    this.mixinedAllStyle = {} /* 混合[外联、内联、标签自带]的样式结果 */
+    this.mixinedStyleExceptInherit = {} /* 混合[外联、内联、标签自带]的样式结果 */
     this.finalStyleObject = {} /* 通过react-to-react-native转换后的最终样式 */
     this.initialAST = {} /* visitors遍历前最初的ast */
     this.afterProcessAST = {} /* processAST.visitors遍历后的ast */
@@ -127,19 +127,19 @@ module.exports = class ReactToReactNative {
         })
       }).then(externalToInlineStyle => {
         this.externalToInlineStyle = externalToInlineStyle
-        this.log('mixinAllStyle')
+        this.log('mixinStyleExceptInherit')
 
-        return this.mixinAllStyle({
+        return this.mixinStyleExceptInherit({
           external: this.externalToInlineStyle,
           inline: this.initialInlineStyle,
           self: this.tagSelfStyle,
           cssObject: this.afterCssToObject
         })
-      }).then((mixinedStyle) => {
-        this.mixinedAllStyle = mixinedStyle
-        this.log('transformMixinedStyle')
+      }).then((mixinedStyleExceptInherit) => {
+        this.mixinedStyleExceptInherit = mixinedStyleExceptInherit
+        this.log('transformAllStyle')
 
-        return this.transformMixinedStyle(this.mixinedAllStyle)
+        return this.transformAllStyle(this.mixinedStyleExceptInherit)
       }).then(finalStyleObject => {
         this.finalStyleObject = finalStyleObject
 
