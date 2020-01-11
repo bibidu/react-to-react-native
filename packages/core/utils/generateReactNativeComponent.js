@@ -10,7 +10,7 @@ module.exports = function generateReactNativeComponent({
   }
   
   function genStyleSheet(finalStyleObject) {
-    return `const ${ctx.enums.STYLESHEET_NAME} = ` + JSON.stringify(finalStyleObject, null, 2)
+    return `const ${ctx.enums.STYLESHEET_NAME} = StyleSheet.create(` + JSON.stringify(finalStyleObject, null, 2) + ')'
   }
 
   const {
