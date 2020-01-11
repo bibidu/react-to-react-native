@@ -119,17 +119,16 @@ module.exports = class ReactToReactNative {
           isTag: (uniqueId) => uniqueId.startsWith(this.enums.UNIQUE_ID),
           uniqueIdName: this.enums.HTML_UNIQUE_ID_ATTRNAME,
         })
-        this.injectBrowserScript = this.generateInjectBrowserScript({
+
+        return this.convertExternalToInline({
           html: this.pureHtmlString,
           css: this.afterCssToObject,
           uniqueIdName: this.enums.HTML_UNIQUE_ID_ATTRNAME,
         })
-        this.log('runInBrowser')
-        return this.runInBrowser({ script: this.injectBrowserScript })
       }).then(externalToInlineStyle => {
         this.externalToInlineStyle = externalToInlineStyle
-        
         this.log('mixinAllStyle')
+
         return this.mixinAllStyle({
           external: this.externalToInlineStyle,
           inline: this.initialInlineStyle,
@@ -138,8 +137,8 @@ module.exports = class ReactToReactNative {
         })
       }).then((mixinedStyle) => {
         this.mixinedAllStyle = mixinedStyle
-
         this.log('transformMixinedStyle')
+
         return this.transformMixinedStyle(this.mixinedAllStyle)
       }).then(finalStyleObject => {
         this.finalStyleObject = finalStyleObject
@@ -147,17 +146,16 @@ module.exports = class ReactToReactNative {
         return this.packageAST(this.afterProcessAST)
       }).then(result => {
         this.afterPackageCode = result
-
         const finalResult = this.generateReactNativeComponent({
           ctx: this
         })
-
         if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {
           if (this.outputPath) {
             require('fs').writeFileSync(this.outputPath, finalResult, 'utf8')
             this.log(`输出到'${this.outputPath}' -> success`)
           }
         }
+
         return finalResult
       })
       // .then(() => this)

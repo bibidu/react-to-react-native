@@ -5,12 +5,11 @@ const astToRelationTree = require('./astToRelationTree')
 const transformMixinedStyle = require('./transformMixinedStyle')
 const relationTreeToHtml = require('./relationTreeToHtml')
 const generatePureHtmlString = require('./generatePureHtmlString')
-const generateInjectBrowserScript = require('./generateInjectBrowserScript')
-const runInBrowser = require('./runInBrowser')
 const astUtils = require('./astUtils')
 const jsxUtils = require('./jsxUtils')
 const generateReactNativeComponent = require('./generateReactNativeComponent')
 const mixinAllStyle = require('./mixinAllStyle')
+const convertExternalToInline = require('./convertExternalToInline')
 
 module.exports = function () {
   ;[
@@ -20,11 +19,10 @@ module.exports = function () {
     astToRelationTree,
     transformMixinedStyle,
     generatePureHtmlString,
-    generateInjectBrowserScript,
-    runInBrowser,
     astUtils,
     jsxUtils,
     generateReactNativeComponent,
     mixinAllStyle,
+    convertExternalToInline,
   ].forEach(util => this[util.name] = util)
 }
