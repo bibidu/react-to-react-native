@@ -144,7 +144,7 @@ module.exports = class ReactToReactNative {
       }).then(finalStyleObject => {
         this.finalStyleObject = finalStyleObject
 
-        return this.package(this.afterProcessAST)
+        return this.packageAST(this.afterProcessAST)
       }).then(result => {
         this.afterPackageCode = result
 

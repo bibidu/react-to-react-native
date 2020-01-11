@@ -35,10 +35,10 @@ const fs = require('fs')
 // }
 // `
 const COMPONENT_NAME = 'BUTTON'
-const reactCompPath = `/Users/duxianzhang/Desktop/company/tz-component-template/src/${COMPONENT_NAME}/index.js`
-// const reactCompPath = `/Users/mr.du/Desktop/react-component-template/template/src/${COMPONENT_NAME}/index.js`
-const outputPath = `/Users/duxianzhang/Desktop/company/tz-component-template/dist_react_native/index.js`
-// const outputPath = `/Users/mr.du/Desktop/react-component-template/template/dist_react_native/index.js`
+// const reactCompPath = `/Users/duxianzhang/Desktop/company/tz-component-template/src/${COMPONENT_NAME}/index.js`
+const reactCompPath = `/Users/mr.du/Desktop/react-component-template/template/src/${COMPONENT_NAME}/index.js`
+// const outputPath = `/Users/duxianzhang/Desktop/company/tz-component-template/dist_react_native/index.js`
+const outputPath = `/Users/mr.du/Desktop/react-component-template/template/dist_react_native/index.js`
 // const reactCompString = ''
 // const cssString = ''
 

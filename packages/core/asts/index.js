@@ -1,9 +1,9 @@
 const processAST = require('./processAST')
-const package = require('./package')
+const packageAST = require('./packageAST')
 
 module.exports = function () {
   ;[
     processAST,
-    package,
+    packageAST,
   ].forEach(util => this[util.name] = util)
 }
