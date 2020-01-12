@@ -1,5 +1,27 @@
 module.exports = function addTextWrapper({ ctx, t }) {
 
+  const createSpanWrapper = (t, node) => t.jsxElement(
+    t.jsxOpeningElement(t.jsxIdentifier('span'), [], false),
+    t.jsxClosingElement(t.jsxIdentifier('span')),
+    [node],
+    false
+  )
+  
+  const createSpanWrapperWithText = (t, text) => t.jsxElement(
+    t.jsxOpeningElement(
+      t.jsxIdentifier('span'), [
+        t.jsxAttribute(
+          t.jsxIdentifier(ctx.enums.ACTIVE_ADD_TEXT_MARK),
+          t.stringLiteral('true')
+        )
+      ],
+      false
+    ),
+    t.jsxClosingElement(t.jsxIdentifier('span')),
+    [t.JSXText(text)],
+    false
+  )
+
   const checkIsHaveTextNodeMark = (path) => {
     const attrsPath = path.get('openingElement').get('attributes')
     return Boolean(
@@ -44,16 +66,3 @@ module.exports = function addTextWrapper({ ctx, t }) {
   }
 }
 
-const createSpanWrapper = (t, node) => t.jsxElement(
-  t.jsxOpeningElement(t.jsxIdentifier('span'), [], false),
-  t.jsxClosingElement(t.jsxIdentifier('span')),
-  [node],
-  false
-)
-
-const createSpanWrapperWithText = (t, text) => t.jsxElement(
-  t.jsxOpeningElement(t.jsxIdentifier('span'), [], false),
-  t.jsxClosingElement(t.jsxIdentifier('span')),
-  [t.JSXText(text)],
-  false
-)
