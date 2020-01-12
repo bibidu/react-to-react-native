@@ -10,6 +10,7 @@ const jsxUtils = require('./jsxUtils')
 const generateReactNativeComponent = require('./generateReactNativeComponent')
 const mixinStyleExceptInherit = require('./mixinStyleExceptInherit')
 const convertExternalToInline = require('./convertExternalToInline')
+const caclInheritStyle = require('./caclInheritStyle')
 
 module.exports = function () {
   ;[
@@ -24,5 +25,6 @@ module.exports = function () {
     generateReactNativeComponent,
     mixinStyleExceptInherit,
     convertExternalToInline,
+    caclInheritStyle,
   ].forEach(util => this[util.name] = util)
 }
