@@ -8,6 +8,7 @@ module.exports = function generatePureHtmlString({
   uniqueNodeInfo,
   isTag,
   uniqueIdName,
+  activeAddTextMark,
 }, key = ENTRY, tabSize = 0) {
   let html = '', currentArray = fsRelations[key]
   
@@ -23,12 +24,13 @@ module.exports = function generatePureHtmlString({
       const block = ' '.repeat(tabSize)
 
       if (isTag(item)) {
-        const { id, className } = uniqueNodeInfo[uniqueId]
+        const { id, className, activeAddText,  } = uniqueNodeInfo[uniqueId]
         const classAttr = className ? ` class="${className}"` : ''
         const idAttr = id ? ` id="${id}"` : ''
+        const activeTextAttr = activeAddText ? ` ${activeAddTextMark}="${activeAddText}"` : ''
 
         if (!isUserComponent(tagName)) {
-          html += `${block}<${tagName} ${uniqueIdName}="${uniqueId}"${classAttr}${idAttr}>\n`
+          html += `${block}<${tagName} ${uniqueIdName}="${uniqueId}"${classAttr}${idAttr}${activeTextAttr}>\n`
         }
 
         html += generatePureHtmlString({
@@ -36,6 +38,7 @@ module.exports = function generatePureHtmlString({
           uniqueNodeInfo,
           isTag,
           uniqueIdName,
+          activeAddTextMark,
         }, item, tabSize + TAB_SIZE)
 
         if (!isUserComponent(tagName)) {
@@ -47,6 +50,7 @@ module.exports = function generatePureHtmlString({
           uniqueNodeInfo,
           isTag,
           uniqueIdName,
+          activeAddTextMark,
         }, item, tabSize)
       }
     }

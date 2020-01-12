@@ -4,6 +4,7 @@ module.exports = function clean({ ctx, t }) {
     JSXElement(path) {
       // 移除标记
       const marks = [
+        ctx.enums.ACTIVE_ADD_TEXT_MARK,
         ctx.enums.STATIC_MARK,
         ctx.enums.UNIQUE_ID,
         'className',

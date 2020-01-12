@@ -16,6 +16,7 @@ module.exports = function convertExternalToInline({
   html,
   css,
   uniqueIdName,
+  activeAddTextMark,
 }) {
   const obj = {}
   const { externalStyle } = css
@@ -26,7 +27,11 @@ module.exports = function convertExternalToInline({
     const els = $(selector)
 
     els.map((i, el) => {
-      obj[$(el).attr(uniqueIdName)] = style
+      const element = $(el)
+      const activeAddTextNode = Boolean(element.attr(activeAddTextMark))
+      if (!activeAddTextNode) {
+        obj[element.attr(uniqueIdName)] = style
+      }
     })
   })
 

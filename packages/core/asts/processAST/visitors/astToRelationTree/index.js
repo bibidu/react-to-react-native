@@ -117,6 +117,7 @@ module.exports = function astToRelationTree({ ctx, t }) {
   function extractJSXNodeInfo(JSXElementPath) {
     const openingElement = JSXElementPath.get('openingElement')
     const tagName = openingElement.get('name').node.name
+
     const result = {
       tagName,
       className: '',
@@ -124,18 +125,31 @@ module.exports = function astToRelationTree({ ctx, t }) {
       id: '',
       activeId: '',
       uniqueId: '',
+      activeAddText: ''
     }
     const attributes = openingElement.get('attributes')
     for (let attr of attributes) {
-      ;['className', 'id', 'uniqueId'].forEach(attrName => {
-        const key = attrName === 'uniqueId' ? ctx.enums.UNIQUE_ID : attrName
-        if (attr.get('name').isJSXIdentifier({ name: key })) {
+      ;[
+        'className',
+        'id',
+      ].forEach(attrName => {
+        if (attr.get('name').isJSXIdentifier({ name: attrName })) {
           const { staticExpression, activeExpression } = getAttrValueExactly(attr.get('value'))
           const activeKey = 'active' + attrName.replace(/^\w/, (_) => _.toUpperCase())
           result[attrName] = staticExpression
           result[activeKey] = activeExpression
         }
       })
+      if (attr.get('name').isJSXIdentifier({ name: ctx.enums.UNIQUE_ID })) {
+        const name = 'uniqueId'
+        const { staticExpression } = getAttrValueExactly(attr.get('value'))
+        const activeKey = 'active' + name.replace(/^\w/, (_) => _.toUpperCase())
+        result[name] = staticExpression
+      }
+      if (attr.get('name').isJSXIdentifier({ name: ctx.enums.ACTIVE_ADD_TEXT_MARK })) {
+        const { staticExpression } = getAttrValueExactly(attr.get('value'))
+        result['activeAddText'] = staticExpression
+      }
     }
     return result
   }
@@ -183,21 +197,10 @@ module.exports = function astToRelationTree({ ctx, t }) {
 
       const nodeInfo = extractJSXNodeInfo(path)
       const {
-        className,
-        id,
-        tagName,
         uniqueId,
-        activeClassName,
-        activeId,
+        tagName,
       } = nodeInfo
-      ctx.addUniqueNodeInfo(uniqueId, {
-        className,
-        id,
-        tagName,
-        uniqueId,
-        activeClassName,
-        activeId,
-      })
+      ctx.addUniqueNodeInfo(uniqueId, nodeInfo)
 
       // 临时方案：对于自定义的组件，默认从当前文件的Class中进行匹配
       if (tagName.charAt(0) !== tagName.charAt(0).toLowerCase()) {

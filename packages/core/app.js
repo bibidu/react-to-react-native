@@ -32,9 +32,7 @@ module.exports = class ReactToReactNative {
     this.afterPackageCode = '' /* package阶段后生成的组件code */
 
     this.uniqueNodeInfo = {} /* JSXElement节点的信息 */
-    this.addUniqueNodeInfo = (k, { className, id, tagName, uniqueId, activeClassName, activeId, }) => {
-      this.uniqueNodeInfo[k] = { className, id, tagName, uniqueId, activeClassName, activeId, }
-    }
+    this.addUniqueNodeInfo = (k, nodeInfo) => this.uniqueNodeInfo[k] = nodeInfo
 
     this.fsRelations = {} /* 节点间关系 */
     this.addFsRelation = (k, v) => {
@@ -119,12 +117,14 @@ module.exports = class ReactToReactNative {
           uniqueNodeInfo: this.uniqueNodeInfo,
           isTag: (uniqueId) => uniqueId.startsWith(this.enums.UNIQUE_ID),
           uniqueIdName: this.enums.HTML_UNIQUE_ID_ATTRNAME,
+          activeAddTextMark: this.enums.ACTIVE_ADD_TEXT_MARK,
         })
 
         return this.convertExternalToInline({
           html: this.pureHtmlString,
           css: this.afterCssToObject,
           uniqueIdName: this.enums.HTML_UNIQUE_ID_ATTRNAME,
+          activeAddTextMark: this.enums.ACTIVE_ADD_TEXT_MARK,
         })
       }).then(externalToInlineStyle => {
         this.externalToInlineStyle = externalToInlineStyle
