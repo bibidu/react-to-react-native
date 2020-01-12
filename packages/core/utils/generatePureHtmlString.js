@@ -3,13 +3,14 @@ const TAB_SIZE = 2
 
 const isUserComponent = (tagName) => tagName.charAt(0) !== tagName.charAt(0).toLowerCase()
 
-module.exports = function generatePureHtmlString({
-  fsRelations,
-  uniqueNodeInfo,
-  isTag,
-  uniqueIdName,
-  activeAddTextMark,
-}, key = ENTRY, tabSize = 0) {
+module.exports = function generatePureHtmlString(info, key = ENTRY, tabSize = 0) {
+  const {
+    fsRelations,
+    uniqueNodeInfo,
+    isTag,
+    uniqueIdName,
+    activeAddTextMark,
+  } = info
   let html = '', currentArray = fsRelations[key]
   
   if (key === ENTRY) {
@@ -33,25 +34,13 @@ module.exports = function generatePureHtmlString({
           html += `${block}<${tagName} ${uniqueIdName}="${uniqueId}"${classAttr}${idAttr}${activeTextAttr}>\n`
         }
 
-        html += generatePureHtmlString({
-          fsRelations,
-          uniqueNodeInfo,
-          isTag,
-          uniqueIdName,
-          activeAddTextMark,
-        }, item, tabSize + TAB_SIZE)
+        html += generatePureHtmlString(info, item, tabSize + TAB_SIZE)
 
         if (!isUserComponent(tagName)) {
           html += `${block}</${tagName}>\n`
         }
       } else {
-        html += generatePureHtmlString({
-          fsRelations,
-          uniqueNodeInfo,
-          isTag,
-          uniqueIdName,
-          activeAddTextMark,
-        }, item, tabSize)
+        html += generatePureHtmlString(info, item, tabSize)
       }
     }
   }
