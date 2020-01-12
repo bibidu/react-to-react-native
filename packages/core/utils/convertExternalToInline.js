@@ -23,10 +23,11 @@ module.exports = function convertExternalToInline({
 
   removeUnSupportStyle(externalStyle)
   Object.entries(externalStyle).forEach(([selector, style]) => {
-    const el = $(selector)
-    if (el.length) {
-      obj[el.attr(uniqueIdName)] = style
-    }
+    const els = $(selector)
+
+    els.map((i, el) => {
+      obj[$(el).attr(uniqueIdName)] = style
+    })
   })
 
   return obj
