@@ -3,21 +3,21 @@ const ReactToReactNative = require('../app')
 const reactCompString = `
   import React from 'react'
 
-  function T() {
-    return (
-      <button
-        onClick={() => {}}
-        rn-text
-      >
-        <span style={{color: 'green'}}>{text}</span>
-      </button>
-    )
-  }
-  // class T extends React.Component{
-  //   render() {
-  //     return <div></div>
-  //   }
+  // function T() {
+  //   return (
+  //     <button
+  //       onClick={() => {}}
+  //       rn-text
+  //     >
+  //       <span style={{color: 'green'}}>{text}</span>
+  //     </button>
+  //   )
   // }
+  class T extends React.Component{
+    render() {
+      return <div></div>
+    }
+  }
   export default T
 `
 

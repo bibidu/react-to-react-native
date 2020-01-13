@@ -24,7 +24,9 @@ const astUtils = {
    * @param {*} ast 
    */
   ast2code(ast) {
-    return generator(ast).code
+    return generator(ast, {
+      retainLines: true
+    }).code
   },
 
   /**
