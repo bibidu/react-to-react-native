@@ -99,19 +99,9 @@ module.exports = function astToRelationTree({ ctx, t }) {
   }
 
   function getClassMethodPrefix(path) {
-    const exportClasses = ctx.collections.exports
-    if (exportClasses.length === 1) {
-      const parentClass = path.findParent(p => p.isClassDeclaration())
-      if (parentClass.get('id').isIdentifier({ name: exportClasses[0] })) {
-        return 'ROOT-'
-      } else {
-        return 'ClassMethod-'
-      }
-      // const parentClass = 
-      // const parent
-    } else {
-      throw Error('暂只支持暴露单组件')
-    }
+    const parentClass = path.findParent(p => p.isClassDeclaration())
+    const className = parentClass.get('id').node.name
+    return `Class-${className}-`
   }
 
   function extractJSXNodeInfo(JSXElementPath) {

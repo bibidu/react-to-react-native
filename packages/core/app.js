@@ -120,6 +120,7 @@ module.exports = class ReactToReactNative {
           isTag: (uniqueId) => uniqueId.startsWith(this.enums.UNIQUE_ID),
           uniqueIdName: this.enums.HTML_UNIQUE_ID_ATTRNAME,
           activeAddTextMark: this.enums.ACTIVE_ADD_TEXT_MARK,
+          collectExports: this.collections.exports,
         })
 
         return this.convertExternalToInline({
