@@ -3,6 +3,15 @@ module.exports = function collectInfo({ ctx, t }) {
   const visitor = {}
 
   Object.assign(visitor, {
+    ImportDeclaration(path) {
+      // 收集引入的react声明
+      const isReactImport = path.get('source').isStringLiteral({ value: 'react' })
+      if (isReactImport) {
+        ctx.collections.importReactPath = path.node
+        path.remove()
+      }
+    },
+
     ExportDefaultDeclaration(path) {
       const { name } = path.get('declaration').node
       // 收集导出的组件名

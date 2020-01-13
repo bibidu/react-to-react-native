@@ -16,11 +16,15 @@ module.exports = function generateReactNativeComponent({
   const {
     usingRNComponentNames,
     finalStyleObject,
+    collections,
   } = ctx
+
+  const importReact = ctx.astUtils.ast2code(collections.importReactPath)
   const usingCode = genUsingComponentCode(usingRNComponentNames)
   const styleSheet = genStyleSheet(finalStyleObject)
   const component = ctx.astUtils.ast2code(ctx.afterPackageCode)
   const result = [
+    importReact,
     usingCode,
     component,
     styleSheet,

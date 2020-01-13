@@ -9,7 +9,8 @@ module.exports = class ReactToReactNative {
 
     /* 收集的组件信息合集 */
     this.collections = {
-      exports: [] /* 暴露出的组件名 */
+      exports: [], /* 暴露出的组件名 */
+      importReactPath: {}, /* 组件引用的react AST Path */
     }
     this.reactCompPath = '' /* 输入react组件绝对路径 */
     this.outputPath = '' /* 输出react-native组件绝对路径 */

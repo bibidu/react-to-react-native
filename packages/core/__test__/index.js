@@ -1,5 +1,4 @@
 const ReactToReactNative = require('../app')
-const fs = require('fs')
 
 const reactCompString = `
   import React from 'react'
