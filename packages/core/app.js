@@ -89,7 +89,9 @@ module.exports = class ReactToReactNative {
     this.cssType = cssType
 
     if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {
-      this.reactCompString = require('fs').readFileSync(this.reactCompPath, 'utf8')
+      if (this.reactCompPath) {
+        this.reactCompString = require('fs').readFileSync(this.reactCompPath, 'utf8')
+      }
     }
 
     return this
