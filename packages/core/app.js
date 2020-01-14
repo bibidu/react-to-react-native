@@ -143,9 +143,9 @@ module.exports = class ReactToReactNative {
         })
       }).then((mixinedStyleExceptInherit) => {
         this.mixinedStyleExceptInherit = mixinedStyleExceptInherit
-        this.log('caclInheritStyle')
+        this.log('calcInheritStyle')
 
-        return this.caclInheritStyle({
+        return this.calcInheritStyle({
           styleExceptInherit: this.mixinedStyleExceptInherit,
           afterProcessAST: this.afterProcessAST,
         })

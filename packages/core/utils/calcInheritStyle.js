@@ -6,13 +6,13 @@ const textNames = [
   'Text',
 ]
 
-const caclInheritStyle = [
+const canInheritStyle = [
   'line-height',
   'color',
   'font-size',
 ]
 
-module.exports = function caclInheritStyle({
+module.exports = function calcInheritStyle({
   styleExceptInherit,
   afterProcessAST,
 }) {
@@ -64,7 +64,7 @@ const getCanInheritParent = path => path.findParent(p => (
 const extractCanInheritStyle = (style) => {
   const newStyle = {}
   Object.keys(style).forEach(key => {
-    if (caclInheritStyle.includes(key)) {
+    if (canInheritStyle.includes(key)) {
       newStyle[key] = style[key]
     }
   })
