@@ -1,6 +1,4 @@
-module.exports = function generateReactNativeComponent({
-  ctx
-}) {
+module.exports = function generateReactNativeComponent() {
   function genUsingComponentCode(rnUsingComponentName) {
     const componentStr = rnUsingComponentName.join(',\n  ')
     return `import {
@@ -10,19 +8,19 @@ module.exports = function generateReactNativeComponent({
   }
   
   function genStyleSheet(finalStyleObject) {
-    return `const ${ctx.enums.STYLESHEET_NAME} = StyleSheet.create(` + JSON.stringify(finalStyleObject, null, 2) + ')'
+    return `const ${this.enums.STYLESHEET_NAME} = StyleSheet.create(` + JSON.stringify(finalStyleObject, null, 2) + ')'
   }
 
   const {
     usingRNComponentNames,
     finalStyleObject,
     collections,
-  } = ctx
+  } = this
 
-  const importReact = ctx.astUtils.ast2code(collections.importReactPath)
+  const importReact = this.astUtils.ast2code(collections.importReactPath)
   const usingCode = genUsingComponentCode(usingRNComponentNames)
-  const styleSheet = genStyleSheet(finalStyleObject)
-  const component = ctx.astUtils.ast2code(ctx.afterPackageCode)
+  const styleSheet = genStyleSheet.call(this, finalStyleObject)
+  const component = this.astUtils.ast2code(this.afterPackageCode)
   const result = [
     importReact,
     usingCode,

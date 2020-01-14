@@ -12,6 +12,7 @@ const mixinStyleExceptInherit = require('./mixinStyleExceptInherit')
 const convertExternalToInline = require('./convertExternalToInline')
 const calcInheritStyle = require('./calcInheritStyle')
 const mixinInheritAndOther = require('./mixinInheritAndOther')
+const mergeByKey = require('./mergeByKey')
 
 module.exports = function () {
   ;[
@@ -28,5 +29,6 @@ module.exports = function () {
     convertExternalToInline,
     calcInheritStyle,
     mixinInheritAndOther,
+    mergeByKey,
   ].forEach(util => this[util.name] = util)
 }

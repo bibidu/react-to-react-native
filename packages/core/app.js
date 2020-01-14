@@ -164,9 +164,7 @@ module.exports = class ReactToReactNative {
         return this.packageAST(this.afterProcessAST)
       }).then(result => {
         this.afterPackageCode = result
-        const finalResult = this.generateReactNativeComponent({
-          ctx: this
-        })
+        const finalResult = this.generateReactNativeComponent()
         if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {
           if (this.outputPath) {
             require('fs').writeFileSync(this.outputPath, finalResult, 'utf8')
