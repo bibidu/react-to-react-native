@@ -49,6 +49,10 @@ module.exports = function resolves({path, t, ctx}) {
     return resolve('TouchableOpacity', true)
   }
 
+  if (tagName === 'img') {
+    return resolve('Image', true)
+  }
+
   if (constant.mapViewTags.includes(tagName)) {
     return resolve('View')
   }
