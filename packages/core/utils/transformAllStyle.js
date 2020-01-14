@@ -3,6 +3,7 @@ const transform = require('css-to-react-native').default
 const shouldDeleteAttrNames = [
   'text-shadow',
   'box-sizing',
+  'display',
 ]
 
 function deleteUnSupportAttr(obj) {
