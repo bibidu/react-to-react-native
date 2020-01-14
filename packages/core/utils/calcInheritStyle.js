@@ -41,7 +41,8 @@ module.exports = function calcInheritStyle({
           const uniqueId = getUniqueIdStr(parent)
           const style = styleExceptInherit[uniqueId]
           if (style) {
-            parentsStyle.push(extractCanInheritStyle(style))
+            const { inherit } = splitCanInheritStyle(style)
+            parentsStyle.push(inherit)
           }
           parent = getCanInheritParent(parent)
         }
@@ -49,6 +50,24 @@ module.exports = function calcInheritStyle({
           const uniqueId = getUniqueIdStr(path)
           inheritStyle[uniqueId] = mergeParentsStyle(parentsStyle)
         }
+      }
+    },
+    Program: {
+      exit(path) {
+        path.traverse({
+          JSXElement(path) {
+            // 对于非文本节点，移除可继承的样式属性
+            if (!isTextNode(path)) {
+              const uniqueId = getUniqueIdStr(path)
+              const style = styleExceptInherit[uniqueId]
+              if (style) {
+                const { inherit } = splitCanInheritStyle(style)
+                // TODO: 禁止直接修改this上的变量，改用方法修改
+                Object.keys(inherit).forEach(key => delete style[key])
+              }
+            }
+          }
+        })
       }
     }
   })
@@ -61,14 +80,16 @@ const getCanInheritParent = path => path.findParent(p => (
   p.isProgram()
 ))
 
-const extractCanInheritStyle = (style) => {
-  const newStyle = {}
+const splitCanInheritStyle = (style) => {
+  const inherit = {}, noInHerit = {}
   Object.keys(style).forEach(key => {
     if (canInheritStyle.includes(key)) {
-      newStyle[key] = style[key]
+      inherit[key] = style[key]
+    } else {
+      noInHerit[key] = style[key]
     }
   })
-  return newStyle
+  return { inherit, noInHerit }
 }
 
 const mergeParentsStyle = (parentsStyle) => {
