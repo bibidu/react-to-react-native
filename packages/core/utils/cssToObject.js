@@ -52,9 +52,7 @@ const css2obj = postcss.plugin('css2obj', opts => {
         obj[node.parent.selector][node.prop] = node.value
       }
       if (isComment(node)) {
-        console.log(node.text);
         const matches = node.text.match(matchStableNameRE)
-        console.log(matches);
         if (matches && matches.length >= 2) {
           stable[node.parent.selector] = matches[2]
         }

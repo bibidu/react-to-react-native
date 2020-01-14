@@ -10,6 +10,7 @@ const canInheritStyle = [
   'line-height',
   'color',
   'font-size',
+  'text-align',
 ]
 
 module.exports = function calcInheritStyle({

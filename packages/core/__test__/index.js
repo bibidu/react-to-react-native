@@ -25,7 +25,7 @@ div{
 ul{
   color: green;
 }`
-const COMPONENT_NAME = 'Calendar'
+const COMPONENT_NAME = 'Toast'
 // const reactCompPath = `/Users/duxianzhang/Desktop/company/tz-component-template/src/${COMPONENT_NAME}/index.js`
 const reactCompPath = `/Users/mr.du/Desktop/react-component-template/template/src/${COMPONENT_NAME}/index.js`
 // const outputPath = `/Users/duxianzhang/Desktop/company/tz-component-template/dist_react_native/index.js`
@@ -37,8 +37,8 @@ new ReactToReactNative()
   .init({
     reactCompPath,
     outputPath,
-    reactCompString,
-    cssString,
+    // reactCompString,
+    // cssString,
   }).start().then((finalResult) => {
     // console.log('=========finalResult=========')
     // console.log()
