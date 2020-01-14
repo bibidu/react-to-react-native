@@ -25,7 +25,6 @@ const astUtils = {
    */
   ast2code(ast) {
     return generator(ast, {
-      retainLines: true
     }).code
   },
 

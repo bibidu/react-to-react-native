@@ -2,9 +2,9 @@ module.exports = function generateReactNativeComponent() {
   function genUsingComponentCode(rnUsingComponentName) {
     const componentStr = rnUsingComponentName.join(',\n  ')
     return `import {
-    AppRegistry,
-    StyleSheet,
-    ${componentStr}\n} from 'react-native'`
+  AppRegistry,
+  StyleSheet,
+  ${componentStr}\n} from 'react-native'`
   }
   
   function genStyleSheet(finalStyleObject) {
