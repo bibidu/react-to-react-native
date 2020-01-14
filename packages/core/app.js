@@ -27,6 +27,7 @@ module.exports = class ReactToReactNative {
     this.externalToInlineStyle = {} /* 外联转内联的样式 */
     this.mixinedStyleExceptInherit = {} /* 混合[外联、内联、标签自带]的样式结果 */
     this.inheritStyle = {} /* 继承而来的样式 */
+    this.mixinedStyle = {} /* 混合所有样式的结果 */
     this.finalStyleObject = {} /* 通过react-to-react-native转换后的最终样式 */
     this.initialAST = {} /* visitors遍历前最初的ast */
     this.afterProcessAST = {} /* processAST.visitors遍历后的ast */
@@ -150,9 +151,13 @@ module.exports = class ReactToReactNative {
         })
       }).then(inheritStyle => {
         this.inheritStyle = inheritStyle
+
+        return this.mixinInheritAndOther(this.mixinedStyleExceptInherit, this.inheritStyle)
+      }).then(mixinedStyle => {
+        this.mixinedStyle = mixinedStyle
         this.log('transformAllStyle')
 
-        return this.transformAllStyle(this.mixinedStyleExceptInherit, this.inheritStyle)
+        return this.transformAllStyle(this.mixinedStyle)
       }).then(finalStyleObject => {
         this.finalStyleObject = finalStyleObject
 

@@ -1,27 +1,30 @@
 const ReactToReactNative = require('../app')
 
 const reactCompString = `
-  import React from 'react'
+  import React, { Component } from 'react'
 
-  // function T() {
-  //   return (
-  //     <button
-  //       onClick={() => {}}
-  //       rn-text
-  //     >
-  //       <span style={{color: 'green'}}>{text}</span>
-  //     </button>
-  //   )
-  // }
   class T extends React.Component{
     render() {
-      return <div></div>
+      return <div>
+        <ul>
+          123
+        </ul>
+      </div>
     }
   }
   export default T
 `
 
-const cssString = ``
+const cssString = `
+div{
+  color: red;
+  border: 1px solid #ccc;
+  margin: 0 20px;
+  font-size: 15px;
+}
+ul{
+  color: green;
+}`
 const COMPONENT_NAME = 'BUTTON'
 // const reactCompPath = `/Users/duxianzhang/Desktop/company/tz-component-template/src/${COMPONENT_NAME}/index.js`
 // const reactCompPath = `/Users/mr.du/Desktop/react-component-template/template/src/${COMPONENT_NAME}/index.js`
