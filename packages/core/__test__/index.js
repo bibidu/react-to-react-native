@@ -35,14 +35,14 @@ const outputPath = `/Users/mr.du/Desktop/AwesomeReactNativeProject/auto/index.js
 
 new ReactToReactNative()
   .init({
-    reactCompPath,
-    outputPath,
-    // reactCompString,
-    // cssString,
+    // reactCompPath,
+    // outputPath,
+    reactCompString,
+    cssString,
   }).start().then((finalResult) => {
-    // console.log('=========finalResult=========')
-    // console.log()
-    // console.log(finalResult)
+    console.log('=========finalResult=========')
+    console.log()
+    console.log(finalResult)
     // console.log(ctx.afterTsCompiled)
     // console.log(ctx.afterCssCompiled)
   })

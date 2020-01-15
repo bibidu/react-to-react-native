@@ -1,3 +1,5 @@
+const prettier = require('prettier')
+
 module.exports = function generateReactNativeComponent() {
   function genUsingComponentCode(rnUsingComponentName) {
     const componentStr = rnUsingComponentName.join(',\n  ')
@@ -18,6 +20,14 @@ module.exports = function generateReactNativeComponent() {
 `
   }
 
+  function formatCode(code) {
+    const formatConfig = {
+      jsxBracketSameLine: false,
+      tabWidth: 2,
+    }
+    return prettier.format(code, formatConfig)
+  }
+
   const {
     usingRNComponentNames,
     finalStyleObject,
@@ -28,7 +38,7 @@ module.exports = function generateReactNativeComponent() {
   const importReact = this.astUtils.ast2code(collections.importReactPath)
   const usingCode = genUsingComponentCode(usingRNComponentNames)
   const styleSheet = genStyleSheet.call(this, finalStyleObject)
-  const component = this.astUtils.ast2code(this.afterPackageCode)
+  const component = formatCode(this.astUtils.ast2code(this.afterPackageCode))
   const result = [
     topBanner,
     importReact,
