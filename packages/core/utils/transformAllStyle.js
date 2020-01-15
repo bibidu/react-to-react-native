@@ -19,6 +19,7 @@ module.exports = function transformAllStyle(mixinedAllStyle) {
   Object.entries(mixinedAllStyle).forEach(([ uniqueId, style]) => {
     mixinedAllStyle[uniqueId] = _transform(style)
   })
+  removeEmpty(mixinedAllStyle)
   return mixinedAllStyle
 }
 
@@ -40,4 +41,12 @@ const objStyleToTransformArray = (obj) => {
     array.push([key, value])
   }
   return array
+}
+
+function removeEmpty(styles) {
+  Object.entries(styles).forEach(([key, value]) => {
+    if (!Object.keys(value).length) {
+      delete styles[key]
+    }
+  })
 }
