@@ -9,7 +9,9 @@ function collectRNUsingComponentName(ctx, tagName) {
 function replaceTagName(path, t, newTagName) {
   const newTagPath = t.JSXIdentifier(newTagName)
   path.get('openingElement').get('name').replaceWith(newTagPath)
-  path.get('closingElement').get('name').replaceWith(newTagPath)
+  if (path.get('closingElement').isJSXClosingElement()) {
+    path.get('closingElement').get('name').replaceWith(newTagPath)
+  }
 }
 
 function saveStyleFromTagName(path, ctx, styles) {
