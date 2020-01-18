@@ -41,6 +41,29 @@ const jsxUtils = {
         attribute.get('name').replaceWith(t.JSXIdentifier(targetAttrName))
       }
     }
+  },
+
+  removeJSXAttributeByKey(path, attrNames) {
+    if (!Array.isArray(attrNames)) {
+      attrNames = [attrNames]
+    }
+    attrNames.forEach(attrName => {
+      const attrPath = jsxUtils.getJSXAttribute(path, attrName)
+      if (attrPath) {
+        attrPath.remove()
+      }
+    })
+  },
+
+  addJSXAttribute(path, attrName, attrValue) {
+    if (typeof attrValue === 'object') {
+      throw Error('不支持添加对象类型的JSXAttribute')
+    }
+    const jsxAttributePath = t.jsxAttribute(
+      t.jsxIdentifier(attrName),
+      t.stringLiteral(String(attrValue))
+    )
+    path.get('openingElement').pushContainer('attributes', jsxAttributePath)
   }
 }
 

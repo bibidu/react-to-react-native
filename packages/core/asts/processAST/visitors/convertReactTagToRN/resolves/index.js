@@ -53,6 +53,10 @@ module.exports = function resolves({path, t, ctx}) {
     return resolve('Image', true)
   }
 
+  if (tagName === 'textarea') {
+    return resolve('TextInput', true)
+  }
+
   if (constant.mapViewTags.includes(tagName)) {
     return resolve('View')
   }
