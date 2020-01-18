@@ -1,6 +1,7 @@
 const asts = require('./asts')
 const compilers = require('./compilers')
 const utils = require('./utils')
+const helpers = require('./helpers')
 const enums = require('./config/enums')
 
 module.exports = class ReactToReactNative {
@@ -60,6 +61,7 @@ module.exports = class ReactToReactNative {
     this.initAsts()
     this.initCompilers()
     this.initUtils()
+    this.initHelpers()
   }
 
   initAsts() {
@@ -72,6 +74,10 @@ module.exports = class ReactToReactNative {
 
   initUtils() {
     utils.call(this)
+  }
+
+  initHelpers() {
+    helpers.call(this)
   }
 
   init({
