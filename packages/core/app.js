@@ -93,8 +93,10 @@ module.exports = class ReactToReactNative {
     this.reactCompPath = reactCompPath
     this.outputPath = outputPath
     this.reactCompString = reactCompString
+    this.compileType = Boolean(reactCompPath) ? this.enums.MULTIPLE_FILE : this.enums.SINGLE_FILE
     this.cssString = cssString
     this.cssType = cssType
+    // this.currentCompilePath = this.hashHelper('reactCompPath')
 
     if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {
       if (this.reactCompPath) {
@@ -106,6 +108,12 @@ module.exports = class ReactToReactNative {
   }
 
   start() {
+    this.createGraphHelper({
+      compileType: this.compileType,
+      entryPath: this.reactCompPath,
+      entry: this.reactCompString,
+    })
+    return
     return this.typescriptCompiler(this.reactCompString)
       .then(afterTsCompiled => {
         this.afterTsCompiled = afterTsCompiled
