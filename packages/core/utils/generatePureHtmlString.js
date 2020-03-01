@@ -15,28 +15,28 @@ module.exports = function generatePureHtmlString(info, key = 'ROOT', tabSize = 0
     uniqueIdName,
     activeAddTextMark,
     collectExports,
+    hashHelper,
+    collections,
   } = info
   let html = '', currentArray = fsRelations[key]
 
   if (key === 'ROOT') {
     // 组件暴露的根入口, 暂时只考虑单入口
-    const expName = collectExports[0]
-    for (let name of rootNames(expName)) {
-      if (!currentArray) {
-        currentArray = fsRelations[name]
-      }
-    }
+    const rootComponentPath = this.reactCompPath
+    const filePathHash = hashHelper(rootComponentPath)
+    const rootClassName = collections.exports[filePathHash]
+    const expName = collectExports[filePathHash]
+
+    currentArray = fsRelations[`${filePathHash}-Class-${rootClassName}`]
 
     if (!currentArray || !currentArray.length) {
       throw Error('generatePureHtmlString找不到入口render')
     }
   }
-
   if (currentArray) {
     for (let item of currentArray) {
-      const [uniqueId, type, tagName] = item.split('-')
+      const [uniqueId, type, tagName] = item.slice(9).split('-')
       const block = ' '.repeat(tabSize)
-
       if (isTag(item)) {
         const { id, className, activeAddText,  } = uniqueNodeInfo[uniqueId]
         const classAttr = className ? ` class="${className}"` : ''

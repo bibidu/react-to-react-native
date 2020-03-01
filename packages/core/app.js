@@ -10,7 +10,7 @@ module.exports = class ReactToReactNative {
 
     /* 收集的组件信息合集 */
     this.collections = {
-      exports: [], /* 暴露出的组件名 */
+      exports: {}, /* 暴露出的组件名 */
       importReactPath: {}, /* 组件引用的react AST Path */
     }
     this.reactCompPath = '' /* 输入react组件绝对路径 */
@@ -20,6 +20,8 @@ module.exports = class ReactToReactNative {
     this.addCssString = (mark, cssString) => this.cssString += `\n/* ${mark}*/\n` + cssString
     this.cssType = '' /* scss | other */
 
+    this.graph = {} /* 组件图信息 */
+    this.currentCompilePath = '' /* 当前正在编译的组件路径 */
     this.afterTsCompiled = '' /* typescript编译后 */
     this.afterCssCompiled = '' /* css编译器编译后 */
     this.afterCssToObject = {} /* css-to-object后的css对象 */
@@ -96,7 +98,6 @@ module.exports = class ReactToReactNative {
     this.compileType = Boolean(reactCompPath) ? this.enums.MULTIPLE_FILE : this.enums.SINGLE_FILE
     this.cssString = cssString
     this.cssType = cssType
-    // this.currentCompilePath = this.hashHelper('reactCompPath')
 
     if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {
       if (this.reactCompPath) {
@@ -107,12 +108,158 @@ module.exports = class ReactToReactNative {
     return this
   }
 
-  start() {
-    this.createGraphHelper({
+  async start() {
+    if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {
+      this.outputDir = require('path').dirname(this.outputPath)
+      // console.log(this.outputDir)
+    }
+    
+    // 构建graph
+    this.graph = this.createGraphHelper({
       compileType: this.compileType,
       entryPath: this.reactCompPath,
+      exportPath: this.outputPath,
       entry: this.reactCompString,
     })
+
+    if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {
+      // 添加导出路径 importSource
+      for await (let filePath of Object.keys(this.graph)) {
+        const component = this.graph[filePath]
+        if (!component.exportPath) {
+          component.exportPath = require('path').resolve(this.outputDir, component.importSource)
+        }
+      }
+    }
+    
+    // 收集所有cssObject
+    this.cssObject = {
+      externalStyle: {},
+      stableClassNames: {},
+    }
+    for await (let filePath of Object.keys(this.graph)) {
+      this.currentCompilePath = filePath
+      const { code, fileType } = this.graph[filePath]
+      if (fileType === 'css') {
+        const afterCSSNextCompiled = await this.scssCompiler(code)
+        const afterCSSToObj = await this.cssToObject(afterCSSNextCompiled)
+        this.cssObject.externalStyle = Object.assign(
+          this.cssObject.externalStyle, afterCSSToObj.externalStyle
+        )
+        this.cssObject.stableClassNames = Object.assign(
+          this.cssObject.stableClassNames, afterCSSToObj.stableClassNames
+        )
+      }
+    }
+
+    // process
+    for await (let filePath of Object.keys(this.graph)) {
+      this.currentCompilePath = filePath
+      const component = this.graph[filePath]
+      const { code, ast, fileType, } = component
+      if (fileType === 'react') {
+        // typescript编译
+        component.afterTsCompiled = await this.typescriptCompiler(code)
+        // 添加文本标签wrapper、添加uniqueId
+        component.afterProcessAST = this.processAST(ast)
+        // 构建父子节点间关系
+        this.astToRelationTreeHelper(component.afterProcessAST, filePath)
+      }
+    }
+
+    // 生成htmlString
+    this.pureHtmlString = this.generatePureHtmlString({
+      fsRelations: this.fsRelations,
+      uniqueNodeInfo: this.uniqueNodeInfo,
+      isTag: (uniqueId) => uniqueId.slice(9).startsWith(this.enums.UNIQUE_ID),
+      uniqueIdName: this.enums.HTML_UNIQUE_ID_ATTRNAME,
+      activeAddTextMark: this.enums.ACTIVE_ADD_TEXT_MARK,
+      collectExports: this.collections.exports,
+      hashHelper: this.hashHelper,
+      collections: this.collections,
+    })
+
+    // 转换标签、事件
+    for await (let filePath of Object.keys(this.graph)) {
+      this.currentCompilePath = filePath
+      const component = this.graph[filePath]
+      const { ast, fileType, } = component
+      if (fileType === 'react') {
+        this.convertTagReferenceHelper(ast, {
+          addUsingComponent: (name) => {
+            component.usingComponent = (component.usingComponent || [])
+            if (!component.usingComponent.includes(name)) {
+              component.usingComponent.push(name)
+            }
+          }
+        })
+      }
+    }
+    
+    // 外联转对象
+    this.externalToInlineStyle = this.convertExternalToInline({
+      html: this.pureHtmlString,
+      css: this.cssObject,
+      uniqueIdName: this.enums.HTML_UNIQUE_ID_ATTRNAME,
+      activeAddTextMark: this.enums.ACTIVE_ADD_TEXT_MARK,
+    })
+
+    // 混合所有样式（除继承样式）
+    this.mixinedStyleExceptInherit = this.mixinStyleExceptInherit({
+      external: this.externalToInlineStyle,
+      inline: this.initialInlineStyle,
+      self: this.tagSelfStyle,
+      cssObject: this.cssObject,
+    })
+
+    // 暂搁置继承样式的处理
+    this.inheritStyle = {}
+
+    // 混合继承样式和其他样式
+    this.mixinedStyle = this.mixinInheritAndOther(this.mixinedStyleExceptInherit, this.inheritStyle)
+    
+    // 生成最终的对象style
+    this.finalStyleObject = this.transformAllStyle(this.mixinedStyle)
+
+    for await (let filePath of Object.keys(this.graph)) {
+      this.currentCompilePath = filePath
+      const component = this.graph[filePath]
+      const { ast, fileType, } = component
+      if (fileType === 'react') {
+        this.packageAST(ast)
+        component.result = this.astUtils.ast2code(ast)
+      }
+    }
+    
+    if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {
+      // 写入最终dist文件
+      for await (let filePath of Object.keys(this.graph)) {
+        const {
+          fileType,
+          exportPath,
+          result,
+          usingComponent,
+        } = this.graph[filePath]
+        
+        const finalResult = this.generateReactNativeComponent({
+          fileType,
+          code: result,
+          usingComponent,
+        })
+        if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {
+          if (exportPath) {
+            require('fs').writeFileSync(exportPath, finalResult, 'utf8')
+            this.log(`输出到'${exportPath}' -> success`)
+          }
+        }
+      }
+      if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {
+        const stylesheetPath = this.outputDir + `/${this.enums.STYLESHEET_FILE_NAME}.js`
+        const stylesheetContent = `export default ` + JSON.stringify(this.finalStyleObject, null, 2)
+        require('fs').writeFileSync(stylesheetPath, stylesheetContent, 'utf8')
+      }
+    }
+
     return
     return this.typescriptCompiler(this.reactCompString)
       .then(afterTsCompiled => {

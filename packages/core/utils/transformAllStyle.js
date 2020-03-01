@@ -1,8 +1,8 @@
 const transform = require('css-to-react-native').default
 
 const shouldDeleteAttrNames = [
-  'text-shadow',
-  'box-sizing',
+  'textShadow',
+  'boxSizing',
   'display',
 ]
 
@@ -30,7 +30,8 @@ function _transform(obj) {
     const result = transform(arrayStyle)
     return result
   } catch (error) {
-    return '[ERROR] cssToReactNative error'
+    throw '[ERROR] cssToReactNative error'
+    return {}
   }
 }
 

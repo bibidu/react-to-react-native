@@ -2,8 +2,8 @@
   require('./addTextWrapper'),
   require('./addUniqueId'),
   require('./collectInfo'),
-  require('./astToRelationTree'),
-  require('./convertReactTagToRN'),
+  // require('./astToRelationTree'),
+  // require('./convertReactTagToRN'),
 ]
 
 if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {

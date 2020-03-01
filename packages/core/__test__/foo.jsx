@@ -1,11 +1,13 @@
 import React from 'react'
-import Foo1 from './foo1'
+import T1 from './foo1'
+import './foo.scss'
 
-export default class T extends React.Component{
+class T extends React.Component{
   render() {
     return <h1>
       TTT
-      <Foo1></Foo1>
+      <T1></T1>
     </h1>
   }
 }
+export default T

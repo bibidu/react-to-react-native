@@ -1,8 +1,12 @@
 const prettier = require('prettier')
 
-module.exports = function generateReactNativeComponent() {
-  function genUsingComponentCode(rnUsingComponentName) {
-    const componentStr = rnUsingComponentName.join(',\n  ')
+module.exports = function generateReactNativeComponent({
+  fileType,
+  usingComponent,
+  code,
+}) {
+  function genUsingComponentCode(usingComponent) {
+    const componentStr = (usingComponent || []).join(',\n  ')
     return `import {
   AppRegistry,
   StyleSheet,
@@ -10,7 +14,7 @@ module.exports = function generateReactNativeComponent() {
   }
   
   function genStyleSheet(finalStyleObject) {
-    return `const ${this.enums.STYLESHEET_NAME} = StyleSheet.create(` + JSON.stringify(finalStyleObject, null, 2) + ')'
+    return `import ${this.enums.STYLESHEET_NAME} from './${this.enums.STYLESHEET_FILE_NAME}.js'`
   }
 
   function genTopBanner() {
@@ -24,27 +28,27 @@ module.exports = function generateReactNativeComponent() {
     const formatConfig = {
       jsxBracketSameLine: false,
       tabWidth: 2,
+      parser: 'babel',
     }
     return prettier.format(code, formatConfig)
   }
 
   const {
-    usingRNComponentNames,
     finalStyleObject,
     collections,
   } = this
 
   const topBanner = genTopBanner()
-  const importReact = this.astUtils.ast2code(collections.importReactPath)
-  const usingCode = genUsingComponentCode(usingRNComponentNames)
+  // const importReact = this.astUtils.ast2code(collections.importReactPath)
+  const usingCode = fileType === 'react' ? genUsingComponentCode(usingComponent) : ''
   const styleSheet = genStyleSheet.call(this, finalStyleObject)
-  const component = formatCode(this.astUtils.ast2code(this.afterPackageCode))
+  const component = fileType === 'react' ? formatCode(code) : ''
   const result = [
     topBanner,
-    importReact,
+    styleSheet,
+    // importReact,
     usingCode,
     component,
-    styleSheet,
   ].join('\n')
 
   return result

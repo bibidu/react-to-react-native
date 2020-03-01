@@ -2,6 +2,9 @@ const cheerio = require('cheerio')
 
 const unSupportStyles = [
   ':hover',
+  ':before',
+  ':after',
+  ':active',
 ]
 
 function removeUnSupportStyle(style) {

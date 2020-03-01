@@ -15,7 +15,8 @@ module.exports = function collectInfo({ ctx, t }) {
     ExportDefaultDeclaration(path) {
       const { name } = path.get('declaration').node
       // 收集导出的组件名
-      ctx.collections.exports.push(name)
+      console.log(`正在编译的组件路径 ${ctx.currentCompilePath}`)
+      ctx.collections.exports[ctx.hashHelper(ctx.currentCompilePath)] = name
     },
 
     JSXElement(path) {
