@@ -6,8 +6,20 @@ class T extends React.Component{
   render() {
     return <h1>
       TTT
-      <T1></T1>
+      <T1>e</T1>
+      <T2>e</T2>
     </h1>
   }
 }
+
+
+class T2 extends React.Component{
+  render() {
+    return <h2>
+      h2
+    </h2>
+  }
+}
+
+
 export default T

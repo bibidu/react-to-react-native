@@ -4,10 +4,6 @@ const resolves = require('./resolves')
 
 const isComponent = (tagName) => tagName.charAt(0) !== tagName.charAt(0).toLowerCase()
 
-// function collectRNUsingComponentName(ctx, tagName) {
-//   ctx.addUsingRNComponentName(tagName)
-// }
-
 function replaceTagName(path, t, newTagName) {
   const newTagPath = t.JSXIdentifier(newTagName)
   path.get('openingElement').get('name').replaceWith(newTagPath)

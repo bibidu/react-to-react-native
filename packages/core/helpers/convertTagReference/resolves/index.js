@@ -12,18 +12,18 @@ const constant = {
   ]
 }
 
-module.exports = function resolves({path, t, ctx}) {
+module.exports = function resolves({
+  path,
+  t,
+  ctx,
+}) {
   // 标签名
   const tagName = path.get('openingElement').get('name').node.name
   // 是否有tap事件
   const hasTapEvent = constant.tapEvents.some(eventName =>
     ctx.jsxUtils.getJSXAttributeValue(path, eventName)
   )
-  /**
-   * 
-   * @param {*} newTagName
-   * @param {*}  rawTagName
-   */
+  
   function resolve(newTagName, hasExtraAction) {
     if (hasExtraAction) {
       // extraAction：对节点进行（除替换标签名、替换事件名）额外的操作，如添加新的子节点

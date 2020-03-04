@@ -13,7 +13,6 @@ module.exports = function createGraph({
   compileType,
   entryPath,
   exportPath,
-  entry,
 }) {
   const graph = _analysisEntry(entryPath, exportPath, this.astUtils.code2ast)
 
@@ -23,8 +22,10 @@ module.exports = function createGraph({
 }
 
 function _analysisEntry(entryPath, exportPath, code2ast) {
+  // TODO: add 添加process.env.COMPILE_ENV环境判断，用于隔离node环境和浏览器环境
   const fs = require('fs')
   const graph = {}
+
   function _findGraph(entryPath, info) {
     const code = fs.readFileSync(entryPath, 'utf8')
     const {
@@ -49,13 +50,13 @@ function _analysisEntry(entryPath, exportPath, code2ast) {
             const importSource = path.get('source').node.value
             if (!isNpm(importSource)) {
               const {
-                entirePath: importFile,
-                type: fileType,
+                entirePath,
+                type,
                 suffix,
               } = resolveFile(entryPath, importSource)
               
-              newGraph[importFile] = {
-                fileType,
+              newGraph[entirePath] = {
+                fileType: type,
                 importSource: importSource.includes(suffix) ?
                     importSource : importSource + suffix,
               }
@@ -70,10 +71,12 @@ function _analysisEntry(entryPath, exportPath, code2ast) {
       })
     }
   }
+  
   _findGraph(entryPath, {
     fileType: 'react',
     exportPath,
   })
+  
   return graph
 }
 

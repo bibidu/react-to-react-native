@@ -42,6 +42,7 @@ module.exports = function addStyleAccordingToUniqueId({ ctx, t }) {
       } = ctx.uniqueNodeInfo[uniqueId]
       if (!activeClassName) activeClassName = []
       if (!activeId) activeId = []
+      
       const mixinExpression = ctx.finalStyleObject[uniqueId] ? [{
         node: t.stringLiteral(uniqueId)
       }] : []

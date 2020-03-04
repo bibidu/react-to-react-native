@@ -22,13 +22,13 @@ module.exports = function generatePureHtmlString(info, key = 'ROOT', tabSize = 0
 
   if (key === 'ROOT') {
     // 组件暴露的根入口, 暂时只考虑单入口
-    const rootComponentPath = this.reactCompPath
+    const rootComponentPath = this.entryPath
     const filePathHash = hashHelper(rootComponentPath)
     const rootClassName = collections.exports[filePathHash]
     const expName = collectExports[filePathHash]
 
     currentArray = fsRelations[`${filePathHash}-Class-${rootClassName}`]
-
+    
     if (!currentArray || !currentArray.length) {
       throw Error('generatePureHtmlString找不到入口render')
     }

@@ -49,16 +49,7 @@ module.exports = function astToRelationTree(ast, currentPath) {
 
   function getCurrentFileUniqueName(path) {
     const { start, end } = path.node
-    // uniquePrefix 用于开发调试时定位元素的位置
-    // let uniquePrefix
-    // if (start) {
-    //   uniquePrefix = String(`[${start}-${end}]-`)
-    // } else {
-    //   // 添加的textWrapper不存在start、end属性
-    //   const firstChild = path.get('children.0').node
-    //   uniquePrefix = String(`[${firstChild.start}-${firstChild.end}]-$-`)
-    // }
-
+    
     let base = ctx.hashHelper(currentPath) + '-'
 
     if (path.isJSXElement()) {
@@ -126,6 +117,7 @@ module.exports = function astToRelationTree(ast, currentPath) {
         'className',
         'id',
       ].forEach(attrName => {
+
         if (attr.get('name').isJSXIdentifier({ name: attrName })) {
           const { staticExpression, activeExpression } = getAttrValueExactly(attr.get('value'))
           const activeKey = 'active' + attrName.replace(/^\w/, (_) => _.toUpperCase())
@@ -133,12 +125,14 @@ module.exports = function astToRelationTree(ast, currentPath) {
           result[activeKey] = activeExpression
         }
       })
+
       if (attr.get('name').isJSXIdentifier({ name: ctx.enums.UNIQUE_ID })) {
         const name = 'uniqueId'
         const { staticExpression } = getAttrValueExactly(attr.get('value'))
         const activeKey = 'active' + name.replace(/^\w/, (_) => _.toUpperCase())
         result[name] = staticExpression
       }
+
       if (attr.get('name').isJSXIdentifier({ name: ctx.enums.ACTIVE_ADD_TEXT_MARK })) {
         const { staticExpression } = getAttrValueExactly(attr.get('value'))
         result['activeAddText'] = staticExpression
@@ -184,25 +178,50 @@ module.exports = function astToRelationTree(ast, currentPath) {
   }
 
   function getComponentMapName(tagName, currentPath, path) {
-    // 暂时只支持外引组件
-    // 1. import Foo from './foo'
-    let parent = path.findParent(() => true)
-    while (parent) {
-      for (let i = 0; i < parent.container.length; i++) {
-        const item = parent.container[i]
-        if (item.type === 'ImportDeclaration') {
-          if (item.specifiers.length) {
-            const importPath = item.source.value
-            const name = item.specifiers[0].local.name
-            if (name === tagName) {
-              const file = resolveFile(currentPath, importPath)
-              return `${ctx.hashHelper(file.entirePath)}-Class-${tagName}`
+
+    function getImportType() {
+      let parent = path.findParent(() => true)
+      while (parent) {
+        for (let i = 0; i < parent.container.length; i++) {
+          const item = parent.container[i]
+          if (item.type === 'ImportDeclaration') {
+            if (item.specifiers.length) {
+              const importPath = item.source.value
+              const name = item.specifiers[0].local.name
+              if (name === tagName) {
+                const file = resolveFile(currentPath, importPath)
+                return `${ctx.hashHelper(file.entirePath)}-Class-${tagName}`
+              }
             }
           }
         }
+        parent = parent.findParent(() => true)
       }
-      parent = parent.findParent(() => true)
     }
+
+    function getClassType() {
+      const parent = path.findParent((node) => node.isProgram())
+      console.log('parent')
+      console.log(parent.type)
+      const classes = parent.get('body').filter(child => (
+        child.isClassDeclaration() && child.get('id').isIdentifier({ name: tagName })
+      ))
+      if (classes.length === 1) {
+        return getCurrentFileUniqueName(classes[0])
+      }
+    }
+
+    // 1. import Foo from './foo'
+    let mapName = ''
+    if (mapName = getImportType()) {
+      return mapName
+    }
+    // 2. class T2 extends Component {}
+    if (mapName = getClassType()) {
+      return mapName
+    }
+    
+    // TODO: add 支持当前文件的纯函数类型组件
     const msg = `未识别到引用的组件 ${tagName}`
     throw Error(msg)
   }

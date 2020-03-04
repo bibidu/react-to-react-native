@@ -35,6 +35,7 @@ module.exports = function addTextWrapper({ ctx, t }) {
       if (parent.isJSXElement()) {
         const parentIsTextNode = parent.get('openingElement').get('name').isJSXIdentifier({ name: 'span' })
         const hasTextNodeMark = checkIsHaveTextNodeMark(parent)
+        // 有静态文本标记且父JSX标签不是span
         if (hasTextNodeMark && !parentIsTextNode) {
           path.replaceWith(createSpanWrapper(t, path.node))
           path.skip()

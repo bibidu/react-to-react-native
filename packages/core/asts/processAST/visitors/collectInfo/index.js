@@ -4,7 +4,7 @@ module.exports = function collectInfo({ ctx, t }) {
 
   Object.assign(visitor, {
     ImportDeclaration(path) {
-      // 收集引入的react声明
+      // 收集import xxx from 'react'并在转译时移除
       const isReactImport = path.get('source').isStringLiteral({ value: 'react' })
       if (isReactImport) {
         ctx.collections.importReactPath = path.node
@@ -22,15 +22,16 @@ module.exports = function collectInfo({ ctx, t }) {
     JSXElement(path) {
       const styleAttr = ctx.jsxUtils.getJSXAttributeValue(path, 'style')
       if (styleAttr) {
-        // 1. style={{[string]: string | any}}内联样式
         const isExpression = styleAttr.isJSXExpressionContainer()
         const isObjectExpression = isExpression && styleAttr.get('expression').isObjectExpression()
+        // 1. style={{[string]: string | any}}内联样式。
         if (isObjectExpression) {
           const objStyle = ctx.astUtils.objAstToObj(styleAttr.get('expression'))
           const uniqueIdPrefix = ctx.enums.UNIQUE_ID
           const uniqueId = ctx.jsxUtils.getJSXAttributeValue(path, uniqueIdPrefix)
           ctx.addInitialInlineStyle(uniqueId.node.value, objStyle)
         }
+        // 2. 形如style={obj}, 暂不支持(需要逐级向父级查找)
         // 删除style属性
         ctx.jsxUtils.getJSXAttribute(path, 'style').remove()
       }
