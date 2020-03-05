@@ -1,11 +1,10 @@
 import React from 'react'
 
-class T1 extends React.Component{
+class Black extends React.Component{
   render() {
-    return <>
-      <h1>TTT</h1>
-      <img></img>
-    </>
+    return <h5>
+      Black
+    </h5>
   }
 }
-export default T1
+export default Black

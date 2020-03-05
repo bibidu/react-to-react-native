@@ -41,7 +41,8 @@ module.exports = function astToRelationTree(ast, currentPath) {
       p.isJSXElement() ||
       p.isClassMethod() || 
       p.isFunctionDeclaration() || 
-      p.isClassDeclaration()
+      p.isClassDeclaration() ||
+      p.isVariableDeclarator()
     ))
 
     return getCurrentFileUniqueName(parentNode)
@@ -61,6 +62,8 @@ module.exports = function astToRelationTree(ast, currentPath) {
       base += 'Function-' + path.get('id').node.name
     } else if (path.isClassDeclaration()) {
       base += 'Class-' + path.get('id').node.name
+    } else if (path.isVariableDeclarator()) {
+      base += 'VariableDecl-' + path.get('id').node.name 
     } else {
       this.error('JSXElement父级不合法')
     }
@@ -199,6 +202,7 @@ module.exports = function astToRelationTree(ast, currentPath) {
       }
     }
 
+    // TODO: update 逐级向上查找，而非指定最外层class。while循环直到找到Program为止即可。
     function getClassType() {
       const parent = path.findParent((node) => node.isProgram())
       console.log('parent')
@@ -211,6 +215,17 @@ module.exports = function astToRelationTree(ast, currentPath) {
       }
     }
 
+    // TODO: update 同getClassType，可逐级查找。
+    function getPureFunctionType() {
+      const parent = path.findParent((node) => node.isProgram())
+      const VariableDecls = parent.get('body').filter(child => (
+        child.isVariableDeclaration() && child.get('declarations.0').get('id').isIdentifier({ name: tagName })
+      ))
+      if (VariableDecls.length === 1) {
+        return getCurrentFileUniqueName(VariableDecls[0].get('declarations.0'))
+      }
+    }
+
     // 1. import Foo from './foo'
     let mapName = ''
     if (mapName = getImportType()) {
@@ -220,7 +235,11 @@ module.exports = function astToRelationTree(ast, currentPath) {
     if (mapName = getClassType()) {
       return mapName
     }
-    
+    // 3. const T3 = () => <>xxx</>
+    if (mapName = getPureFunctionType()) {
+      return mapName
+    }
+  
     // TODO: add 支持当前文件的纯函数类型组件
     const msg = `未识别到引用的组件 ${tagName}`
     throw Error(msg)
