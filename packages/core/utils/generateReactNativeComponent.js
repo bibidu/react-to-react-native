@@ -20,8 +20,7 @@ module.exports = function generateReactNativeComponent({
   function genTopBanner() {
     return `//
 // Created by node lib \`react-to-react-native\`.
-// 
-`
+// `
   }
 
   function formatCode(code) {
@@ -30,7 +29,7 @@ module.exports = function generateReactNativeComponent({
       tabWidth: 2,
       parser: 'babel',
     }
-    return prettier.format(code, formatConfig)
+    return prettier.format(code, formatConfig).replace(/^[\r\n]/, '')
   }
 
   const {
