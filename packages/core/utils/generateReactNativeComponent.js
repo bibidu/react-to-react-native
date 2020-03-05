@@ -1,6 +1,7 @@
 const prettier = require('prettier')
 
 module.exports = function generateReactNativeComponent({
+  importReactCode,
   fileType,
   usingComponent,
   code,
@@ -32,18 +33,24 @@ module.exports = function generateReactNativeComponent({
     return prettier.format(code, formatConfig).replace(/^[\r\n]/, '')
   }
 
+  function genReactImport() {
+    return importReactCode
+  }
+
   const {
     finalStyleObject,
     collections,
   } = this
 
   const topBanner = genTopBanner()
+  const reactImport = genReactImport()
   // const importReact = this.astUtils.ast2code(collections.importReactPath)
   const usingCode = fileType === 'react' ? genUsingComponentCode(usingComponent) : ''
   const styleSheet = genStyleSheet.call(this, finalStyleObject)
   const component = fileType === 'react' ? formatCode(code) : ''
   const result = [
     topBanner,
+    reactImport,
     styleSheet,
     // importReact,
     usingCode,

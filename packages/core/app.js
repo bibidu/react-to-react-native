@@ -249,6 +249,7 @@ module.exports = class ReactToReactNative {
         } = info
         
         const finalResult = this.generateReactNativeComponent({
+          importReactCode: this.astUtils.ast2code(this.collections.importReactPath),
           fileType,
           code: result,
           usingComponent,
