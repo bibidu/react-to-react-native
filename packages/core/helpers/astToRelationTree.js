@@ -205,8 +205,6 @@ module.exports = function astToRelationTree(ast, currentPath) {
     // TODO: update 逐级向上查找，而非指定最外层class。while循环直到找到Program为止即可。
     function getClassType() {
       const parent = path.findParent((node) => node.isProgram())
-      console.log('parent')
-      console.log(parent.type)
       const classes = parent.get('body').filter(child => (
         child.isClassDeclaration() && child.get('id').isIdentifier({ name: tagName })
       ))
