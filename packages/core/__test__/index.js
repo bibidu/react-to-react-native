@@ -29,7 +29,7 @@ ul{
 }`
 const COMPONENT_NAME = 'PopupComment'
 // const entryPath = `/Users/duxianzhang/Desktop/company/tz-component-template/src/${COMPONENT_NAME}/index.js`
-const entryPath = `/Users/mr.du/Desktop/bibidu/react-to-react-native/packages/core/__test__/foo.jsx`
+const entryPath = `/Users/mr.du/Desktop/bibidu/react-to-react-native/packages/components/template/src/Button/index.js`
 // const entryPath = `/Users/mr.du/Desktop/react-component-template/template/src/${COMPONENT_NAME}/index.js`
 // const exportPath = `/Users/duxianzhang/Desktop/company/tz-component-template/dist_react_native/index.js`
 const exportPath = `/Users/mr.du/Desktop/AwesomeReactNativeProject/auto/index.js`
