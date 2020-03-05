@@ -254,7 +254,10 @@ module.exports = class ReactToReactNative {
           usingComponent,
         })
         if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {
-          if (exportPath) {
+          const ignoreTypes = [
+            'css',
+          ]
+          if (exportPath && !ignoreTypes.includes(fileType)) {
             fs.writeFileSync(exportPath, finalResult, 'utf8')
             this.log(`输出到'${exportPath}' -> success`)
           }
