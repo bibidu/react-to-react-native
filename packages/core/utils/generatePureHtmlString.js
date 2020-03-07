@@ -1,13 +1,13 @@
 const TAB_SIZE = 2
 
-const isUserComponent = (tagName) => tagName.charAt(0) !== tagName.charAt(0).toLowerCase()
-
 const rootNames = (exportsName) => [
   `Class-${exportsName}-render`,
   `Function-${exportsName}`
 ]
 
+let ctx = null
 module.exports = function generatePureHtmlString(info, key = 'ROOT', tabSize = 0) {
+  !ctx && (ctx = this)
   const {
     fsRelations,
     uniqueNodeInfo,
@@ -44,13 +44,13 @@ module.exports = function generatePureHtmlString(info, key = 'ROOT', tabSize = 0
         const idAttr = id ? ` id="${id}"` : ''
         const activeTextAttr = activeAddText ? ` ${activeAddTextMark}="${activeAddText}"` : ''
 
-        if (!isUserComponent(tagName)) {
+        if (!ctx.isUserComponent(tagName)) {
           html += `${block}<${tagName} ${uniqueIdName}="${uniqueId}"${classAttr}${idAttr}${activeTextAttr}>\n`
         }
 
         html += generatePureHtmlString(info, item, tabSize + TAB_SIZE)
 
-        if (!isUserComponent(tagName)) {
+        if (!ctx.isUserComponent(tagName)) {
           html += `${block}</${tagName}>\n`
         }
       } else {

@@ -1,9 +1,7 @@
 const log = require('./log')
 const error = require('./error')
 const cssToObject = require('./cssToObject')
-const astToRelationTree = require('./astToRelationTree')
 const transformAllStyle = require('./transformAllStyle')
-const relationTreeToHtml = require('./relationTreeToHtml')
 const generatePureHtmlString = require('./generatePureHtmlString')
 const astUtils = require('./astUtils')
 const jsxUtils = require('./jsxUtils')
@@ -13,13 +11,15 @@ const convertExternalToInline = require('./convertExternalToInline')
 const calcInheritStyle = require('./calcInheritStyle')
 const mixinInheritAndOther = require('./mixinInheritAndOther')
 const mergeByKey = require('./mergeByKey')
+const getInheritStyle = require('./getInheritStyle')
+const omit = require('./omit')
+const isUserComponent = require('./isUserComponent')
 
 module.exports = function () {
   ;[
     log,
     error,
     cssToObject,
-    astToRelationTree,
     transformAllStyle,
     generatePureHtmlString,
     astUtils,
@@ -30,5 +30,8 @@ module.exports = function () {
     calcInheritStyle,
     mixinInheritAndOther,
     mergeByKey,
+    getInheritStyle,
+    omit,
+    isUserComponent,
   ].forEach(util => this[util.name] = util)
 }

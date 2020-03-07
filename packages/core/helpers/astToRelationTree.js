@@ -108,7 +108,7 @@ module.exports = function astToRelationTree(ast, currentPath) {
     const result = {
       tagName,
       className: '',
-      activeClassName: '',
+      activeClassName: [],
       id: '',
       activeId: '',
       uniqueId: '',

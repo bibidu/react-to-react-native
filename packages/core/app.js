@@ -3,10 +3,12 @@ const compilers = require('./compilers')
 const utils = require('./utils')
 const helpers = require('./helpers')
 const enums = require('./config/enums')
+const constants = require('./config/constants')
 
 module.exports = class ReactToReactNative {
   constructor() {
     this.enums = enums /* 枚举字段 */
+    this.constants = constants /* 常量 */
 
     /* 收集的组件信息合集 */
     this.collections = {
@@ -82,6 +84,7 @@ module.exports = class ReactToReactNative {
     helpers.call(this)
   }
 
+  // TODO add 传入组件的检查
   init({
     entryPath = '',
     exportPath = '',
@@ -214,16 +217,17 @@ module.exports = class ReactToReactNative {
       self: this.tagSelfStyle,
       cssObject: this.cssObject,
     })
-
-    // TODO: add 暂搁置继承样式的处理
-    this.inheritStyle = {}
+    
+    // 计算继承样式
+    this.inheritStyle = this.getInheritStyle()
 
     // 混合继承样式和其他样式
     this.mixinedStyle = this.mixinInheritAndOther(this.mixinedStyleExceptInherit, this.inheritStyle)
     
     // 生成最终的对象style
     this.finalStyleObject = this.transformAllStyle(this.mixinedStyle)
-
+ 
+    // package
     Object.entries(this.graph).forEach(([filePath, component]) => {
       this.currentCompilePath = filePath
       const {
@@ -266,8 +270,14 @@ module.exports = class ReactToReactNative {
       })
 
       const stylesheetPath = this.outputDir + `/${this.enums.STYLESHEET_FILE_NAME}.js`
-      const stylesheetContent = `export default ` + JSON.stringify(this.finalStyleObject, null, 2)
+      const stylesheetContent = `export default ` + sortAndStringify(this.finalStyleObject)
       fs.writeFileSync(stylesheetPath, stylesheetContent, 'utf8')
     }
   }
+}
+
+function sortAndStringify(styleObj) {
+  const result = {}
+  Object.keys(styleObj).sort().map(key => result[key] = styleObj[key])
+  return JSON.stringify(result, null, 2)
 }

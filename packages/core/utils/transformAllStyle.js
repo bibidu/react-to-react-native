@@ -6,6 +6,23 @@ const shouldDeleteAttrNames = [
   'display',
 ]
 
+let replaceKey = null
+let storeValue = null
+
+function storeKey(obj) {
+  if (replaceKey && replaceKey in obj) {
+    storeValue = obj[replaceKey]
+    delete obj[replaceKey]
+  }
+}
+
+function restoreKey(obj) {
+  if (replaceKey && storeValue) {
+    obj[replaceKey] = storeValue
+    storeValue = null
+  }
+}
+
 function deleteUnSupportAttr(obj) {
   const attrNames = Object.keys(obj)
   attrNames.forEach(attrName => {
@@ -16,23 +33,41 @@ function deleteUnSupportAttr(obj) {
 }
 
 module.exports = function transformAllStyle(mixinedAllStyle) {
-  Object.entries(mixinedAllStyle).forEach(([ uniqueId, style]) => {
-    mixinedAllStyle[uniqueId] = _transform(style)
+  const ctx = this
+
+  function isStableClass(uniqueId) {
+    return !uniqueId.startsWith(ctx.enums.UNIQUE_ID)
+  }
+
+  replaceKey = this.enums.ACTIVE_CLASSNAME_WILL_REPLACEBY_STYLESHEET
+
+  Object.entries(mixinedAllStyle).forEach(([uniqueId, style]) => {
+    !isStableClass(uniqueId) && storeKey(style)
+
+    const result = _transform(style)
+    
+    !isStableClass(uniqueId) && restoreKey(result)
+
+    mixinedAllStyle[uniqueId] = result
   })
+
   removeEmpty(mixinedAllStyle)
   return mixinedAllStyle
 }
 
 function _transform(obj) {
+  let result = {}
   deleteUnSupportAttr(obj)
+
   const arrayStyle = objStyleToTransformArray(obj)
   try {
-    const result = transform(arrayStyle)
-    return result
+    result = transform(arrayStyle)
   } catch (error) {
     throw '[ERROR] cssToReactNative error'
-    return {}
+    return result
   }
+
+  return result
 }
 
 const objStyleToTransformArray = (obj) => {
