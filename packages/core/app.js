@@ -269,9 +269,15 @@ module.exports = class ReactToReactNative {
         }
       })
 
+      // 输出stylesheet
       const stylesheetPath = this.outputDir + `/${this.enums.STYLESHEET_FILE_NAME}.js`
       const stylesheetContent = `export default ` + sortAndStringify(this.finalStyleObject)
       fs.writeFileSync(stylesheetPath, stylesheetContent, 'utf8')
+
+      // 输出rnUtils
+      const rnUtilsPath = this.outputDir + `/${this.enums.RNUTILS_FILE_NAME}.js`
+      const rnUtilsContent = `export default ` + require('./config/distUtils').call(this)
+      fs.writeFileSync(rnUtilsPath, rnUtilsContent, 'utf8')
     }
   }
 }

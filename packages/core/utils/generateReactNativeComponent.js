@@ -1,11 +1,14 @@
 const prettier = require('prettier')
 
+// TODO: update 传参改为从ctx中获取
 module.exports = function generateReactNativeComponent({
   importReactCode,
   fileType,
   usingComponent,
   code,
 }) {
+  const ctx = this
+
   function genUsingComponentCode(usingComponent) {
     const componentStr = (usingComponent || []).join(',\n  ')
     return `import {
@@ -14,6 +17,10 @@ module.exports = function generateReactNativeComponent({
   ${componentStr}\n} from 'react-native'`
   }
   
+  function genRuntimeUtils() {
+    return `import ${ctx.enums.RNUTILS_USE_NAME} from './${ctx.enums.RNUTILS_FILE_NAME}.js'`
+  }
+
   function genStyleSheet(finalStyleObject) {
     return `import ${this.enums.STYLESHEET_NAME} from './${this.enums.STYLESHEET_FILE_NAME}.js'`
   }
@@ -44,16 +51,17 @@ module.exports = function generateReactNativeComponent({
 
   const topBanner = genTopBanner()
   const reactImport = genReactImport()
-  // const importReact = this.astUtils.ast2code(collections.importReactPath)
   const usingCode = fileType === 'react' ? genUsingComponentCode(usingComponent) : ''
+  const runtimeUtils = genRuntimeUtils()
   const styleSheet = genStyleSheet.call(this, finalStyleObject)
   const component = fileType === 'react' ? formatCode(code) : ''
   const result = [
     topBanner,
     reactImport,
-    styleSheet,
-    // importReact,
     usingCode,
+    runtimeUtils,
+    styleSheet,
+    '',
     component,
   ].join('\n')
 

@@ -1,25 +1,43 @@
 module.exports = function addStyleAccordingToUniqueId({ ctx, t }) {
   const key = ctx.enums.ACTIVE_CLASSNAME_WILL_REPLACEBY_STYLESHEET
 
-  function createArrayCallInJSXExpression(activeExpressionArray) {
-    const singleExpression = t.MemberExpression(
-      t.identifier(ctx.enums.STYLESHEET_NAME),
-      activeExpressionArray[0].node,
-      true
-    )
+  function createArrayCallInJSXExpression({
+    activeExpressionArray, // 动态属性
+    inheritActiveClassNameAst, // 继承而来的父级所有属性(需要去除不能继承的属性，如父级的border等)
+  }) {
+    const notInheritStylesheetAst = activeExpressionArray.map(item => (
+      t.MemberExpression(
+        t.identifier(ctx.enums.STYLESHEET_NAME),
+        item.node,
+        true
+      )
+    ))
 
-    const multiExpression = t.ArrayExpression(
-      activeExpressionArray.map(expression => (
+    const inheritStylesheetAst = inheritActiveClassNameAst.map(item => (
+      t.CallExpression(
         t.MemberExpression(
-          t.identifier(ctx.enums.STYLESHEET_NAME),
-          expression.node,
-          true
-        )
-      ))
-    )
+          t.identifier(ctx.enums.RNUTILS_USE_NAME),
+          t.identifier(ctx.enums.EXTRACT_FUNC)
+        ),
+        [
+          t.MemberExpression(
+            t.identifier(ctx.enums.STYLESHEET_NAME),
+            activeExpressionArray[0].node,
+            true
+          ),
+          // 可继承的css属性名
+          t.MemberExpression(
+            t.identifier(ctx.enums.RNUTILS_USE_NAME),
+            t.identifier(ctx.enums.CAN_INHERIT_STYLE_NAMES),
+          )
+        ]
+      )
+    ))
+
+    const mixinsArray = notInheritStylesheetAst.concat(inheritStylesheetAst)
 
     return t.jsxExpressionContainer(
-      activeExpressionArray.length === 1 ? singleExpression : multiExpression
+      mixinsArray.length === 1 ? mixinsArray[0] : t.ArrayExpression(mixinsArray)
     )
   }
 
@@ -47,12 +65,16 @@ module.exports = function addStyleAccordingToUniqueId({ ctx, t }) {
       delete finalStyle[key]
 
       // 临时方案: 暂不考虑动态、非动态的样式优先级
-      const activeExpressionArray = activeClassName.concat(activeId).concat(mixinExpression).concat(inheritActiveClassNameAst)
+      const activeExpressionArray = activeClassName.concat(activeId).concat(mixinExpression)
       
-      // 自定义组件直接跳过(不在自定义组件上定义style，如<Table style={xxx} />)
+      // 自定义组件hasStyleValue为false，直接跳过(不在自定义组件上定义style，如<Table style={xxx} />)
       const hasStyleValue = Boolean(Object.keys(finalStyle).length)
-      if (hasStyleValue && activeExpressionArray.length) {
-        const attributeValuePath = createArrayCallInJSXExpression(activeExpressionArray)
+      // 拥有继承而来的属性或本身有属性
+      if (inheritActiveClassNameAst.length || hasStyleValue) {
+        const attributeValuePath = createArrayCallInJSXExpression({
+          activeExpressionArray,
+          inheritActiveClassNameAst,
+        })
         const jsxAttributePath = t.JSXAttribute(
           t.JSXIdentifier('style'),
           attributeValuePath
