@@ -7,23 +7,15 @@ module.exports = function addStyleAccordingToUniqueId({ ctx, t }) {
       activeExpressionArray[0].node,
       true
     )
-    const multiExpression = t.CallExpression(
-      t.MemberExpression(
-        t.ArrayExpression(
-          activeExpressionArray.map(expression => expression.node)
-        ),
-        t.identifier('map'),
-        false
-      ),
-      [t.ArrowFunctionExpression(
-        [t.identifier('k')],
+
+    const multiExpression = t.ArrayExpression(
+      activeExpressionArray.map(expression => (
         t.MemberExpression(
           t.identifier(ctx.enums.STYLESHEET_NAME),
-          t.identifier('k'),
+          expression.node,
           true
-        ),
-        false
-      )]
+        )
+      ))
     )
 
     return t.jsxExpressionContainer(
