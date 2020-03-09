@@ -3,42 +3,66 @@ module.exports = function addStyleAccordingToUniqueId({ ctx, t }) {
 
   function createArrayCallInJSXExpression({
     activeExpressionArray, // 动态属性
-    inheritActiveClassNameAst, // 继承而来的父级所有属性(需要去除不能继承的属性，如父级的border等)
+    ancestorStylesheetKey, // 继承而来的父级所有属性(需要去除不能继承的属性，如父级的border等)
   }) {
-    const notInheritStylesheetAst = activeExpressionArray.map(item => (
-      t.MemberExpression(
-        t.identifier(ctx.enums.STYLESHEET_NAME),
-        item.node,
-        true
-      )
-    ))
-
-    const inheritStylesheetAst = inheritActiveClassNameAst.map(item => (
-      t.CallExpression(
+    const notInheritStylesheetAst = activeExpressionArray.map(item => {
+      return (
         t.MemberExpression(
-          t.identifier(ctx.enums.RNUTILS_USE_NAME),
-          t.identifier(ctx.enums.EXTRACT_FUNC)
-        ),
-        [
-          t.MemberExpression(
-            t.identifier(ctx.enums.STYLESHEET_NAME),
-            activeExpressionArray[0].node,
-            true
-          ),
-          // 可继承的css属性名
-          t.MemberExpression(
-            t.identifier(ctx.enums.RNUTILS_USE_NAME),
-            t.identifier(ctx.enums.CAN_INHERIT_STYLE_NAMES),
-          )
-        ]
+          t.identifier(ctx.enums.STYLESHEET_NAME),
+          item.node,
+          true
+        )
       )
-    ))
+    })
+    
+    let inheritStylesheetAst = ancestorStylesheetKey.filter(
+      ([uniqueId, ancestorAst]) => uniqueId && Array.isArray(ancestorAst)
+    )
+
+    const isInheritStylesheetAstValid = Boolean(ancestorStylesheetKey.length) &&
+      Boolean(inheritStylesheetAst.length)
+    
+    if (!isInheritStylesheetAstValid) {
+      inheritStylesheetAst = []
+    } else {
+      inheritStylesheetAst = inheritStylesheetAst
+        .map(([uniqueId, activeAncestorAst]) => {
+          const ancestorAstArray = activeAncestorAst.map(ast => t.MemberExpression(
+            t.identifier(ctx.enums.STYLESHEET_NAME),
+            ast.node,
+            true
+          ))
+          const uniqueIdStylesheetAst = uniqueId ? t.MemberExpression(
+            t.identifier(ctx.enums.STYLESHEET_NAME),
+            t.stringLiteral(uniqueId),
+            true
+          ) : null
+
+          if (uniqueIdStylesheetAst) ancestorAstArray.push(uniqueIdStylesheetAst)
+          if (!ancestorAstArray.length) return null
+
+          return t.CallExpression(
+            t.MemberExpression(
+              t.identifier(ctx.enums.RNUTILS_USE_NAME),
+              t.identifier(ctx.enums.EXTRACT_CAN_INHERIT_STYLE_NAME_FUNC),
+            ),
+            [
+              // ...[{a: 1}, {a: 2}] => {a: 1}
+              t.SpreadElement(
+                t.ArrayExpression(ancestorAstArray)
+              )
+            ]
+          )
+      })
+    }
 
     const mixinsArray = notInheritStylesheetAst.concat(inheritStylesheetAst)
-
-    return t.jsxExpressionContainer(
-      mixinsArray.length === 1 ? mixinsArray[0] : t.ArrayExpression(mixinsArray)
-    )
+    
+    switch(mixinsArray.length) {
+      case 0: return null
+      case 1: return t.jsxExpressionContainer(mixinsArray[0])
+      default: return t.jsxExpressionContainer(t.ArrayExpression(mixinsArray))
+    }
   }
 
   return {
@@ -52,34 +76,37 @@ module.exports = function addStyleAccordingToUniqueId({ ctx, t }) {
         activeClassName,
         activeId,
       } = ctx.uniqueNodeInfo[uniqueId]
-      const finalStyle = ctx.finalStyleObject[uniqueId] || {}
+      
+      const {
+        exceptInherit, // 除了继承样式的混合结果
+      } = ctx.convertedStyleToRN
 
+      const ancestorStylesheetKey = ctx.inheritStyle[uniqueId] || []
+      
       if (!activeClassName) activeClassName = []
       if (!activeId) activeId = []
       
-      const mixinExpression = finalStyle ? [{
+      const mixinExceptInheritExpression = exceptInherit[uniqueId] ? [{
         node: t.stringLiteral(uniqueId)
       }] : []
 
-      const inheritActiveClassNameAst = key in finalStyle ? finalStyle[key] : []
-      delete finalStyle[key]
-
       // 临时方案: 暂不考虑动态、非动态的样式优先级
-      const activeExpressionArray = activeClassName.concat(activeId).concat(mixinExpression)
-      
-      // 自定义组件hasStyleValue为false，直接跳过(不在自定义组件上定义style，如<Table style={xxx} />)
-      const hasStyleValue = Boolean(Object.keys(finalStyle).length)
+      const activeExpressionArray = activeClassName.concat(activeId).concat(mixinExceptInheritExpression)
+
       // 拥有继承而来的属性或本身有属性
-      if (inheritActiveClassNameAst.length || hasStyleValue) {
+      if (ancestorStylesheetKey.length || activeExpressionArray.length) {
         const attributeValuePath = createArrayCallInJSXExpression({
           activeExpressionArray,
-          inheritActiveClassNameAst,
+          ancestorStylesheetKey,
         })
-        const jsxAttributePath = t.JSXAttribute(
-          t.JSXIdentifier('style'),
-          attributeValuePath
-        )
-        path.get('openingElement').pushContainer('attributes', jsxAttributePath)
+
+        if (attributeValuePath) {
+          const jsxAttributePath = t.JSXAttribute(
+            t.JSXIdentifier('style'),
+            attributeValuePath
+          )
+          path.get('openingElement').pushContainer('attributes', jsxAttributePath)
+        }
       }
     }
   }

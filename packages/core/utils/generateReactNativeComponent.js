@@ -18,7 +18,7 @@ module.exports = function generateReactNativeComponent({
   }
   
   function genRuntimeUtils() {
-    return `import ${ctx.enums.RNUTILS_USE_NAME} from './${ctx.enums.RNUTILS_FILE_NAME}.js'`
+    return `import * as ${ctx.enums.RNUTILS_USE_NAME} from './${ctx.enums.RNUTILS_FILE_NAME}.js'`
   }
 
   function genStyleSheet(finalStyleObject) {

@@ -32,8 +32,8 @@ module.exports = class ReactToReactNative {
     this.externalToInlineStyle = {} /* 外联转内联的样式 */
     this.mixinedStyleExceptInherit = {} /* 混合[外联、内联、标签自带]的样式结果 */
     this.inheritStyle = {} /* 继承而来的样式 */
-    this.mixinedStyle = {} /* 混合所有样式的结果 */
-    this.finalStyleObject = {} /* 通过react-to-react-native转换后的最终样式 */
+    this.removedInvalidStyle= {} /* 已经移除无效样式的样式结果 */
+    this.convertedStyleToRN = {} /* 通过react-to-react-native转换后的样式 */
     // this.initialAST = {} /* visitors遍历前最初的ast */
     this.afterProcessAST = {} /* processAST.visitors遍历后的ast */
     // this.afterPackageCode = '' /* package阶段后生成的组件code */
@@ -221,12 +221,16 @@ module.exports = class ReactToReactNative {
     // 计算继承样式
     this.inheritStyle = this.getInheritStyle()
 
-    // 混合继承样式和其他样式
-    this.mixinedStyle = this.mixinInheritAndOther(this.mixinedStyleExceptInherit, this.inheritStyle)
-    
-    // 生成最终的对象style
-    this.finalStyleObject = this.transformAllStyle(this.mixinedStyle)
- 
+    // 移除无效样式（行内的非继承样式、非行内的继承样式）
+    this.removedInvalidStyle = {
+      exceptInherit: this.removeInvalidStyle(this.mixinedStyleExceptInherit),
+    }
+
+    // 转换成RN的stylesheet结果
+    this.convertedStyleToRN = {
+      exceptInherit: this.convertStyleToRN(this.removedInvalidStyle.exceptInherit),
+    }
+
     // package
     Object.entries(this.graph).forEach(([filePath, component]) => {
       this.currentCompilePath = filePath
@@ -240,6 +244,9 @@ module.exports = class ReactToReactNative {
       }
     })
     
+    // 生成最终的对象style(inherit样式都是从exceptInherit中通过omit、extract生成)
+    this.finalStyleObject = this.mergeByKey(this.convertedStyleToRN.exceptInherit, {})
+
     if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {
       const fs = require('fs')
 
@@ -276,7 +283,7 @@ module.exports = class ReactToReactNative {
 
       // 输出rnUtils
       const rnUtilsPath = this.outputDir + `/${this.enums.RNUTILS_FILE_NAME}.js`
-      const rnUtilsContent = `export default ` + require('./config/distUtils').call(this)
+      const rnUtilsContent = require('./config/distUtils').call(this)
       fs.writeFileSync(rnUtilsPath, rnUtilsContent, 'utf8')
     }
   }

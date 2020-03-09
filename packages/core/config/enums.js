@@ -9,8 +9,8 @@ module.exports = {
   MULTIPLE_FILE: 'multiple_file', // 编译类型为多文件
   ACTIVE_CLASSNAME_WILL_REPLACEBY_STYLESHEET: 'activeClassName$$', // 最终替换成stylesheet.xxx的动态类名
   RNUTILS_USE_NAME: 'rnUtils', // 最终生成的rnUtils调用名
-  OMIT_FUNC: 'omit', // 最终生成的rnUtils中的omit函数
-  EXTRACT_FUNC: 'extract', // 最终生成的rnUtils中的extract函数
+  OMIT_CAN_INHERIT_STYLE_NAME_FUNC: 'omitInheritStyleName', // 最终生成的rnUtils中的omitInheritStyleName函数
+  EXTRACT_CAN_INHERIT_STYLE_NAME_FUNC: 'extractInheritStyleName', // 最终生成的rnUtils中的extractInheritStyleName函数
   CAN_INHERIT_STYLE_NAMES: 'canInheritStyleName', // 最终生成的rnUtils中‘可继承的文本css属性名’
   RNUTILS_FILE_NAME: 'rnUtils',
 }

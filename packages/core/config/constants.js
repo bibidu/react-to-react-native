@@ -15,6 +15,12 @@ module.exports = {
   // 文本节点
   textNames: [
     'span',
+    'h1',
+    'h2',
+    'h3',
+    'h4',
+    'h5',
+    'h6',
   ],
   // 可继承的css属性名
   canInheritStyleName: expandDiffTypeInHeritStyle(baseInheritStyleName)

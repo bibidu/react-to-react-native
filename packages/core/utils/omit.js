@@ -1,4 +1,5 @@
 module.exports = function omit(obj, deleteKeys) {
-  deleteKeys.forEach(key => key in obj && delete obj[key])
-  return obj
+  const result = {}
+  deleteKeys.forEach(key => !(key in obj) && (result[key] = obj[key]))
+  return result
 }

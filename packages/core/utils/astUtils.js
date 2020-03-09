@@ -1,3 +1,4 @@
+const t = require('@babel/types')
 const parser = require('@babel/parser')
 const generator = require('@babel/generator').default
 
@@ -17,6 +18,17 @@ const astUtils = {
       obj[key] = value
     }
     return obj
+  },
+
+  objToObjAst(obj) {
+    return t.objectExpression(
+      Object.entries(obj).map(([key, value]) => (
+        t.objectProperty(
+          t.identifier(key),
+          typeof value === 'number' ? t.numericLiteral(value) : t.stringLiteral(value)
+        )
+      ))
+    )
   },
 
   /**

@@ -10,40 +10,26 @@ module.exports = function getInheritStyle() {
   const inheritStyle = {}
 
   function getmixinAncestorStyle (parentsUniqueId) {
-    let mixinStyle = {}
+    const ancestorsStyle = []
+
     parentsUniqueId.forEach(uniqueId => {
-      const externalStyle = ctx.externalToInlineStyle[uniqueId] || {}
-      const tagSelfStyle = ctx.tagSelfStyle[uniqueId] || {}
-      const staticInlineStyle = ctx.initialInlineStyle[uniqueId] || {}
-      const activeInlineStyle = {}
-      // TODO: update 修改activeClassName名称（包含ast）更符合语义
-      const { activeClassName: activeInlineStyleAst } = ctx.uniqueNodeInfo[uniqueId] || []
-      // console.log(uniqueId);
-      // if (uniqueId === 'unique_id2') {
-      //   console.log('fkwaejflkjawelkf');
-      // }
-      for (let i = 0; i < activeInlineStyleAst.length; i++) {
-        const item = activeInlineStyleAst[i]
-        // const className = ctx.astUtils.ast2code(item.node)
-        ! activeInlineStyle[key] &&  (activeInlineStyle[key] = [])
-        activeInlineStyle[key].push(item)
-      }
-      
-      // 当前策略： 
-      // 继承父级样式时，会将所有父级的“所有类型动态”（内联动态 > 内联静态 > 外联 > 标签自带）进行混合，
-      mixinStyle = Object.assign(
-        {},
-        mixinStyle,
-        externalStyle,
-        staticInlineStyle,
-        activeInlineStyle,
-        tagSelfStyle,
+      // 具有外联样式、标签自带样式、内联样式中至少一个
+      const noValidStyleExceptInherit = (
+        !Boolean(uniqueId in ctx.externalToInlineStyle) &&
+        !Boolean(uniqueId in ctx.tagSelfStyle) &&
+        !Boolean(uniqueId in ctx.initialInlineStyle)
       )
+
+      // 当前替代方案：由于父级样式的组成由动态 + stylesheet[uniqueId]组成，故当前继承样式也应在父级组成中提取可继承的样式部分
+      const { activeClassName: activeInlineStyleAst } = ctx.uniqueNodeInfo[uniqueId] || []
+
+      ancestorsStyle.unshift([
+        noValidStyleExceptInherit ? '' : uniqueId, // stylesheet应存在的uniqueId
+        activeInlineStyleAst // 动态的style
+      ])
     })
-    const removeKeys = Object.keys(mixinStyle).filter(k => (
-      !canInheritStyleName.includes(k) && k !== key
-    ))
-    return ctx.omit(mixinStyle, removeKeys)
+    
+    return ancestorsStyle
   }
 
   const mixinMultipleFileHtml = this.pureHtmlString

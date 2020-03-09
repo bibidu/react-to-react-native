@@ -32,27 +32,27 @@ function deleteUnSupportAttr(obj) {
   })
 }
 
-module.exports = function transformAllStyle(mixinedAllStyle) {
+module.exports = function convertStyleToRN(styles) {
   const ctx = this
 
   function isStableClass(uniqueId) {
     return !uniqueId.startsWith(ctx.enums.UNIQUE_ID)
   }
 
-  replaceKey = this.enums.ACTIVE_CLASSNAME_WILL_REPLACEBY_STYLESHEET
+  replaceKey = ctx.enums.ACTIVE_CLASSNAME_WILL_REPLACEBY_STYLESHEET
 
-  Object.entries(mixinedAllStyle).forEach(([uniqueId, style]) => {
+  Object.entries(styles).forEach(([uniqueId, style]) => {
     !isStableClass(uniqueId) && storeKey(style)
 
     const result = _transform(style)
     
     !isStableClass(uniqueId) && restoreKey(result)
 
-    mixinedAllStyle[uniqueId] = result
+    styles[uniqueId] = result
   })
 
-  removeEmpty(mixinedAllStyle)
-  return mixinedAllStyle
+  removeEmpty(styles)
+  return styles
 }
 
 function _transform(obj) {

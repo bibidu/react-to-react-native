@@ -125,7 +125,7 @@ module.exports = function astToRelationTree(ast, currentPath) {
           const { staticExpression, activeExpression } = getAttrValueExactly(attr.get('value'))
           const activeKey = 'active' + attrName.replace(/^\w/, (_) => _.toUpperCase())
           result[attrName] = staticExpression
-          result[activeKey] = activeExpression
+          result[activeKey] = activeExpression || []
         }
       })
 
