@@ -254,9 +254,8 @@ export default App`
                     if (!js) {
                         return alert('React.JSX can not be null or undefined!')
                     }
-                    const css = this.file['css'] || ''
+                    const css = this.file['CSS'] || ''
                     compile(js, css).then(({ result }) => {
-                        console.log(result);
                         this.results = result.map((item, idx) => {
                             const [type, value] = [Object.keys(item)[0], Object.values(item)[0]]
                             return `${idx !== 0 ? '\n' : ''}████████████████ ${type.toUpperCase()} ████████████████\n` + value
