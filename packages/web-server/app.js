@@ -1,3 +1,4 @@
+const fs = require('fs')
 const path = require('path')
 const express = require('express')
 const app = express()
@@ -26,10 +27,17 @@ function _compile(request) {
   })
 }
 
+app.get('/docs', (req, res) => {
+  // const html = markdown.makeHtml(docMarkdown)
+  // TODO: 改成静态形式，而非每次读取
+  const docHtml = fs.readFileSync('../docs/_book/index.html', 'utf8')
+  res.setHeader('Content-Type', 'text/html');
+  res.send(docHtml)
+  res.end()
+})
+
 app.post('/compile', (req, res) => {
   const { reactCompString, cssString } = req.body
-  console.log(reactCompString);
-  console.log(cssString);
   if (reactCompString === undefined || cssString === undefined) {
     res.json({
       code: -1,

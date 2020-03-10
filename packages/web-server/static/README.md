@@ -83,6 +83,7 @@ export default App
 ```
 
 ### 引入其他组件
+
 ```jsx
 import Foo from './foo'
 
@@ -117,67 +118,81 @@ class App extends React.Component {
 ### 支持的样式写法
 
 - 外连
-```scss
-// foo.scss
-body {
-  .foo {
-    /* ... */
+
+  ```css
+  // foo.scss
+  body {
+    .foo {}
   }
-}
-```
+  ```
 
 - 内联（纯对象）
-```jsx
-<div style={{color: 'red'}}></div>
-```
+
+  ```jsx
+  render() {
+    return <div style={\{color: 'red'\}}></div>
+  }
+  ```
 
 - 标签自带
-```html
-<h1>react-to-react-native</h1>
 
-<!-- 等价于 => -->
+  ```jsx
+  render() {
+    return <h1>react-to-react-native</h1>
+  }
+  ```
 
-<View>
-  <Text style={{fontSize: 36}}>react-to-react-native</Text>
-<View>
-```
+  ```jsx
+  <!-- 等价于 => -->
+  render() {
+    return (
+      <View>
+        <Text style={\{fontSize: 36\}}>react-to-react-native</Text>
+      <View>
+    )
+  }
+  ```
 
 - 继承
-```scss
-.red_color{
-  color: red;
-}
-```
-```jsx
-const App = function() {
-  return (
-    <div className="red_color">
-      <h1>react2RN</h1>
-    </div>
-  )
-}
 
-<!-- 等价于 =>  -->
-
-const stylesheet = {
-  uniqueId1: {
-    color: 'red',
-    fontSize: 36
+  ```css
+  .red_color{
+    color: red;
   }
-}
+  ```
 
-const App = function() {
-  return (
-    <View>
+  ```jsx
+  const App = function() {
+    return (
+      <div className="red_color">
+        <h1>react2RN</h1>
+      </div>
+    )
+  }
+  <!-- 等价于 =>  -->
+  ```
+
+  ```jsx
+  const stylesheet = {
+    uniqueId1: {
+      color: 'red',
+      fontSize: 36
+    }
+  }
+  ```
+  ```jsx
+  const App = function() {
+    return (
       <View>
-        <Text style={stylesheet['uniqueId1']}>
-          react2RN
-        </Text>
+        <View>
+          <Text style={stylesheet['uniqueId1']}>
+            react2RN
+          </Text>
+        <View>
       <View>
-    <View>
-  )
-}
-```
+    )
+  }
+  ```
 
 ### 支持的html标签
 - div
@@ -193,19 +208,21 @@ const App = function() {
 
 ### 支持的scss写法
 - 变量声明
-```scss
-$BASE_COLOR: red;
-.foo {
-  color: $BASE_COLOR;
-}
-```
-- 样式嵌套
-```scss
-.foo {
-  color: red;
-  &:after{
-    content: '!';
+
+  ```scss
+  $BASE_COLOR: red;
+  .foo {
+    color: $BASE_COLOR;
   }
-  .bar { /* ... */ }
-}
-```
+  ```
+- 样式嵌套
+
+  ```scss
+  .foo {
+    color: red;
+    &:after{
+      content: '!';
+    }
+    .bar { /* ... */ }
+  }
+  ```

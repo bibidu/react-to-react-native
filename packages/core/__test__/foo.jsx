@@ -1,15 +1,13 @@
 import React from 'react'
-import Black from './foo1'
 import './foo.scss'
 
-const Red = () => <h1>red</h1>
-const Green = () => <h2>Green</h2>
+const H1 = () => <h1 className="green_color">h1</h1>
+const H2 = () => <h2>h2</h2>
 
 const App = () => {
   return <>
-    <Red />
-    <Green />
-    <Black />
+    <H1 />
+    <H2 />
   </>
 }
 
