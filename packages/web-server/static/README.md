@@ -95,6 +95,14 @@ const App = function() {
 }
 ```
 
+### 导出组件
+
+```jsx
+const App = () => <>react2RN</>
+
+export default App
+```
+
 ### 自定义组件嵌套
 ```jsx
 import Foo from './foo'
@@ -193,6 +201,33 @@ class App extends React.Component {
     )
   }
   ```
+
+### 外联样式混写
+```css
+.white_color{
+  color: #fff;
+}
+```
+
+```jsx
+<!-- A -->
+const getClassType = (type) => `${type}-btn`
+
+const App = ({ type }) => <h1 className={`white_color ${getClassType(type)}`}>react2RN</h1>
+```
+
+```jsx
+<!-- B -->
+class App extends React.Component{
+
+  getClassType = (type) => `${type}-btn`
+
+  render() {
+    const { type } = this.props
+    return <h1 className={`white_color ${this.getClassType(type)}`}>react2RN</h1>
+  }
+}
+```
 
 ### 支持的html标签
 - div
