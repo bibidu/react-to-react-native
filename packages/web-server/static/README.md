@@ -229,6 +229,31 @@ class App extends React.Component{
 }
 ```
 
+### 图片资源
+
+- 字符串类型
+
+  ```jsx
+  render() {
+    return <img src="https://58cdn.com/react2rn.png" alt="react2rn" />
+  }
+  ```
+
+- JSX类型
+
+  ```jsx
+  render() {
+    return <>
+      {
+        [
+          { url: "https://58cdn.com/react2rn.png" }
+        ].map(item => (
+          <img src={item.url} key={item} alt="react2rn" />
+        ))
+      }
+    </>
+  }
+  ```
 ### 支持的html标签
 - div
 - span
