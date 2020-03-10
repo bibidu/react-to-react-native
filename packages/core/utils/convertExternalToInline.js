@@ -33,7 +33,10 @@ module.exports = function convertExternalToInline({
       const element = $(el)
       const activeAddTextNode = Boolean(element.attr(activeAddTextMark))
       if (!activeAddTextNode) {
-        obj[element.attr(uniqueIdName)] = style
+        obj[element.attr(uniqueIdName)] = Object.assign(
+          obj[element.attr(uniqueIdName)] || {},
+          style
+        )
       }
     })
   })
