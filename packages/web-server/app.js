@@ -1,10 +1,22 @@
+const path = require('path')
 const express = require('express')
-const r2rn = require('../core/app')
 const app = express()
+const r2rn = require('../core/app')
 const bodyParser = require('body-parser')
 
 /* static */
 const PORT = 3000
+
+// app.all('*',function (req, res, next) {
+//   res.header('Access-Control-Allow-Origin', '*'); //当允许携带cookies此处的白名单不能写’*’
+//   res.header('Access-Control-Allow-Headers','content-type,Content-Length, Authorization,Origin,Accept,X-Requested-With'); //允许的请求头
+//   res.header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PUT'); //允许的请求方法
+//   next();
+// });
+
+app.use(express.static(path.join(__dirname, 'static')))
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
 
 function _compile(request) {
   return new Promise(resolve => {
@@ -14,8 +26,10 @@ function _compile(request) {
   })
 }
 
-app.post('/compile', bodyParser.urlencoded({ extended: false }), (req, res) => {
+app.post('/compile', (req, res) => {
   const { reactCompString, cssString } = req.body
+  console.log(reactCompString);
+  console.log(cssString);
   if (reactCompString === undefined || cssString === undefined) {
     res.json({
       code: -1,
@@ -34,4 +48,8 @@ app.post('/compile', bodyParser.urlencoded({ extended: false }), (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Web Server listening on port ${PORT}!`)
+})
+
+process.on('uncaughtException', () => {
+  console.log('error');
 })
