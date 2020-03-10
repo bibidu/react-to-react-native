@@ -3,6 +3,20 @@
 Visual Studio-like style based on original C# coloring by Jason Diamond <jason@diamond.name>
 
 */
+.docs{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 40px;
+  color: #fff;
+  border: 2px solid #fff;
+  padding: 6px 13px;
+  font-size: 16px;
+}
+.docs:hover{
+  color: orange;
+}
+
 .hljs {
   display: block;
   overflow-x: auto;
