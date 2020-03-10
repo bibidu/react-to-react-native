@@ -90,7 +90,7 @@ module.exports = class ReactToReactNative {
     exportPath = '',
     reactCompString = '',
     cssString = '',
-    cssType = 'scss' 
+    cssType = 'css' 
   } = {}) {
     if (!entryPath && !reactCompString) {
       // TODO: add 保存该错误，并在start时返回包含错误的数组
@@ -101,8 +101,10 @@ module.exports = class ReactToReactNative {
     this.reactCompString = reactCompString
     // TODO: replace 对entryPath存在时的路径进行检查，当该文件路径不合法时this.error, 并保存该错误
     this.compileType = Boolean(entryPath) ? this.enums.MULTIPLE_FILE : this.enums.SINGLE_FILE
+    process.env.COMPILE_ENV = Boolean(entryPath) ? 'node' : 'browser'
     this.cssString = cssString
     this.cssType = cssType
+    this.tasks = []
 
     // TODO: update 替换成更好的书写方式
     if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {
@@ -123,8 +125,11 @@ module.exports = class ReactToReactNative {
     // 构建graph
     this.graph = this.createGraphHelper({
       compileType: this.compileType,
+      cssType: this.cssType,
       entryPath: this.entryPath,
       exportPath: this.exportPath,
+      reactCompString: this.reactCompString,
+      cssString: this.cssString,
     })
 
     if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {
@@ -170,7 +175,7 @@ module.exports = class ReactToReactNative {
         this.astToRelationTreeHelper(component.afterProcessAST, filePath)
       }
     }
-
+    
     // 生成htmlString
     this.pureHtmlString = this.generatePureHtmlString({
       fsRelations: this.fsRelations,
@@ -247,44 +252,68 @@ module.exports = class ReactToReactNative {
     // 生成最终的对象style(inherit样式都是从exceptInherit中通过omit、extract生成)
     this.finalStyleObject = this.mergeByKey(this.convertedStyleToRN.exceptInherit, {})
 
-    if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {
-      const fs = require('fs')
-
-      // 写入最终dist文件
-      Object.entries(this.graph).forEach(([filePath, info]) => {
-        const {
-          fileType,
-          exportPath,
-          result,
-          usingComponent,
-        } = info
-        
-        const finalResult = this.generateReactNativeComponent({
-          importReactCode: this.astUtils.ast2code(this.collections.importReactPath),
-          fileType,
-          code: result,
-          usingComponent,
-        })
-        if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {
-          const ignoreTypes = [
-            'css',
-          ]
-          if (exportPath && !ignoreTypes.includes(fileType)) {
-            fs.writeFileSync(exportPath, finalResult, 'utf8')
-            this.log(`输出到'${exportPath}' -> success`)
-          }
-        }
+    // 输出到dist
+    Object.entries(this.graph).forEach(([filePath, info]) => {
+      const {
+        fileType,
+        exportPath,
+        result,
+        usingComponent,
+      } = info
+      
+      // 输出react native.jsx
+      const finalResult = this.generateReactNativeComponent({
+        importReactCode: this.astUtils.ast2code(this.collections.importReactPath),
+        fileType,
+        code: result,
+        usingComponent,
       })
 
-      // 输出stylesheet
-      const stylesheetPath = this.outputDir + `/${this.enums.STYLESHEET_FILE_NAME}.js`
-      const stylesheetContent = `export default ` + sortAndStringify(this.finalStyleObject)
-      fs.writeFileSync(stylesheetPath, stylesheetContent, 'utf8')
+      const ignoreTypes = [
+        'css',
+      ]
+      if (!ignoreTypes.includes(fileType)) {
+        if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {
+          const fs = require('fs')
+          if (exportPath) {
+            this.tasks.push(() => {
+              fs.writeFileSync(exportPath, finalResult, 'utf8')
+              this.log(`输出到'${exportPath}' -> success`)
+            })
+          }
+        } else {
+          this.tasks.push({
+            js: finalResult,
+          })
+        }
+      }
+    })
 
-      // 输出rnUtils
-      const rnUtilsPath = this.outputDir + `/${this.enums.RNUTILS_FILE_NAME}.js`
-      const rnUtilsContent = require('./config/distUtils').call(this)
-      fs.writeFileSync(rnUtilsPath, rnUtilsContent, 'utf8')
+    // 输出stylesheet、输出rnUtils
+    const stylesheetContent = sortAndStringify(this.finalStyleObject)
+    const rnUtilsContent = require('./config/distUtils').call(this)
+
+    if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {
+      const fs = require('fs')
+      this.tasks.push(() => {
+        const stylesheetPath = this.outputDir + `/${this.enums.STYLESHEET_FILE_NAME}.js`
+        fs.writeFileSync(stylesheetPath, `export default ` + stylesheetContent, 'utf8')
+      }, () => {
+        const rnUtilsPath = this.outputDir + `/${this.enums.RNUTILS_FILE_NAME}.js`
+        fs.writeFileSync(rnUtilsPath, rnUtilsContent, 'utf8')
+      })
+    } else {
+      this.tasks.push({
+        stylesheet: stylesheetContent
+      }, {
+        utils: rnUtilsContent
+      })
+    }
+    
+    if (this.compileType === this.enums.SINGLE_FILE) {
+      return this.tasks
+    } else {
+      Promise.all(this.tasks.map(task => task()))
     }
   }
 }

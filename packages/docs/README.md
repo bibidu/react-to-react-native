@@ -1,4 +1,4 @@
-# React2RN文档
+<!-- # React2RN文档
 
 ## 🌈 简介
 
@@ -32,7 +32,15 @@
 - 动态css语法 -> stylesheet静态css语法
 - React与React Native标签、事件的替换规则
 - React Native只支持flex布局，如何渲染React中非flex布局
-- 转义如何不破坏代码结构，支持二次开发
+- 转义如何不破坏代码结构，支持二次开发 -->
 
 ## ✌️支持写法
 
+### 依赖引入
+- `import React from 'react'`
+
+- `import * as React from 'react'`
+
+- `import React, { Component } from 'react'`
+
+**e**

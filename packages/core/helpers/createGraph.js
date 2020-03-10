@@ -11,17 +11,34 @@ const resolves = {
 
 module.exports = function createGraph({
   compileType,
+  cssType,
   entryPath,
   exportPath,
+  reactCompString,
+  cssString,
 }) {
-  const graph = _analysisEntry(entryPath, exportPath, this.astUtils.code2ast)
+  const graph = _analysisEntry(
+    cssType,
+    entryPath,
+    exportPath,
+    reactCompString,
+    cssString,
+    this.astUtils.code2ast,
+  )
 
   this.log(`createGraph ${compileType}`)
   
   return graph
 }
 
-function _analysisEntry(entryPath, exportPath, code2ast) {
+function _analysisEntry(
+  cssType,
+  entryPath,
+  exportPath,
+  reactCompString,
+  cssString,
+  code2ast,
+) {
   // TODO: add 添加process.env.COMPILE_ENV环境判断，用于隔离node环境和浏览器环境
   const fs = require('fs')
   const graph = {}
@@ -71,11 +88,27 @@ function _analysisEntry(entryPath, exportPath, code2ast) {
       })
     }
   }
-  
-  _findGraph(entryPath, {
-    fileType: 'react',
-    exportPath,
-  })
+  if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {
+    _findGraph(entryPath, {
+      fileType: 'react',
+      exportPath,
+    })
+  } else {
+    graph['react'] = {
+      code: reactCompString,
+      ast: code2ast(reactCompString),
+      fileType: 'react',
+      exportPath: null,
+      importSource: null,
+    }
+    
+    graph['css'] = {
+      code: cssString,
+      fileType: cssType,
+      exportPath: null,
+      importSource: null,
+    }
+  }
   
   return graph
 }

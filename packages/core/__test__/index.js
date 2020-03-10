@@ -40,12 +40,12 @@ new ReactToReactNative()
   .init({
     entryPath,
     exportPath,
-    // reactCompString,
-    // cssString,
+    // reactCompString: require('fs').readFileSync(entryPath, 'utf8'),
+    // cssString: require('fs').readFileSync(entryPath.replace('index.js', 'index.scss'), 'utf8'),
   }).start().then((finalResult) => {
-    // console.log('=========finalResult=========')
-    // console.log()
-    // console.log(finalResult)
+    console.log('=========finalResult=========')
+    console.log()
+    console.log(finalResult)
     // console.log(ctx.afterTsCompiled)
     // console.log(ctx.afterCssCompiled)
   })

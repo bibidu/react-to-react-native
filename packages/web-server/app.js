@@ -1,6 +1,7 @@
 const express = require('express')
 const r2rn = require('../core/app')
 const app = express()
+const bodyParser = require('body-parser')
 
 /* static */
 const PORT = 3000
@@ -13,8 +14,8 @@ function _compile(request) {
   })
 }
 
-app.get('/compile', (req, res) => {
-  const { reactCompString, cssString } = req.query
+app.post('/compile', bodyParser.urlencoded({ extended: false }), (req, res) => {
+  const { reactCompString, cssString } = req.body
   if (reactCompString === undefined || cssString === undefined) {
     res.json({
       code: -1,

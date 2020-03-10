@@ -21,6 +21,7 @@ const traverse = require('@babel/traverse').default
  */
 module.exports = function astToRelationTree(ast, currentPath) {
   const ctx = this
+
   function getQuasisStaticValueInTemplateLiteral(templateLiteralPath){
     const quasis = templateLiteralPath.get('quasis')
     let value = ''

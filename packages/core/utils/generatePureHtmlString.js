@@ -22,7 +22,7 @@ module.exports = function generatePureHtmlString(info, key = 'ROOT', tabSize = 0
 
   if (key === 'ROOT') {
     // 组件暴露的根入口, 暂时只考虑单入口
-    const rootComponentPath = this.entryPath
+    const rootComponentPath = this.compileType === this.enums.MULTIPLE_FILE ? this.entryPath : 'react'
     const filePathHash = hashHelper(rootComponentPath)
     const rootClassName = collections.exports[filePathHash]
     const expName = collectExports[filePathHash]
