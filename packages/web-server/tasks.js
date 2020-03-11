@@ -10,9 +10,3 @@ publicIp.v4().then(ip => {
   console.log(`ip ${ip}`)
   fs.writeFileSync(ENTRY, html.replace(/localhost/g, ip), 'utf8')
 })
-
-const dir = './static/index.html'
-fs.writeFileSync(dir, fs.readFileSync(dir, 'utf8') + `<script>
-  document.querySelector('.last-update').innerText = ${timestamp}
-</script>` , 'utf8')
-
