@@ -1,24 +1,18 @@
 module.exports = function({path, ctx, t, constant}) {
   const srcAttrValue = ctx.jsxUtils.getJSXAttributeValue(path, 'src')
-  if (srcAttrValue.isStringLiteral()) {
-    srcAttrValue.replaceWith(
-      t.JSXExpressionContainer(
-        ctx.astUtils.objToObjAst({ uri: srcAttrValue.node.value })
+  srcAttrValue.replaceWith(
+    t.JSXExpressionContainer(
+      t.CallExpression(
+        t.MemberExpression(
+          t.identifier(ctx.enums.RNUTILS_USE_NAME),
+          t.identifier(ctx.enums.IMG_POLYFILL_FUNC),
+        ),
+        [
+          srcAttrValue.isJSXExpressionContainer() ?
+            srcAttrValue.get('expression').node : srcAttrValue.node
+        ]
       )
     )
-  } else if (srcAttrValue.isJSXExpressionContainer()) {
-    srcAttrValue.replaceWith(
-      t.JSXExpressionContainer(
-        t.ObjectExpression(
-          [
-            t.ObjectProperty(
-              t.identifier('uri'),
-              srcAttrValue.get('expression').node
-            )
-          ]
-        )
-      )
-    )
-  }
+  )
   ctx.jsxUtils.replaceJSXAttributeKey(path, 'src', 'source')
 }

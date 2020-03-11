@@ -15,6 +15,8 @@ const extract = (obj, extractKeys) => {
 const extractInheritStyleName = (obj) => {
   return extract(obj, canInheritStyleName)
 }
+const imgPolyfill = (src) => typeof src === 'number' ? src : { uri: src }
+
   return `
 // 文本节点可继承的css属性名
 export const canInheritStyleName = ${JSON.stringify(canInheritStyleName, null, 2)}
@@ -24,5 +26,8 @@ export const extract = ${extract}
 
 // 提取目标对象中的 可继承style名
 export const extractInheritStyleName = ${extractInheritStyleName}
+
+// 兼容rn的图片source引用
+export const imgPolyfill = ${imgPolyfill}
 `
 }
