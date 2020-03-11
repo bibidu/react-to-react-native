@@ -229,52 +229,6 @@ class App extends React.Component{
 }
 ```
 
-### ⚠️ 样式的优先级
-- 动态样式和静态样式同时存在时，优先级以动态样式为主。
-
-  ```css
-  .a{
-    color: red;
-  }
-  .b{
-    color: green;
-  }
-  .active{
-    color: blue;
-  }
-  ```
-
-  ```jsx
-  import React from 'react'
-  import './index.scss'
-
-  const getActiveStyle = () => `active`
-  
-  const App = function() {
-    return <div className="container">
-      <div className={`a ${getActiveStyle()} b`}>123</div>
-    </div>
-  }
-
-  export default App
-  ```
-
-  ```jsx
-  <!-- 最终的颜色是green，因为react2rn会将顺序调整为 -->
-  <View>
-    <Text style={[
-      Object.assign(
-        {},
-        stylesheet['a'],
-        stylesheet['b'],
-        stylesheet[getActiveStyle()]
-      )
-    ]}>
-      123
-    </Text>
-  </View>
-  ```
-
 ### 图片资源
 
 - 字符串类型
@@ -332,3 +286,54 @@ class App extends React.Component{
     .bar { /* ... */ }
   }
   ```
+
+## ⚠️ 注意项
+
+### 样式的优先级
+- 动态样式和静态样式同时存在时，优先级以动态样式为主。
+
+  ```css
+  .a{
+    color: red;
+  }
+  .b{
+    color: green;
+  }
+  .active{
+    color: blue;
+  }
+  ```
+
+  ```jsx
+  import React from 'react'
+  import './index.scss'
+
+  const getActiveStyle = () => `active`
+  
+  const App = function() {
+    return <div className="container">
+      <div className={`a ${getActiveStyle()} b`}>123</div>
+    </div>
+  }
+
+  export default App
+  ```
+
+  ```jsx
+  <!-- 最终的颜色是green，因为react2rn会将顺序调整为 -->
+  <View>
+    <Text style={[
+      Object.assign(
+        {},
+        stylesheet['a'],
+        stylesheet['b'],
+        stylesheet[getActiveStyle()]
+      )
+    ]}>
+      123
+    </Text>
+  </View>
+  ```
+
+### 样式的绝对定位
+- 绝对定位的元素的父级要求也必须是绝对定位，且具有合适的top、left等属性。
