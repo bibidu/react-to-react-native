@@ -11,8 +11,6 @@ const {
 const markdown = require('markdown-it')
 const md = markdown({})
 
-let lastCommitTime
-
 app.all('*',function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*'); //当允许携带cookies此处的白名单不能写’*’
   res.header('Access-Control-Allow-Headers','content-type,Content-Length, Authorization,Origin,Accept,X-Requested-With'); //允许的请求头
@@ -39,28 +37,14 @@ app.get('/docs', (req, res) => {
   const mdCSS = fs.readFileSync('./static/css/md.css', 'utf8')
   const docHtml = md.render(docMd)
   res.setHeader('Content-Type', 'text/html');
-  res.send(docHtml + `<style>${mdCSS}</style>` + `<script>
-    const div = document.createElement('div')
-    div.style.position = 'fixed'
-    div.style.top = '50px'
-    div.style.right = '70px'
-    div.style.color =  '#D93026'
-    div.style.fontWeight = 'bold'
-    div.innerText = 'Last update: ${lastCommitTime}'
-    document.body.appendChild(div)
-  </script>`)
+  res.send(docHtml + `<style>${mdCSS}</style>`)
   res.end()
 })
 
 app.post('/react2rnWebHook', (req, res) => {
   console.log('react2rnWebHook dispatch!')
   const { timestamp } = req.body.head_commit
-  lastCommitTime = timestamp
-  autoSh()
-  const dir = './static/index.html'
-  fs.writeFileSync(dir, fs.readFileSync(dir, 'utf8') + `<script>
-    document.querySelector('.last-update').innerText = ${lastCommitTime}
-  </script>` , 'utf8')
+  autoSh(timestamp)
 })
 
 app.post('/compile', (req, res) => {
