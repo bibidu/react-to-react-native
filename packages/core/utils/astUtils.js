@@ -49,6 +49,7 @@ const astUtils = {
       sourceType: "module",
       plugins: [
         "jsx",
+        "classProperties",
       ]
     })
     return ast
