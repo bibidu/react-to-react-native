@@ -62,6 +62,8 @@ module.exports = class ReactToReactNative {
     this.initialInlineStyle = {} /* 组件最初的内联样式 */
     this.addInitialInlineStyle = (uniqueId, inlineStyle) => this.initialInlineStyle[uniqueId] = inlineStyle
   
+    this.warnings = new Set() /* 保存编译过程的警告 */
+
     this.initAsts()
     this.initCompilers()
     this.initUtils()
@@ -292,9 +294,10 @@ module.exports = class ReactToReactNative {
       }
     })
 
-    // 输出stylesheet、输出rnUtils
+    // 输出stylesheet、输出rnUtils、warnings
     const stylesheetContent = sortAndStringify(this.finalStyleObject)
     const rnUtilsContent = require('./config/distUtils').call(this)
+    const warnings = Array.from(this.warnings)
 
     if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {
       const fs = require('fs')
@@ -310,6 +313,8 @@ module.exports = class ReactToReactNative {
         stylesheet: stylesheetContent
       }, {
         utils: rnUtilsContent
+      }, {
+        warnings: warnings
       })
     }
     

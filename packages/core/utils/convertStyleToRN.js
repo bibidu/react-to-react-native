@@ -1,9 +1,28 @@
 const transform = require('css-to-react-native').default
-
+let ctx = null
 const shouldDeleteAttrNames = [
   'textShadow',
   'boxSizing',
   'display',
+  'fixed'
+]
+
+const shouldWarnAttrValues = [
+  {
+    pairs: 'position-fixed',
+    warnings: [
+      'rn 不支持position: fixed属性，请将超出屏幕的部分使用ScrollView包裹',
+      'rn中绝对定位的所有父级必须均为绝对定位，可通过添加父级style为position: absolute;top:0;left:0;width:100%;height:100%;'
+    ],
+    actions: (obj) => obj['position'] = 'absolute'
+  },
+  {
+    pairs: 'position-absolute',
+    warnings: [
+      'rn中绝对定位的所有父级必须均为绝对定位，可通过添加父级style为position: absolute;top:0;left:0;width:100%;height:100%;'
+    ],
+    actions: (obj) => {}
+  }
 ]
 
 let replaceKey = null
@@ -24,16 +43,22 @@ function restoreKey(obj) {
 }
 
 function deleteUnSupportAttr(obj) {
-  const attrNames = Object.keys(obj)
-  attrNames.forEach(attrName => {
+  Object.entries(obj).forEach(([attrName, attrValue]) => {
     if (shouldDeleteAttrNames.includes(attrName)) {
       delete obj[attrName]
     }
+    shouldWarnAttrValues.forEach((item) => {
+      const { pairs, warnings, actions} = item
+      if (pairs === `${attrName}-${attrValue}`) {
+        warnings.forEach(item => ctx.warnings.add(item))
+        actions(obj)
+      }
+    })
   })
 }
 
 module.exports = function convertStyleToRN(styles) {
-  const ctx = this
+  ctx = this
 
   function isStableClass(uniqueId) {
     return !uniqueId.startsWith(ctx.enums.UNIQUE_ID)
