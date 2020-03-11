@@ -17,6 +17,9 @@ const config = {
   h6: {
     fontSize: '12px'
   },
+  button: {
+    textAlign: 'center'
+  }
 }
 module.exports = function style(tagName) {
   return config[tagName] || {}
