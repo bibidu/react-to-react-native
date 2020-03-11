@@ -56,11 +56,11 @@ app.post('/react2rnWebHook', (req, res) => {
   console.log('react2rnWebHook dispatch!')
   const { timestamp } = req.body.head_commit
   lastCommitTime = timestamp
+  autoSh()
   const dir = './static/index.html'
   fs.writeFileSync(dir, fs.readFileSync(dir, 'utf8') + `<script>
     document.querySelector('.last-update').innerText = ${lastCommitTime}
   </script>` , 'utf8')
-  autoSh()
 })
 
 app.post('/compile', (req, res) => {
