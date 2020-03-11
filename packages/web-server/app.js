@@ -40,7 +40,14 @@ app.get('/docs', (req, res) => {
   const docHtml = md.render(docMd)
   res.setHeader('Content-Type', 'text/html');
   res.send(docHtml + `<style>${mdCSS}</style>` + `<script>
-    document.querySelector('.last-update').innerText = lastCommitTime
+    const div = document.createElement('div')
+    div.style.position = 'fixed'
+    div.style.top = '50px'
+    div.style.right = '70px'
+    div.style.color =  '#D93026'
+    div.style.fontWeight = 'bold'
+    div.innerText = 'Last update: ${lastCommitTime}'
+    document.body.appendChild(div)
   </script>`)
   res.end()
 })
@@ -49,6 +56,10 @@ app.post('/react2rnWebHook', (req, res) => {
   console.log('react2rnWebHook dispatch!')
   const { timestamp } = req.body.head_commit
   lastCommitTime = timestamp
+  const dir = './static/index.html'
+  fs.writeFileSync(dir, fs.readFileSync(dir, 'utf8') + `<script>
+    document.querySelector('.last-update').innerText = lastCommitTime
+  </script>` , 'utf8')
   autoSh()
 })
 
