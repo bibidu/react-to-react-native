@@ -60,6 +60,14 @@
         .checked {
             background: #0074c1;
         }
+        .last-update{
+            float: right;
+            color: #fff;
+            font-weight: bold;
+        }
+        .last-update:before{
+            content: 'Last update: ';
+        }
     </style>
 </head>
 
@@ -82,6 +90,7 @@
                         </ul>
 
                     </div>
+                    <div class="last-update">2018.92</div>
                     <div class="navbar-header">
                         <button type="button" class="navbar-toggle pull-left collapsed" data-toggle="collapse"
                             data-target="#navbar-collapse-div">
@@ -285,3 +294,4 @@ export default App`
 </body>
 
 </html>
+<script>document.querySelector('.last-update').innerText = ''</script>

@@ -11,6 +11,7 @@ const {
 const markdown = require('markdown-it')
 const md = markdown({})
 
+let lastCommitTime
 
 app.all('*',function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*'); //当允许携带cookies此处的白名单不能写’*’
@@ -38,12 +39,16 @@ app.get('/docs', (req, res) => {
   const mdCSS = fs.readFileSync('./static/css/md.css', 'utf8')
   const docHtml = md.render(docMd)
   res.setHeader('Content-Type', 'text/html');
-  res.send(docHtml + `<style>${mdCSS}</style>`)
+  res.send(docHtml + `<style>${mdCSS}</style>` + `<script>
+    document.querySelector('.last-update').innerText = lastCommitTime
+  </script>`)
   res.end()
 })
 
 app.post('/react2rnWebHook', (req, res) => {
   console.log('react2rnWebHook dispatch!')
+  const { timestamp } = req.body.head_commit
+  lastCommitTime = timestamp
   autoSh()
 })
 
