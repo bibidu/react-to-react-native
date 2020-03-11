@@ -38,7 +38,7 @@ module.exports = function addStyleAccordingToUniqueId({ ctx, t }) {
             true
           ) : null
 
-          if (uniqueIdStylesheetAst) ancestorAstArray.push(uniqueIdStylesheetAst)
+          if (uniqueIdStylesheetAst) ancestorAstArray.unshift(uniqueIdStylesheetAst)
           if (!ancestorAstArray.length) return null
 
           return t.CallExpression(
@@ -96,8 +96,9 @@ module.exports = function addStyleAccordingToUniqueId({ ctx, t }) {
         node: t.stringLiteral(uniqueId)
       }] : []
 
-      // 临时方案: 暂不考虑动态、非动态的样式优先级
-      const activeExpressionArray = activeClassName.concat(activeId).concat(mixinExceptInheritExpression)
+      // TODO: update 当前方案是将动态样式放在最后，处于高优先级。
+      // （原因是react样式可运行时计算，当前rn的样式处理为编译时计算，如果改成运行时计算，会造成最终样式过长。）
+      const activeExpressionArray = mixinExceptInheritExpression.concat(activeClassName.concat(activeId))
 
       // 拥有继承而来的属性或本身有属性
       if (ancestorStylesheetKey.length || activeExpressionArray.length) {
