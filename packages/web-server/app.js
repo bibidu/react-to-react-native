@@ -4,6 +4,7 @@ const express = require('express')
 const app = express()
 const r2rn = require('../core/app')
 const bodyParser = require('body-parser')
+const autoSh = require('./autoSh')
 const {
   PORT
 } = require('./config')
@@ -39,6 +40,11 @@ app.get('/docs', (req, res) => {
   res.setHeader('Content-Type', 'text/html');
   res.send(docHtml + `<style>${mdCSS}</style>`)
   res.end()
+})
+
+app.post('/react2rnWebHook', (req, res) => {
+  console.log('react2rnWebHook dispatch!')
+  autoSh()
 })
 
 app.post('/compile', (req, res) => {
