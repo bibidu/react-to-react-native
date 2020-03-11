@@ -4,9 +4,12 @@ const express = require('express')
 const app = express()
 const r2rn = require('../core/app')
 const bodyParser = require('body-parser')
+const {
+  PORT
+} = require('./config')
+const markdown = require('markdown-it')
+const md = markdown({})
 
-/* static */
-const PORT = 3000
 
 app.all('*',function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*'); //当允许携带cookies此处的白名单不能写’*’
@@ -30,9 +33,11 @@ function _compile(request) {
 app.get('/docs', (req, res) => {
   // const html = markdown.makeHtml(docMarkdown)
   // TODO: 改成静态形式，而非每次读取
-  const docHtml = fs.readFileSync('../docs/_book/index.html', 'utf8')
+  const docMd = fs.readFileSync('./static/README.md', 'utf8')
+  const mdCSS = fs.readFileSync('./static/css/md.css', 'utf8')
+  const docHtml = md.render(docMd)
   res.setHeader('Content-Type', 'text/html');
-  res.send(docHtml)
+  res.send(docHtml + `<style>${mdCSS}</style>`)
   res.end()
 })
 
