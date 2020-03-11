@@ -8,7 +8,7 @@ const html = fs.readFileSync(ENTRY, 'utf8')
 
 publicIp.v4().then(ip => {
   console.log(`ip ${ip}`)
-  fs.writeFileSync(ENTRY, html.replace('localhost', ip), 'utf8')
+  fs.writeFileSync(ENTRY, html.replace(/localhost/g, ip), 'utf8')
 })
 
 
