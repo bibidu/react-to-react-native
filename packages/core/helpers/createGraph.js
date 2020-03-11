@@ -7,6 +7,9 @@ const resolves = {
   '.js': 'js',
   '.scss': 'css',
   '.sass': 'css',
+  '.png': 'img',
+  '.jpeg': 'img',
+  '.jpg': 'img',
 }
 
 module.exports = function createGraph({

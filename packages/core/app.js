@@ -269,23 +269,26 @@ module.exports = class ReactToReactNative {
         usingComponent,
       })
 
-      const ignoreTypes = [
-        'css',
-      ]
-      if (!ignoreTypes.includes(fileType)) {
-        if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {
-          const fs = require('fs')
-          if (exportPath) {
-            this.tasks.push(() => {
+      if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {
+        const fs = require('fs-extra')
+        if (exportPath) {
+          this.tasks.push(() => {
+            if (fileType === 'react') {
               fs.writeFileSync(exportPath, finalResult, 'utf8')
-              this.log(`输出到'${exportPath}' -> success`)
-            })
-          }
-        } else {
-          this.tasks.push({
-            js: finalResult,
+            } else if (fileType === 'css') {
+              /* 后续直接处理stylesheet */
+            }
+            else {
+              // 非jsx、非css资源
+              fs.copySync(filePath, exportPath)
+            }
+            this.log(`输出到'${exportPath}' -> success`)
           })
         }
+      } else {
+        this.tasks.push({
+          js: finalResult,
+        })
       }
     })
 
