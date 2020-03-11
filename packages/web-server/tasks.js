@@ -11,16 +11,8 @@ publicIp.v4().then(ip => {
   fs.writeFileSync(ENTRY, html.replace(/localhost/g, ip), 'utf8')
 })
 
+const dir = './static/index.html'
+fs.writeFileSync(dir, fs.readFileSync(dir, 'utf8') + `<script>
+  document.querySelector('.last-update').innerText = ${timestamp}
+</script>` , 'utf8')
 
-function getIPAdress() {
-  var interfaces = os.networkInterfaces();
-  for (var devName in interfaces) {
-      var iface = interfaces[devName];
-      for (var i = 0; i < iface.length; i++) {
-          var alias = iface[i];
-          if (alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal) {
-              return alias.address;
-          }
-      }
-  }
-}

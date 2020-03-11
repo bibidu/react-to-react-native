@@ -11,9 +11,4 @@ module.exports = function(timestamp) {
   `
   console.log(execSync(commands).toString())
 
-  const dir = './static/index.html'
-  fs.writeFileSync(dir, fs.readFileSync(dir, 'utf8') + `<script>
-    document.querySelector('.last-update').innerText = ${timestamp}
-  </script>` , 'utf8')
-
 }
