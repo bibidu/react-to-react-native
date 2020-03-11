@@ -16,6 +16,11 @@ const extractInheritStyleName = (obj) => {
   return extract(obj, canInheritStyleName)
 }
 const imgPolyfill = (src) => typeof src === 'number' ? src : { uri: src }
+const eventTarget = (e) => ({
+  target: {
+    value: e
+  }
+})
 
   return `
 // 文本节点可继承的css属性名
@@ -29,5 +34,8 @@ export const extractInheritStyleName = ${extractInheritStyleName}
 
 // 兼容rn的图片source引用
 export const imgPolyfill = ${imgPolyfill}
+
+// 兼容rn的事件event.target
+export const eventTarget = ${eventTarget}
 `
 }

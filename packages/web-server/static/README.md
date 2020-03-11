@@ -229,6 +229,22 @@ class App extends React.Component{
 }
 ```
 
+### 事件
+
+- 成员变量形式
+
+  ```jsx
+  <textarea onChange={this.inputEvent} />
+  ```
+
+- 闭包形式
+
+  ```jsx
+    <textarea onChange={e => this.inputEvent(e)} />
+    <textarea onChange={e => this.inputEvent(e)([{ z: e }, e])} />
+    <textarea onChange={e => this.changeInput(e, { t: e })} />
+  ```
+
 ### 图片资源
 
 - 字符串类型
@@ -265,6 +281,7 @@ class App extends React.Component{
 
 ### 支持的事件
 - onClick
+- onChange
 
 ### 支持的scss写法
 - 变量声明

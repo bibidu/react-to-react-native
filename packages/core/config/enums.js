@@ -12,6 +12,7 @@ module.exports = {
   OMIT_CAN_INHERIT_STYLE_NAME_FUNC: 'omitInheritStyleName', // 最终生成的rnUtils中的omitInheritStyleName函数
   EXTRACT_CAN_INHERIT_STYLE_NAME_FUNC: 'extractInheritStyleName', // 最终生成的rnUtils中的extractInheritStyleName函数
   IMG_POLYFILL_FUNC: 'imgPolyfill', // 最终生成的rnUtils中的imgPolyfill函数
+  EVENT_TARGET_FUNC: 'eventTarget', // 最终生成的rnUtils中的eventTarget函数
   CAN_INHERIT_STYLE_NAMES: 'canInheritStyleName', // 最终生成的rnUtils中‘可继承的文本css属性名’
   RNUTILS_FILE_NAME: 'rnUtils',
 }
