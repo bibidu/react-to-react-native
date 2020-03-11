@@ -58,6 +58,14 @@
 
 - `import './foo.scss`
 
+### 其他资源引入
+
+  ```jsx
+  import wxImg from './imgs/wx.png' // 图片资源
+  
+  import * as utils from './utils' // 工具库引入
+  ```
+
 ### 入口组件暴露
 ```jsx
 class App extends React.Component {
@@ -82,18 +90,47 @@ const App = function() {
 export default App
 ```
 
-### 引入其他组件
+### 自定义组件引入
 
-```jsx
-import Foo from './foo'
+- 外部JSX组件
 
-const App = function() {
-  return <>
-    <h1>title</h1>
-    <Foo color={this.state.color} />
-  </>
-}
-```
+  ```jsx
+  import Foo from './foo'
+
+  const App = function() {
+    return <>
+      <Foo color={this.state.color} />
+    </>
+  }
+  ```
+
+- Class组件
+
+  ```jsx
+  class Foo extends React.Component {
+    render() {
+      return <>...</>
+    }
+  }
+
+  const App = function() {
+    return <>
+      <Foo color={this.state.color} />
+    </>
+  }
+  ```
+
+- 纯函数组件
+
+  ```jsx
+  const Foo = () => <>...</>
+
+  const App = function() {
+    return <>
+      <Foo color={this.state.color} />
+    </>
+  }
+  ```
 
 ### 导出组件
 
@@ -270,6 +307,15 @@ class App extends React.Component{
     </>
   }
   ```
+
+- 引入图片路径
+
+  ```jsx
+  import wxImg from './imgs/wx.png' // ES引入
+
+  const wxImg = require('./imgs/wx.png') // commonJs引入
+  ```
+
 ### 支持的html标签
 - div
 - span
