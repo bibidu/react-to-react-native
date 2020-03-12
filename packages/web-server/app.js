@@ -33,7 +33,7 @@ function _compile(request) {
 app.get('/docs', (req, res) => {
   // const html = markdown.makeHtml(docMarkdown)
   // TODO: 改成静态形式，而非每次读取
-  const docMd = fs.readFileSync('./static/README.md', 'utf8')
+  const docMd = fs.readFileSync('../../README.md', 'utf8')
   const mdCSS = fs.readFileSync('./static/css/md.css', 'utf8')
   const docHtml = md.render(docMd)
   res.setHeader('Content-Type', 'text/html');
