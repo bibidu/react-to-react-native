@@ -27,7 +27,7 @@
 改造成本 | 高 | 低 |
 已转换的业务组件个数 | 无法转换 | 8个(持续增加) |
 转换组件类型 | —— | 6 |
-支持的CSS语法 | 只支持class选择器 | 所有选择器 |
+支持的CSS语法 | 只支持class选择器 | 几乎所有选择器（除伪元素） |
 
 
 ## ⭐ 核心问题
@@ -491,3 +491,58 @@ class App extends React.Component{
     </div>
   }
 ```
+
+### ⚠️ 伪元素
+
+- 不支持css伪元素的书写方式，推荐改用js方式实现
+
+  ```css
+  .item{
+    margin-right: 10px;
+    &:after{
+      margin-right: 0;
+    }
+  }
+  ```
+
+  ```jsx
+  render() {
+    return <div>
+      {
+        this.state.list.map((item, index) => (
+          <div className="item" key={index}>
+            {item}
+          </div>
+        ))
+      }
+    </div>
+  }
+  ```
+
+  ```css
+  <!-- 改写为 -->
+  .item{
+    margin-right: 10px;
+    .item-after{
+      margin-right: 0;
+    }
+  }
+  ```
+
+  ```jsx
+  <!-- 改写为 -->
+  render() {
+    return <div>
+      {
+        this.state.list.map((item, index) => {
+          const isLastChild = index === this.state.list.length - 1
+          return (
+            <div className=`item ${isLastChild ? 'item-after' : ''}` key={index}>
+              {item}
+            </div>
+          )
+        })
+      }
+    </div>
+  }
+  ```
