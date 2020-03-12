@@ -1,0 +1,44 @@
+.drawer-container{
+  position: absolute;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.3);
+  .drawer{
+    width: 300px;
+    background: #fff;
+    padding: 20px;
+    box-sizing: border-box;
+    height: 100%;
+  }
+}
+
+.test-title{
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  // border-bottom: 1px solid;
+}
+.test-action{
+  font-size: 20px;
+ font-weight: bold;
+ margin-bottom: 10px;
+}
+.test-content{
+  font-size: 18px;
+ font-weight: bold;
+}
+.test-btn{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 35px;
+  border: 1px solid #ccc;
+  background: transparent;
+  border-radius: 3px;
+  margin: 20px;
+}

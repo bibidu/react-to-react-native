@@ -1,0 +1,80 @@
+.calendar-container{
+  margin: 20px auto;
+  width: 264px;
+  // height: 300px;
+  border-radius: 4px;
+  box-shadow: 0 1px 14px rgba(0,0,0,0.07);
+  padding: 0 30px 30px;
+  box-sizing: border-box;
+  .calendar-top{
+    height: 51px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    .left-btn {
+      padding: 2px 10px;
+      border: 1px solid #eee;
+      border-radius: 3px;
+      font-size: 12px;
+    }
+    .right-btn {
+      padding: 2px 10px;
+      border: 1px solid #eee;
+      border-radius: 3px;
+      font-size: 12px;
+    }
+    .title{
+      font-size: 14px;
+    }
+  }
+  .week-title{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    .week-title-item{
+      flex: 1;
+      color: rgb(212, 212, 212);
+      font-size: 14px;
+      text-align: center;
+    }
+  }
+  .day-container{
+    margin-top: 10px;
+    width: 100%;
+    overflow: hidden;
+    .day-row{
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      align-items: center;
+      .day-item{
+        /* stable: day-item */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: row;
+        width: 14.285%;
+        height: 34px;
+        font-size: 16px;
+        color: rgba(0,0,0,0.8);
+        text-align: center;
+      }
+      .weekend-day{
+        color: #ff2929;
+      }
+      .today-day-item{
+        /* stable: today-day-item */
+        background: #f2f8fe;
+        color: #409eff;
+      }
+      .tap-day-item{
+        /* stable: tap-day-item */
+        background: #f2f8fe;
+        color: #409eff;
+      }
+    }
+  }
+}

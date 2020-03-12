@@ -1,0 +1,122 @@
+ul {
+    padding: 0;
+}
+.tz-area-wrapper{
+    height:100%;
+    position: fixed;
+    width:100%;
+    top:0;
+    left: 0;
+    z-index: 10000;
+
+    .tz-area-content{
+      color: #333;
+      background-color: #fff;
+      height: 312px;
+      width: 100%;
+      bottom: 0;
+      position: absolute;
+      z-index: 10001;
+      border-radius: 10px 10px 0 0;
+
+    .tz-area-title{
+        display: flex;
+        position: relative;
+        padding: 12px;
+        justify-content: center;
+        flex-direction: row;
+        border-bottom: 1px solid #EAEAEA;
+        color: #333;
+        border-radius: 10px 10px 0 0;
+        .tz-area-button-confirm{
+        color: #EF3A05;
+        position: absolute;
+        right: 0;
+        top: 0;
+        padding: 12px;
+        }
+        .tz-area-button-cancel{
+        top: 0;
+        position: absolute;
+        left: 0;
+        padding: 12px;
+        }
+    }
+
+    .tz-area-tab-list {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        border-bottom: 1px solid #EAEAEA;
+        padding: 0 12px;
+        .tz-area-tab-li {
+            align-items: center;
+            position: relative;
+            margin-right: 12px;
+            padding: 14px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            box-sizing: border-box;
+            font-size: 14px;
+            &:last-child{
+            margin-right: 0;
+            }
+            &.active {
+                color: #EF3A05;
+                background: #fff;
+            }
+        }
+    }
+
+.tz-area-options {
+    color: #333;
+    overflow-y: scroll;
+    height: 80%;
+    .tz-area-options-list {
+        display: flex;
+        flex-direction: column;
+        color: #666;
+        box-sizing: border-box;
+        padding-bottom: 10%;
+        .tz-area-options-item {
+            /* tz-area-options-item */
+            display: flex;
+            text-align: center;
+            box-sizing: border-box;
+            padding: 0 12px;
+            .options-wrapper{
+              padding: 12px 0;
+              border-bottom: 1px solid #EAEAEA;
+              width: 100%;
+            }
+            .tz-area-options-text{
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display:-webkit-box;
+                -webkit-box-orient:vertical;
+                -webkit-line-clamp:2;
+                text-align: left;
+            }
+            &.active {
+                background:rgba(245,245,245,1);
+                position: relative;
+
+            }
+        }
+    }
+}
+    }
+
+  .tz-area-mask{
+    height:100%;
+    position: absolute;
+    width:100%;
+    top:0;
+    left: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 10000;
+  }
+  
+}
+
