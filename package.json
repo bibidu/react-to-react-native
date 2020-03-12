@@ -1,0 +1,24 @@
+{
+  "name": "react-to-react-native",
+  "version": "1.0.0",
+  "description": "react-to-react-native",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install-all": "node scripts/install-all.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bibidu/react-to-react-native.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bibidu/react-to-react-native/issues"
+  },
+  "homepage": "https://github.com/bibidu/react-to-react-native#readme"
+}
