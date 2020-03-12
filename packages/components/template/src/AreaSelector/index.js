@@ -183,23 +183,15 @@ class AreaSelector extends Component {
         <ul className="tz-area-tab-list">
           {
             this.state.result.map((item, index) => {
-              if (item.level === this.state.currentLevel) {
-                return (
-                  <li className="tz-area-tab-li  active" key={index}
-                    onClick={() => {this.onClickTab(item, index)}}>
-                    <span>
-                      {item.localName || DefaultUnit[this.state.currentLevel]}
-                    </span>
-                  </li>
-                )
-              } else {
-                return (
-                  <li className="tz-area-tab-li" key={index}
-                    onClick={() => {this.onClickTab(item, index)}}>
-                    <span>{item.localName}</span>
-                  </li>
-                )
-              }
+              const isActive = item.level === this.state.currentLevel
+              return (
+                <li className={`tz-area-tab-li  ${isActive ? 'active' : ''}`} key={index}
+                  onClick={() => {this.onClickTab(item, index)}}>
+                  <span>
+                    {isActive ? (item.localName || DefaultUnit[this.state.currentLevel]) : item.localName}
+                  </span>
+                </li>
+              )
             })
           }
         </ul>
@@ -222,7 +214,7 @@ class AreaSelector extends Component {
               }
 
               return (
-                <li className={React.classnames(['tz-area-options-item', className])} key={index} onClick={() => {
+                <li className={`tz-area-options-item ${className}`} key={index} onClick={() => {
                   this.onClickOption({ item, isActive });
                 }}>
                   <div className="options-wrapper">

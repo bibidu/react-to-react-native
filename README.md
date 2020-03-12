@@ -266,6 +266,17 @@ class App extends React.Component{
 }
 ```
 
+```jsx
+<!-- C -->
+class App extends React.Component{
+
+  render() {
+    const { active } = this.props
+    return <h1 className={`btn ${active ? 'active_btn' : ''}`}>react2RN</h1>
+  }
+}
+```
+
 ### 事件
 
 - 成员变量形式
@@ -352,7 +363,7 @@ class App extends React.Component{
 
 ## ⚠️ 注意项
 
-### 样式的优先级
+### ⚠️ 样式的优先级
 - 动态样式和静态样式同时存在时，优先级以动态样式为主。
 
   ```css
@@ -398,5 +409,85 @@ class App extends React.Component{
   </View>
   ```
 
-### 样式的绝对定位
+### ⚠️ 样式的绝对定位
 - 绝对定位的元素的父级要求也必须是绝对定位，且具有合适的top、left等属性。
+
+### ⚠️ 动态样式（如类名）的书写方式
+
+```jsx
+  <!-- 不要通过显式的判断区分类似的active动态类名 -->
+  render() {
+    return <div>
+      {
+        this.state.list.map((item, index) => {
+          const localNameWithDef = item => (item.localName || this.state.defaultValue)
+
+          if (item.level === this.state.currentLevel) {
+            return (
+              <li className="tz-area-tab-li active" key={index}>
+                <span>{localNameWithDef(item)}</span>
+              </li>
+            )
+          } else {
+            return (
+              <li className="tz-area-tab-li" key={index}>
+                <span>{item.localName}</span>
+              </li>
+            )
+          }
+        })
+      }
+    </div>
+  }
+```
+
+```jsx
+  <!-- 改写1: 通过封装类名方法 -->
+  render() {
+    return <div>
+      {
+        this.state.list.map((item, index) => {
+          const localNameWithDef = item => (item.localName || this.state.defaultValue)
+          const isActiveItem = (item) => item.level === this.state.currentLevel
+          const getActiveClass = (item) => isActiveItem(item) ? 'active' : ''
+
+          return (
+            <li className={`tz-area-tab-li ${getActiveClass(item)}`} key={index}>
+              <span>
+                {
+                  isActiveItem(item) ? localNameWithDef(item) : item.localName
+                }
+              </span>
+            </li>
+          )
+        })
+      }
+    </div>
+  }
+```
+
+```jsx
+  <!-- 改写2: 通过三目表达式 -->
+  render() {
+    return <div>
+      {
+        this.state.list.map((item, index) => {
+          const localNameWithDef = item => (item.localName || this.state.defaultValue)
+
+          return (
+            <li className={`tz-area-tab-li
+              ${item.level === this.state.currentLevel ? 'active' : ''}
+            `} key={index}>
+              <span>
+                {
+                  item.level === this.state.currentLevel ?
+                    localNameWithDef(item) : item.localName
+                }
+              </span>
+            </li>
+          )
+        })
+      }
+    </div>
+  }
+```
