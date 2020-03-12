@@ -288,9 +288,11 @@ module.exports = class ReactToReactNative {
           })
         }
       } else {
-        this.tasks.push({
-          js: finalResult,
-        })
+        if (fileType === 'react') {
+          this.tasks.push({
+            js: finalResult,
+          })
+        }
       }
     })
 
