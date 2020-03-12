@@ -62,6 +62,9 @@ module.exports = class ReactToReactNative {
     this.initialInlineStyle = {} /* 组件最初的内联样式 */
     this.addInitialInlineStyle = (uniqueId, inlineStyle) => this.initialInlineStyle[uniqueId] = inlineStyle
   
+    this.distTagName = {} /* uniqueId对应的输出标签名 */
+    this.addDistTagName = (uniqueId, distTagName) => this.distTagName[uniqueId] = distTagName
+    
     this.warnings = new Set() /* 保存编译过程的警告 */
 
     this.initAsts()

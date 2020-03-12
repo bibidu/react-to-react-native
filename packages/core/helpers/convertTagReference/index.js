@@ -22,6 +22,12 @@ function saveStyleFromTagName(path, ctx, styles) {
   }
 }
 
+function saveDistTagName(path, ctx, tag) {
+  const uniqueIdPath = ctx.jsxUtils.getJSXAttributeValue(path, ctx.enums.UNIQUE_ID)
+  const uniqueId = uniqueIdPath.node.value
+  ctx.addDistTagName(uniqueId, tag)
+}
+
 module.exports = function convertTagReference(ast, {
   addUsingComponent,
 }) {
@@ -35,6 +41,7 @@ module.exports = function convertTagReference(ast, {
     addUsingComponent(tag) // 收集使用到的React Native组件
     replaceTagName(path, t, tag) // 替换标签名
     saveStyleFromTagName(path, ctx, styles) // 保存标签自带样式
+    saveDistTagName(path, ctx, tag) // 保存当前元素的输出标签
   }
 
   return traverse(ast, {

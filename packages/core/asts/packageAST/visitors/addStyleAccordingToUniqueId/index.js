@@ -4,13 +4,27 @@ module.exports = function addStyleAccordingToUniqueId({ ctx, t }) {
   function createArrayCallInJSXExpression({
     activeExpressionArray, // 动态属性
     ancestorStylesheetKey, // 继承而来的父级所有属性(需要去除不能继承的属性，如父级的border等)
+    uniqueId,
   }) {
+    const removeUnUseAttributeFn = ctx.distTagName[uniqueId] === 'Text' ?
+      ctx.enums.EXTRACT_CAN_INHERIT_STYLE_NAME_FUNC : ctx.enums.OMIT_CAN_INHERIT_STYLE_NAME_FUNC
+
+      
+    // distTagName
     const notInheritStylesheetAst = activeExpressionArray.map(item => {
       return (
-        t.MemberExpression(
-          t.identifier(ctx.enums.STYLESHEET_NAME),
-          item.node,
-          true
+        t.CallExpression(
+          t.MemberExpression(
+            t.identifier(ctx.enums.RNUTILS_USE_NAME),
+            t.identifier(removeUnUseAttributeFn),
+          ),
+          [
+            t.MemberExpression(
+              t.identifier(ctx.enums.STYLESHEET_NAME),
+              item.node,
+              true
+            )
+          ]
         )
       )
     })
@@ -105,6 +119,7 @@ module.exports = function addStyleAccordingToUniqueId({ ctx, t }) {
         const attributeValuePath = createArrayCallInJSXExpression({
           activeExpressionArray,
           ancestorStylesheetKey,
+          uniqueId,
         })
 
         if (attributeValuePath) {
