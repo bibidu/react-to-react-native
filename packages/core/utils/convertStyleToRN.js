@@ -4,7 +4,8 @@ const shouldDeleteAttrNames = [
   'textShadow',
   'boxSizing',
   'display',
-  'fixed'
+  'fixed',
+  'outline',
 ]
 
 const shouldWarnAttrValues = [

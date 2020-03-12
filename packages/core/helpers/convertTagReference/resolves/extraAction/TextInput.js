@@ -57,5 +57,14 @@ module.exports = function({path, ctx, t, constant}) {
     'rows',
     'name',
   ])
-  ctx.jsxUtils.addJSXAttribute(path, 'multiline', true)
+  ctx.jsxUtils.addJSXAttribute(
+    path,
+    'multiline',
+    t.JSXExpressionContainer(
+      t.BooleanLiteral(true)
+    ).node,
+    {
+      attrValueIsAst: true,
+    }
+  )
 }

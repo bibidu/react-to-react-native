@@ -55,13 +55,17 @@ const jsxUtils = {
     })
   },
 
-  addJSXAttribute(path, attrName, attrValue) {
+  addJSXAttribute(path, attrName, attrValue, {
+    attrValueIsAst,
+  } = {
+    attrValueIsAst: false
+  }) {
     if (typeof attrValue === 'object') {
       throw Error('不支持添加对象类型的JSXAttribute')
     }
     const jsxAttributePath = t.jsxAttribute(
       t.jsxIdentifier(attrName),
-      t.stringLiteral(String(attrValue))
+      attrValueIsAst ? attrValue : t.stringLiteral(String(attrValue))
     )
     path.get('openingElement').pushContainer('attributes', jsxAttributePath)
   }
