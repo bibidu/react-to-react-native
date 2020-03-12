@@ -60,9 +60,10 @@ ul {
             box-sizing: border-box;
             font-size: 14px;
             &:last-child{
-            margin-right: 0;
+            margin-right: 0px;
             }
             &.active {
+                /* stable: active */
                 color: #EF3A05;
                 background: #fff;
             }

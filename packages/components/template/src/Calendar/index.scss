@@ -1,9 +1,16 @@
+$CALENDAR_CONTAINER_BORDER_COLOR: rgba(0,0,0,0.07);
+$HIGHTLIGHT_COLOR: #409eff;
+$HIGHTLIGHT_BGCOLOR: #f2f8fe;
+// $CALENDAR_CONTAINER_BORDER_COLOR: red;
+// $HIGHTLIGHT_COLOR: green;
+// $HIGHTLIGHT_BGCOLOR: red;
+
 .calendar-container{
   margin: 20px auto;
   width: 264px;
   // height: 300px;
   border-radius: 4px;
-  box-shadow: 0 1px 14px rgba(0,0,0,0.07);
+  box-shadow: 0 1px 14px $CALENDAR_CONTAINER_BORDER_COLOR;
   padding: 0 30px 30px;
   box-sizing: border-box;
   .calendar-top{
@@ -67,13 +74,13 @@
       }
       .today-day-item{
         /* stable: today-day-item */
-        background: #f2f8fe;
-        color: #409eff;
+        background: $HIGHTLIGHT_BGCOLOR;
+        color: $HIGHTLIGHT_COLOR;
       }
       .tap-day-item{
         /* stable: tap-day-item */
-        background: #f2f8fe;
-        color: #409eff;
+        background: $HIGHTLIGHT_BGCOLOR;
+        color: $HIGHTLIGHT_COLOR;
       }
     }
   }

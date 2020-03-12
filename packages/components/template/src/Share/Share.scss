@@ -1,5 +1,10 @@
 .container{
   width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
 }
 .layer {
   position: absolute;
@@ -60,7 +65,8 @@
 .list-item-title {
   color: #000000;
   font-size: 22px * 0.5;
-  margin-top: 10px * 0.5;
+  // margin-top: 10px * 0.5;
+  margin-top: 15px;
 }
 
 .list-item-img {
