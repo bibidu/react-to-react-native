@@ -2,6 +2,8 @@ const t = require('@babel/types')
 const traverse = require('@babel/traverse').default
 // const gen = require('@babel/generator').default
 
+let ctx
+
 const resolves = {
   '.jsx': 'react',
   '.js': 'js',
@@ -20,6 +22,8 @@ module.exports = function createGraph({
   reactCompString,
   cssString,
 }) {
+  ctx = this
+
   const graph = _analysisEntry(
     cssType,
     entryPath,
@@ -74,7 +78,7 @@ function _analysisEntry(
                 type,
                 suffix,
               } = resolveFile(entryPath, importSource)
-              
+
               newGraph[entirePath] = {
                 fileType: type,
                 importSource: importSource.includes(suffix) ?
@@ -120,7 +124,7 @@ function resolveFile(entryPath, importSource) {
   const path = require('path')
   
   const importAbsolutePath = path.resolve(path.dirname(entryPath), importSource)
-  const file = isFile(importAbsolutePath, resolves)
+  const file = ctx.isFile(importAbsolutePath, resolves)
   if (!file) {
     const msg = `不存在该文件: ${importAbsolutePath}`
     throw Error(msg)
@@ -132,29 +136,3 @@ function isNpm(importSource) {
   return /^[a-zA-Z]/.test(importSource)
 }
 
-function isFile(filePath, resolves) {
-  // 已含有后缀
-  if (/\.\w+$/.test(filePath)) {
-    const lastPointIndex = filePath.lastIndexOf('.')
-    const suffix = filePath.slice(lastPointIndex)
-    resolves = {
-      [suffix]: resolves[suffix]
-    }
-    filePath = filePath.slice(0, lastPointIndex)
-  }
-  // 非resolves内类型暂不考虑
-  for (let suffix of Object.keys(resolves)) {
-    try {
-      const type = resolves[suffix]
-      const entirePath = filePath + suffix
-      require('fs').statSync(entirePath)
-      return {
-        entirePath,
-        type,
-        suffix,
-      }
-    } catch (error) {
-      return false
-    }
-  }
-}

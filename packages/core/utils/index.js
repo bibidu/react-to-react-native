@@ -15,6 +15,7 @@ const getInheritStyle = require('./getInheritStyle')
 const omit = require('./omit')
 const extract = require('./extract')
 const isUserComponent = require('./isUserComponent')
+const isFile = require('./isFile')
 
 module.exports = function () {
   ;[
@@ -35,5 +36,6 @@ module.exports = function () {
     omit,
     extract,
     isUserComponent,
+    isFile,
   ].forEach(util => this[util.name] = util)
 }

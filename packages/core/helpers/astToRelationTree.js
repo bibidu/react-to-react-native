@@ -1,5 +1,8 @@
 const t = require('@babel/types')
 const traverse = require('@babel/traverse').default
+
+let ctx
+
 /**1. 支持
  * <div>
  *  {this.renderA()}
@@ -20,7 +23,7 @@ const traverse = require('@babel/traverse').default
  * @param {*} param0 
  */
 module.exports = function astToRelationTree(ast, currentPath) {
-  const ctx = this
+  ctx = this
 
   function getQuasisStaticValueInTemplateLiteral(templateLiteralPath){
     const quasis = templateLiteralPath.get('quasis')
@@ -289,7 +292,7 @@ function resolveFile(entryPath, importSource) {
   const path = require('path')
   
   const importAbsolutePath = path.resolve(path.dirname(entryPath), importSource)
-  const file = isFile(importAbsolutePath, { '.jsx': 'react' })
+  const file = ctx.isFile(importAbsolutePath, { '.jsx': 'react' })
   if (!file) {
     const msg = `不存在该文件: ${importAbsolutePath}`
     throw Error(msg)
@@ -299,30 +302,4 @@ function resolveFile(entryPath, importSource) {
 
 function isNpm(importSource) {
   return /^[a-zA-Z]/.test(importSource)
-}
-
-function isFile(filePath, resolves) {
-  // 已含有后缀
-  if (/\.\w+$/.test(filePath)) {
-    const lastPointIndex = filePath.lastIndexOf('.')
-    const suffix = filePath.slice(lastPointIndex)
-    resolves = {
-      [suffix]: resolves[suffix]
-    }
-    filePath = filePath.slice(0, lastPointIndex)
-  }
-  // 非resolves内类型暂不考虑
-  for (let suffix of Object.keys(resolves)) {
-    try {
-      const type = resolves[suffix]
-      const entirePath = filePath + suffix
-      require('fs').statSync(entirePath)
-      return {
-        entirePath,
-        type,
-      }
-    } catch (error) {
-      return false
-    }
-  }
 }
