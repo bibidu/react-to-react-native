@@ -62,7 +62,7 @@ module.exports = function addStyleAccordingToUniqueId({ ctx, t }) {
       })
     }
 
-    const mixinsArray = notInheritStylesheetAst.concat(inheritStylesheetAst)
+    const mixinsArray = inheritStylesheetAst.concat(notInheritStylesheetAst)
     
     switch(mixinsArray.length) {
       case 0: return null
