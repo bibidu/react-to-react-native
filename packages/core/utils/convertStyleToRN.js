@@ -1,16 +1,43 @@
 const transform = require('css-to-react-native').default
 let ctx = null
-const shouldDeleteAttrNames = [
-  'textShadow',
-  'boxSizing',
-  'display',
-  'fixed',
-  'outline',
-]
 
-const shouldWarnAttrValues = [
+const shouldPreprocessAttr = [
   {
-    pairs: 'position-fixed',
+    match: (attrName, attrValue) => /^border\-(top|left|right|bottom)/.test(attrName),
+    warnings: [],
+    actions: (obj, attrName, attrValue) => {
+      const direction = attrName.split('border-')[1]
+      const firstCharUpper = direction.charAt(0).toUpperCase() + direction.slice(1)
+      const [borderWidth, borderStyle, borderColor] = attrValue.split(' ').filter(Boolean)
+      if (borderWidth !== 'none') {
+        obj[`border${firstCharUpper}Width`] = borderWidth
+        obj['borderStyle'] = borderStyle
+        obj['borderColor'] = borderColor
+      }
+    }
+  },
+  {
+    match: (attrName, attrValue) => attrName === 'text-shadow',
+    warnings: [],
+    actions: (obj) => delete obj['textShadow']
+  },
+  {
+    match: (attrName, attrValue) => attrName === 'box-sizing',
+    warnings: [],
+    actions: (obj) => delete obj['boxSizing']
+  },
+  {
+    match: (attrName, attrValue) => attrName === 'display',
+    warnings: [],
+    actions: (obj) => delete obj['display']
+  },
+  {
+    match: (attrName, attrValue) => attrName === 'outline',
+    warnings: [],
+    actions: (obj) => delete obj['outline']
+  },
+  {
+    match: (attrName, attrValue) => attrName === 'position' && attrValue === 'fixed',
     warnings: [
       'rn 不支持position: fixed属性，请将超出屏幕的部分使用ScrollView包裹',
       'rn中绝对定位的所有父级必须均为绝对定位，可通过添加父级style为position: absolute;top:0;left:0;width:100%;height:100%;'
@@ -18,7 +45,7 @@ const shouldWarnAttrValues = [
     actions: (obj) => obj['position'] = 'absolute'
   },
   {
-    pairs: 'position-absolute',
+    match: (attrName, attrValue) => attrName === 'position' && attrValue === 'absolute',
     warnings: [
       'rn中绝对定位的所有父级必须均为绝对定位，可通过添加父级style为position: absolute;top:0;left:0;width:100%;height:100%;'
     ],
@@ -43,16 +70,13 @@ function restoreKey(obj) {
   }
 }
 
-function deleteUnSupportAttr(obj) {
+function checkUnSupportAttr(obj) {
   Object.entries(obj).forEach(([attrName, attrValue]) => {
-    if (shouldDeleteAttrNames.includes(attrName)) {
-      delete obj[attrName]
-    }
-    shouldWarnAttrValues.forEach((item) => {
-      const { pairs, warnings, actions} = item
-      if (pairs === `${attrName}-${attrValue}`) {
+    shouldPreprocessAttr.forEach((item) => {
+      const { match, warnings, actions} = item
+      if (match(attrName, attrValue)) {
         warnings.forEach(item => ctx.warnings.add(item))
-        actions(obj)
+        actions(obj, attrName, attrValue)
       }
     })
   })
@@ -83,7 +107,7 @@ module.exports = function convertStyleToRN(styles) {
 
 function _transform(obj) {
   let result = {}
-  deleteUnSupportAttr(obj)
+  checkUnSupportAttr(obj)
 
   const arrayStyle = objStyleToTransformArray(obj)
   try {
