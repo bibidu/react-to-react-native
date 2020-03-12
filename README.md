@@ -336,6 +336,13 @@ class App extends React.Component{
 - textarea
 - image
 
+### 支持继承的属性名
+- line-height
+- color
+- font-size
+- text-align
+- font-weight
+
 ### 支持的事件
 - onClick
 - onChange

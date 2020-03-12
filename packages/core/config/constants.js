@@ -3,6 +3,7 @@ const baseInheritStyleName = [
   'color',
   'font-size',
   'text-align',
+  'font-weight',
 ]
 
 function expandDiffTypeInHeritStyle(base) {
