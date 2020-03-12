@@ -8,7 +8,6 @@ const jsxUtils = require('./jsxUtils')
 const generateReactNativeComponent = require('./generateReactNativeComponent')
 const mixinStyleExceptInherit = require('./mixinStyleExceptInherit')
 const convertExternalToInline = require('./convertExternalToInline')
-const calcInheritStyle = require('./calcInheritStyle')
 const removeInvalidStyle = require('./removeInvalidStyle')
 const mergeByKey = require('./mergeByKey')
 const getInheritStyle = require('./getInheritStyle')
@@ -29,7 +28,6 @@ module.exports = function () {
     generateReactNativeComponent,
     mixinStyleExceptInherit,
     convertExternalToInline,
-    calcInheritStyle,
     removeInvalidStyle,
     mergeByKey,
     getInheritStyle,
