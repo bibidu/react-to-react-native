@@ -60,18 +60,7 @@ module.exports = function addStyleAccordingToUniqueId({ ctx, t }) {
               t.identifier(ctx.enums.RNUTILS_USE_NAME),
               t.identifier(ctx.enums.EXTRACT_CAN_INHERIT_STYLE_NAME_FUNC),
             ),
-            [
-              ancestorAstArray.length === 1 ? ancestorAstArray[0] : t.CallExpression(
-                t.MemberExpression(
-                  t.identifier('Object'),
-                  t.identifier('assign'),
-                ),
-                [
-                  t.ObjectExpression([]),
-                  ...ancestorAstArray
-                ]
-              )
-            ]
+            ancestorAstArray
           )
       })
     }
