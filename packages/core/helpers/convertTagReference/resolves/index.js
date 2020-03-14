@@ -54,7 +54,7 @@ module.exports = function resolves({
             }
           })
         }
-      } else if (expression.isMemberExpression()) {
+      } else if (expression.isMemberExpression() || expression.isIdentifier()) {
         // onChange={this.inputEvent}
         expression.replaceWith(
           t.ArrowFunctionExpression(

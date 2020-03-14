@@ -335,6 +335,10 @@ class App extends React.Component{
   <textarea onChange={this.inputEvent} />
   ```
 
+  ```jsx
+  <textarea onChange={inputEvent} />
+  ```
+
 - 闭包形式
 
   ```jsx
