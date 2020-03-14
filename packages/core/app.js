@@ -128,7 +128,7 @@ module.exports = class ReactToReactNative {
     }
     
     // 构建graph
-    this.graph = this.createGraphHelper({
+    this.graph = await this.createGraphHelper({
       compileType: this.compileType,
       cssType: this.cssType,
       entryPath: this.entryPath,
@@ -172,8 +172,6 @@ module.exports = class ReactToReactNative {
       const component = this.graph[filePath]
       const { code, ast, fileType, } = component
       if (fileType === 'react') {
-        // typescript编译
-        component.afterTsCompiled = await this.typescriptCompiler(code)
         // 添加文本标签wrapper、添加uniqueId
         component.afterProcessAST = this.processAST(ast)
         // 构建父子节点间关系
@@ -227,7 +225,7 @@ module.exports = class ReactToReactNative {
       self: this.tagSelfStyle,
       cssObject: this.cssObject,
     })
-    
+
     // 计算继承样式
     this.inheritStyle = this.getInheritStyle()
 
