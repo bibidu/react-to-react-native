@@ -327,7 +327,7 @@ class App extends React.Component{
 }
 ```
 
-### 事件
+### 事件(所有形式)
 
 - 成员变量形式
 
@@ -339,12 +339,23 @@ class App extends React.Component{
   <textarea onChange={inputEvent} />
   ```
 
+- 函数形式
+
+  ```jsx
+  <textarea onChange={function inputEvent() {}} />
+  ```
+
+  ```jsx
+  <textarea onChange={function() {}} />
+  ```
+
 - 闭包形式
 
   ```jsx
     <textarea onChange={e => this.inputEvent(e)} />
     <textarea onChange={e => this.inputEvent(e)([{ z: e }, e])} />
     <textarea onChange={e => this.changeInput(e, { t: e })} />
+    <textarea onChange={e => (t) => e + t} />
   ```
 
 ### 图片资源

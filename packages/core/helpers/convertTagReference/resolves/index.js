@@ -37,25 +37,29 @@ module.exports = function resolves({
     
     if (eventValue.isJSXExpressionContainer()) {
       const expression = eventValue.get('expression')
-      if (expression.isArrowFunctionExpression()) {
-        if (expression.get('body').isCallExpression()) {
-          // onChange={e => this.inputEvent(e)}
-          // onChange={e => this.inputEvent(e)({ z: e })}
-          // onChange={e => this.changeInput(e, { t: e })}
-          const sourceE = expression.get('params.0')
+      if (expression.isArrowFunctionExpression() || expression.isFunctionExpression()) {
+        // onChange={e => this.inputEvent(e)}
+        // onChange={e => this.inputEvent(e)({ z: e })}
+        // onChange={e => this.changeInput(e, { t: e })}
+        // onChange={e => (t) => e + t}
+        // onChange={function(e) { e + 1 }}
+        const sourceE = expression.get('params.0')
+        if (sourceE) {
           expression.get('body').traverse({
             Identifier(_path) {
               if (_path.isIdentifier({ name: sourceE.node.name })) {
                 _path.replaceWith(
-                  createEventTargetPolyfill('e')
+                  createEventTargetPolyfill(sourceE.node.name)
                 )
                 _path.skip()
               }
             }
           })
         }
-      } else if (expression.isMemberExpression() || expression.isIdentifier()) {
+      } else {
         // onChange={this.inputEvent}
+        // onChange={inputEvent}
+        // onChange={inputEvent(123)}
         expression.replaceWith(
           t.ArrowFunctionExpression(
             [
@@ -98,11 +102,11 @@ module.exports = function resolves({
 
   /*************** 映射的规则 ***************/
 
-  // 替换所有点击事件
-  ctx.jsxUtils.replaceJSXAttributeKey(path, 'onClick', 'onPress')
-
   // 所有事件polyfill
   constant.tapEvents.forEach(event => addEventPolyfill(path, event))
+
+  // 替换所有点击事件
+  ctx.jsxUtils.replaceJSXAttributeKey(path, 'onClick', 'onPress')
 
   if (hasTapEvent) {
     return resolve('TouchableOpacity', true)
