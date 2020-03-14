@@ -141,7 +141,9 @@ module.exports = class ReactToReactNative {
       // 添加导出路径 importSource
       Object.entries(this.graph).forEach(([filePath, component]) => {
         if (!component.exportPath) {
-          component.exportPath = require('path').resolve(this.outputDir, component.importSource)
+          const path = require('path')
+          const entryRelativePath = path.relative(this.entryPath, filePath)
+          component.exportPath = path.resolve(this.exportPath, entryRelativePath)
         }
       })
     }
