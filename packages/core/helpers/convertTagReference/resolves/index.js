@@ -3,6 +3,7 @@ const style = require('./style')
 const constant = {
   tapEvents: [
     'onClick',
+    'onChange',
   ],
   mapViewTags: [
     'div',
@@ -44,6 +45,9 @@ module.exports = function resolves({
 
   // 替换所有点击事件
   ctx.jsxUtils.replaceJSXAttributeKey(path, 'onClick', 'onPress')
+
+  // 所有事件polyfill
+  constant.tapEvents.forEach(event => ctx.jsxUtils.addEventPolyfill(path, event))
 
   if (hasTapEvent) {
     return resolve('TouchableOpacity', true)

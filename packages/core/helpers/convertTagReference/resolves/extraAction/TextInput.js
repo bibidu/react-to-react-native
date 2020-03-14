@@ -12,44 +12,6 @@ module.exports = function({path, ctx, t, constant}) {
     )
   }
 
-  const onChangeValue = ctx.jsxUtils.getJSXAttributeValue(path, 'onChange')
-  if (onChangeValue.isJSXExpressionContainer()) {
-    const expression = onChangeValue.get('expression')
-    if (expression.isArrowFunctionExpression()) {
-      if (expression.get('body').isCallExpression()) {
-        // onChange={e => this.inputEvent(e)}
-        // onChange={e => this.inputEvent(e)({ z: e })}
-        // onChange={e => this.changeInput(e, { t: e })}
-        const sourceE = expression.get('params.0')
-        expression.get('body').traverse({
-          Identifier(_path) {
-            if (_path.isIdentifier({ name: sourceE.node.name })) {
-              _path.replaceWith(
-                createEventTargetPolyfill('e')
-              )
-              _path.skip()
-            }
-          }
-        })
-      }
-    } else if (expression.isMemberExpression()) {
-      // onChange={this.inputEvent}
-      expression.replaceWith(
-        t.ArrowFunctionExpression(
-          [
-            t.identifier('e')
-          ],
-          t.CallExpression(
-            expression.node,
-            [
-              createEventTargetPolyfill('e')
-            ]
-          )
-        )
-      )
-    }
-  }
-
   ctx.jsxUtils.replaceJSXAttributeKey(path, 'onChange', 'onChangeText')
   ctx.jsxUtils.removeJSXAttributeByKey(path, [
     'id',

@@ -68,6 +68,48 @@ const jsxUtils = {
       attrValueIsAst ? attrValue : t.stringLiteral(String(attrValue))
     )
     path.get('openingElement').pushContainer('attributes', jsxAttributePath)
+  },
+
+  addEventPolyfill(path, eventName) {
+    const eventValue = jsxUtils.getJSXAttributeValue(path, eventName)
+    if (!eventValue) return
+    
+    if (eventValue.isJSXExpressionContainer()) {
+      const expression = eventValue.get('expression')
+      if (expression.isArrowFunctionExpression()) {
+        if (expression.get('body').isCallExpression()) {
+          // onChange={e => this.inputEvent(e)}
+          // onChange={e => this.inputEvent(e)({ z: e })}
+          // onChange={e => this.changeInput(e, { t: e })}
+          const sourceE = expression.get('params.0')
+          expression.get('body').traverse({
+            Identifier(_path) {
+              if (_path.isIdentifier({ name: sourceE.node.name })) {
+                _path.replaceWith(
+                  createEventTargetPolyfill('e')
+                )
+                _path.skip()
+              }
+            }
+          })
+        }
+      } else if (expression.isMemberExpression()) {
+        // onChange={this.inputEvent}
+        expression.replaceWith(
+          t.ArrowFunctionExpression(
+            [
+              t.identifier('e')
+            ],
+            t.CallExpression(
+              expression.node,
+              [
+                createEventTargetPolyfill('e')
+              ]
+            )
+          )
+        )
+      }
+    }
   }
 }
 
