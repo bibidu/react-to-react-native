@@ -335,6 +335,7 @@ class App extends React.Component{
 - button
 - textarea
 - image
+- Fragment/React.Fragment
 
 ### 支持继承的属性名
 - line-height

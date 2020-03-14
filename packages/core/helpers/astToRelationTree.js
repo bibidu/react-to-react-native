@@ -107,7 +107,7 @@ module.exports = function astToRelationTree(ast, currentPath) {
 
   function extractJSXNodeInfo(JSXElementPath) {
     const openingElement = JSXElementPath.get('openingElement')
-    const tagName = openingElement.get('name').node.name
+    const tagName = ctx.jsxUtils.getTagName(JSXElementPath)
 
     const result = {
       tagName,
@@ -260,7 +260,7 @@ module.exports = function astToRelationTree(ast, currentPath) {
       ctx.addUniqueNodeInfo(uniqueId, nodeInfo)
 
       // 临时方案：对于自定义的组件，默认从当前文件的Class中进行匹配
-      if (tagName.charAt(0) !== tagName.charAt(0).toLowerCase()) {
+      if (ctx.isUserComponent(tagName)) {
         ctx.addFsRelation(getCurrentFileUniqueName(path), getComponentMapName(tagName, currentPath, path))
       }
     },
