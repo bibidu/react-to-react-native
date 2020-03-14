@@ -46,7 +46,8 @@ module.exports = function astToRelationTree(ast, currentPath) {
       p.isClassMethod() || 
       p.isFunctionDeclaration() || 
       p.isClassDeclaration() ||
-      p.isVariableDeclarator()
+      p.isVariableDeclarator() ||
+      p.isClassProperty()
     ))
 
     return getCurrentFileUniqueName(parentNode)
@@ -68,8 +69,10 @@ module.exports = function astToRelationTree(ast, currentPath) {
       base += 'Class-' + path.get('id').node.name
     } else if (path.isVariableDeclarator()) {
       base += 'VariableDecl-' + path.get('id').node.name 
+    } else if (path.isClassProperty()) {
+      base += 'ClassProperty-' + path.get('key').node.name
     } else {
-      this.error('JSXElement父级不合法')
+      ctx.error('JSXElement父级不合法')
     }
 
     // const uniqueName = uniquePrefix + base
@@ -276,6 +279,7 @@ module.exports = function astToRelationTree(ast, currentPath) {
       if (expression.isCallExpression()) {
         if (expression.get('callee').get('object').isThisExpression()) {
           const fnName = expression.get('callee').get('property').node.name
+          console.log(fnName);
           const matched = getMatchFnUpward(path, fnName, 'ClassMethod')
           if (!matched) {
             throw '找不到JSXExpressionContainer中匹配的父级'
