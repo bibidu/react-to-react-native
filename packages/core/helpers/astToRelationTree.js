@@ -292,7 +292,7 @@ function resolveFile(entryPath, importSource) {
   const path = require('path')
   
   const importAbsolutePath = path.resolve(path.dirname(entryPath), importSource)
-  const file = ctx.isFile(importAbsolutePath, { '.jsx': 'react' })
+  const file = ctx.isFile(importAbsolutePath)
   if (!file) {
     const msg = `不存在该文件: ${importAbsolutePath}`
     throw Error(msg)

@@ -1,4 +1,5 @@
-module.exports = function isFile(filePath, resolves) {
+module.exports = function isFile(filePath, currentResolves) {
+  let resolves = this.constants.resolves || currentResolves
   // 已含有后缀
   if (/\.\w+$/.test(filePath)) {
     const lastPointIndex = filePath.lastIndexOf('.')

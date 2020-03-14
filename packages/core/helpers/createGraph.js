@@ -4,16 +4,6 @@ const traverse = require('@babel/traverse').default
 
 let ctx
 
-const resolves = {
-  '.jsx': 'react',
-  '.js': 'js',
-  '.scss': 'css',
-  '.sass': 'css',
-  '.png': 'img',
-  '.jpeg': 'img',
-  '.jpg': 'img',
-}
-
 module.exports = function createGraph({
   compileType,
   cssType,
@@ -122,9 +112,9 @@ function _analysisEntry(
 
 function resolveFile(entryPath, importSource) {
   const path = require('path')
-  
+
   const importAbsolutePath = path.resolve(path.dirname(entryPath), importSource)
-  const file = ctx.isFile(importAbsolutePath, resolves)
+  const file = ctx.isFile(importAbsolutePath)
   if (!file) {
     const msg = `不存在该文件: ${importAbsolutePath}`
     throw Error(msg)
