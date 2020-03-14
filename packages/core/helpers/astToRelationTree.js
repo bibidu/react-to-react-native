@@ -204,22 +204,20 @@ module.exports = function astToRelationTree(ast, currentPath) {
   function getComponentMapName(tagName, currentPath, path) {
 
     function getImportType() {
-      let parent = path.findParent(() => true)
-      while (parent) {
-        for (let i = 0; i < parent.container.length; i++) {
-          const item = parent.container[i]
-          if (item.type === 'ImportDeclaration') {
-            if (item.specifiers.length) {
-              const importPath = item.source.value
-              const name = item.specifiers[0].local.name
-              if (name === tagName) {
-                const file = resolveFile(currentPath, importPath)
-                return `${ctx.hashHelper(file.entirePath)}-Class-${tagName}`
-              }
+      const parent = path.findParent((p) => p.isProgram())
+
+      for (let i = 0; i < parent.get('body').length; i++) {
+        const item = parent.get(`body.${i}`)
+        if (item.type === 'ImportDeclaration') {
+          if (item.get('specifiers').length) {
+            const importPath = item.get('source').node.value
+            const name = item.get('specifiers.0.local').node.name
+            if (name === tagName) {
+              const file = resolveFile(currentPath, importPath)
+              return `${ctx.hashHelper(file.entirePath)}-Class-${tagName}`
             }
           }
         }
-        parent = parent.findParent(() => true)
       }
     }
 
@@ -264,8 +262,12 @@ module.exports = function astToRelationTree(ast, currentPath) {
     throw Error(msg)
   }
 
+  let atLeastOneJSXElement = false
   traverse(ast, {
     JSXElement(path) {
+      if (!atLeastOneJSXElement) {
+        atLeastOneJSXElement = true
+      }
       const parentNodeName = getParentNodeName(path)
       ctx.addFsRelation(parentNodeName, getCurrentFileUniqueName(path))
 
@@ -300,6 +302,15 @@ module.exports = function astToRelationTree(ast, currentPath) {
           const parentNodeName = getParentNodeName(path)
           ctx.addFsRelation(parentNodeName, getCurrentFileUniqueName(matched))
         }
+      }
+    },
+
+    ExportDefaultDeclaration(path) {
+      if (!atLeastOneJSXElement) {
+        const filePathHash = ctx.hashHelper(currentPath)
+        const rootClassName = path.get('declaration').node.name
+        const currentClassNodeName = `${filePathHash}-Class-${rootClassName}`
+        ctx.addFsRelation(currentClassNodeName, getComponentMapName(rootClassName, currentPath, path))
       }
     }
   })
