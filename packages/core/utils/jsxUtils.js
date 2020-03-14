@@ -110,6 +110,27 @@ const jsxUtils = {
         )
       }
     }
+  },
+
+  getTagName(path) {
+    const namePath = path.get('openingElement.name')
+    let tagName
+    if (namePath.isJSXMemberExpression()) {
+
+      function getJSXMemberName(jsxMemberExpr) {
+        if (jsxMemberExpr.isJSXIdentifier()) {
+          return jsxMemberExpr.node.name
+        } else if (jsxMemberExpr.isJSXMemberExpression()) {
+          return getJSXMemberName(jsxMemberExpr.get('object')) + '.' + jsxMemberExpr.get('property').node.name
+        }
+        return tagName
+      }
+
+      tagName = getJSXMemberName(namePath)
+    } else {
+      tagName = namePath.node.name
+    }
+    return tagName
   }
 }
 

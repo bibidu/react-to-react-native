@@ -1,3 +1,26 @@
+const textNames = [
+  'span',
+  'h1',
+  'h2',
+  'h3',
+  'h4',
+  'h5',
+  'h6',
+]
+
+const resolves = {
+  '.jsx': 'react',
+  '.js': 'react',
+  '.ts': 'react',
+  '.tsx': 'react',
+  '.scss': 'css',
+  '.sass': 'css',
+  '.png': 'img',
+  '.jpeg': 'img',
+  '.jpg': 'img',
+  '/index.js': 'react'
+}
+
 const baseInheritStyleName = [
   'line-height',
   'color',
@@ -14,15 +37,9 @@ function expandDiffTypeInHeritStyle(base) {
 
 module.exports = {
   // 文本节点
-  textNames: [
-    'span',
-    'h1',
-    'h2',
-    'h3',
-    'h4',
-    'h5',
-    'h6',
-  ],
+  textNames,
+  // 解析文件的顺序
+  resolves,
   // 可继承的css属性名
   canInheritStyleName: expandDiffTypeInHeritStyle(baseInheritStyleName)
 }

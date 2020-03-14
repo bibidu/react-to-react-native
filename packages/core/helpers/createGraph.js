@@ -4,17 +4,7 @@ const traverse = require('@babel/traverse').default
 
 let ctx
 
-const resolves = {
-  '.jsx': 'react',
-  '.js': 'js',
-  '.scss': 'css',
-  '.sass': 'css',
-  '.png': 'img',
-  '.jpeg': 'img',
-  '.jpg': 'img',
-}
-
-module.exports = function createGraph({
+module.exports = async function createGraph({
   compileType,
   cssType,
   entryPath,
@@ -24,7 +14,7 @@ module.exports = function createGraph({
 }) {
   ctx = this
 
-  const graph = _analysisEntry(
+  const graph = await _analysisEntry(
     cssType,
     entryPath,
     exportPath,
@@ -38,7 +28,7 @@ module.exports = function createGraph({
   return graph
 }
 
-function _analysisEntry(
+async function _analysisEntry(
   cssType,
   entryPath,
   exportPath,
@@ -50,8 +40,8 @@ function _analysisEntry(
   const fs = require('fs')
   const graph = {}
 
-  function _findGraph(entryPath, info) {
-    const code = fs.readFileSync(entryPath, 'utf8')
+  async function _findGraph(entryPath, info) {
+    let code = fs.readFileSync(entryPath, 'utf8')
     const {
       fileType,
       importSource = '',
@@ -65,6 +55,9 @@ function _analysisEntry(
       importSource,
     }
     if (fileType === 'react') {
+      if (['.ts', '.tsx'].some(prefix => entryPath.endsWith(prefix))) {
+        code = await ctx.typescriptCompiler(code)
+      }
       const ast = graph[entryPath].ast = code2ast(code)
       // 逐个文件查找，便于定位错误
       const newGraph = {}
@@ -96,7 +89,7 @@ function _analysisEntry(
     }
   }
   if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {
-    _findGraph(entryPath, {
+    await _findGraph(entryPath, {
       fileType: 'react',
       exportPath,
     })
@@ -122,9 +115,9 @@ function _analysisEntry(
 
 function resolveFile(entryPath, importSource) {
   const path = require('path')
-  
+
   const importAbsolutePath = path.resolve(path.dirname(entryPath), importSource)
-  const file = ctx.isFile(importAbsolutePath, resolves)
+  const file = ctx.isFile(importAbsolutePath)
   if (!file) {
     const msg = `不存在该文件: ${importAbsolutePath}`
     throw Error(msg)
