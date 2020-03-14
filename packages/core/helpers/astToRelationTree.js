@@ -85,7 +85,21 @@ module.exports = function astToRelationTree(ast, currentPath) {
       const parentContainer = path.findParent((p) => p.isClassDeclaration())
       const classMethods = parentContainer.get('body').get('body')
       for (let clazzMethod of classMethods) {
-        if (clazzMethod.get('key').isIdentifier({ name: compareName })) {
+        // Class内的闭包函数在tsCompile阶段会移至constructor内
+        if (clazzMethod.get('key').isIdentifier({ name: 'constructor' })) {
+          clazzMethod.traverse({
+            AssignmentExpression(_path) {
+              if (
+                _path.get('left.object').isThisExpression() &&
+                _path.get('left.property').isIdentifier({ name: compareName }) &&
+                _path.get('right').isArrowFunctionExpression()
+              ) {
+                _path.stop()
+              }
+            }
+          })
+          return clazzMethod
+        } else if (clazzMethod.get('key').isIdentifier({ name: compareName })) {
           return clazzMethod
         }
       }
@@ -279,7 +293,6 @@ module.exports = function astToRelationTree(ast, currentPath) {
       if (expression.isCallExpression()) {
         if (expression.get('callee').get('object').isThisExpression()) {
           const fnName = expression.get('callee').get('property').node.name
-          console.log(fnName);
           const matched = getMatchFnUpward(path, fnName, 'ClassMethod')
           if (!matched) {
             throw '找不到JSXExpressionContainer中匹配的父级'
