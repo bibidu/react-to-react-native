@@ -265,13 +265,19 @@ module.exports = class ReactToReactNative {
         result,
         usingComponent,
       } = info
-      
+
       // 输出react native.jsx
       const finalResult = this.generateReactNativeComponent({
         importReactCode: this.astUtils.ast2code(this.collections.importReactPath),
         fileType,
         code: result,
         usingComponent,
+        getResourceRelativePath: (currentResoucePath) => {
+          const path = require('path')
+          const resourcePath = path.resolve(path.dirname(this.entryPath), currentResoucePath)
+          const relativePath = path.relative(path.dirname(filePath), resourcePath)
+          return relativePath.startsWith('.') ? relativePath : `./${relativePath}`
+        },
       })
 
       if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {
