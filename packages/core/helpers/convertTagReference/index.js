@@ -2,7 +2,7 @@ const t = require('@babel/types')
 const traverse = require('@babel/traverse').default
 const resolves = require('./resolves')
 
-const isComponent = (tagName) => tagName.charAt(0) !== tagName.charAt(0).toLowerCase()
+let ctx
 
 function replaceTagName(path, t, newTagName) {
   const newTagPath = t.JSXIdentifier(newTagName)
@@ -12,7 +12,7 @@ function replaceTagName(path, t, newTagName) {
   }
 }
 
-function saveStyleFromTagName(path, ctx, styles) {
+function saveStyleFromTagName(path, styles) {
   if (Object.keys(styles).length) {
     const uniqueId = ctx.jsxUtils.getJSXAttributeValue(path, ctx.enums.UNIQUE_ID)
     if (!uniqueId || !uniqueId.node || !uniqueId.node.value) {
@@ -22,7 +22,7 @@ function saveStyleFromTagName(path, ctx, styles) {
   }
 }
 
-function saveDistTagName(path, ctx, tag) {
+function saveDistTagName(path, tag) {
   const uniqueIdPath = ctx.jsxUtils.getJSXAttributeValue(path, ctx.enums.UNIQUE_ID)
   const uniqueId = uniqueIdPath.node.value
   ctx.addDistTagName(uniqueId, tag)
@@ -31,17 +31,18 @@ function saveDistTagName(path, ctx, tag) {
 module.exports = function convertTagReference(ast, {
   addUsingComponent,
 }) {
-  const ctx = this
+  ctx = this
+
   function replacement(path) {
-    const tagName = path.get('openingElement').get('name').node.name
-    if (isComponent(tagName)) return
+    const tagName = ctx.jsxUtils.getTagName(path)
+    if (ctx.isUserComponent(tagName)) return
 
     const { tag, styles = {} } = resolves({path, t, ctx})
     
     addUsingComponent(tag) // 收集使用到的React Native组件
     replaceTagName(path, t, tag) // 替换标签名
-    saveStyleFromTagName(path, ctx, styles) // 保存标签自带样式
-    saveDistTagName(path, ctx, tag) // 保存当前元素的输出标签
+    saveStyleFromTagName(path, styles) // 保存标签自带样式
+    saveDistTagName(path, tag) // 保存当前元素的输出标签
   }
 
   return traverse(ast, {
