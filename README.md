@@ -132,32 +132,82 @@ export default App
   }
   ```
 
+### 自定义组件嵌套
+
+- 引入外部组件
+
+  ```jsx
+  import Foo from './foo'
+
+  class App extends React.Component {
+    render() {
+      return <>
+        <Foo className="foo" id="foo">{/* ... */}</Foo>
+      </>
+    }
+  }
+  ```
+
+  ```jsx
+  import Foo from './foo'
+
+  const App = () => (
+    <>
+      <Foo className="foo" id="foo">{/* ... */}</Foo>
+    </>
+  )
+  ```
+
+- 引入ClassMethod类型组件
+
+  ```jsx
+  class App extends React.Component {
+
+    Foo() {
+      return <h1>react2RN</h1>
+    }
+
+    render() {
+      return <>
+        {this.Foo()}
+      </>
+    }
+  }
+  ```
+
+- 引入ClassProperty类型组件
+
+  ```jsx
+  class App extends React.Component {
+
+    Foo = () => {
+      return <h1>react2RN</h1>
+    }
+
+    render() {
+      return <>
+        {this.Foo()}
+      </>
+    }
+  }
+  ```
+
 ### 导出组件
+
+```jsx
+class App extends React.Component {
+  render() {
+    return <>react2RN</>
+  }
+}
+
+export default App
+```
 
 ```jsx
 const App = () => <>react2RN</>
 
 export default App
-```
-
-### 自定义组件嵌套
-```jsx
-import Foo from './foo'
-
-class App extends React.Component {
-  render() {
-    return <>
-      <h1>title</h1>
-      <Foo className="foo" id="foo">
-        <div>
-          {
-            // xxx
-          }
-        </div>
-      </Foo>
-    </>
-  }
-}
 ```
 
 ### 支持的样式写法
