@@ -10,7 +10,9 @@ const textNames = [
 
 const resolves = {
   '.jsx': 'react',
-  '.js': 'js',
+  '.js': 'react',
+  '.ts': 'react',
+  '.tsx': 'react',
   '.scss': 'css',
   '.sass': 'css',
   '.png': 'img',
