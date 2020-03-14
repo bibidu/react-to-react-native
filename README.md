@@ -367,6 +367,11 @@ class App extends React.Component{
     .bar { /* ... */ }
   }
   ```
+- 引入其他scss文件
+
+  ```scss
+  @import '../../libs/assets/rem.scss';
+  ```
 
 ## ⚠️ 注意项
 

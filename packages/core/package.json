@@ -16,10 +16,10 @@
     "cheerio": "^1.0.0-rc.3",
     "css-to-react-native": "^3.0.0",
     "fs-extra": "^8.1.0",
+    "node-sass": "^4.13.1",
     "object-hash": "^2.0.1",
     "postcss": "^7.0.25",
     "prettier": "^1.19.1",
-    "sass": "^1.24.0",
     "typescript": "^3.7.4"
   },
   "devDependencies": {

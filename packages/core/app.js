@@ -155,7 +155,7 @@ module.exports = class ReactToReactNative {
       this.currentCompilePath = filePath
       const { code, fileType } = this.graph[filePath]
       if (fileType === 'css') {
-        const afterCSSNextCompiled = await this.scssCompiler(code)
+        const afterCSSNextCompiled = await this.scssCompiler(code, filePath)
         const afterCSSToObj = await this.cssToObject(afterCSSNextCompiled)
         this.cssObject.externalStyle = Object.assign(
           this.cssObject.externalStyle, afterCSSToObj.externalStyle
