@@ -279,7 +279,7 @@ module.exports = class ReactToReactNative {
         if (exportPath) {
           this.tasks.push(() => {
             if (fileType === 'react') {
-              fs.writeFileSync(exportPath, finalResult, 'utf8')
+              fs.outputFileSync(exportPath, finalResult, 'utf8')
             } else if (fileType === 'css') {
               /* 后续直接处理stylesheet */
             }
