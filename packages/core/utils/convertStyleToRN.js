@@ -50,25 +50,15 @@ const shouldPreprocessAttr = [
       'rn中绝对定位的所有父级必须均为绝对定位，可通过添加父级style为position: absolute;top:0;left:0;width:100%;height:100%;'
     ],
     actions: (obj) => {}
+  },
+  {
+    match: (attrName, attrValue) => attrName.includes('transform') && attrValue.startsWith('translate('),
+    warnings: [],
+    actions: (obj, attrName, attrValue) => {
+      delete obj[attrName]
+    }
   }
 ]
-
-let replaceKey = null
-let storeValue = null
-
-function storeKey(obj) {
-  if (replaceKey && replaceKey in obj) {
-    storeValue = obj[replaceKey]
-    delete obj[replaceKey]
-  }
-}
-
-function restoreKey(obj) {
-  if (replaceKey && storeValue) {
-    obj[replaceKey] = storeValue
-    storeValue = null
-  }
-}
 
 function checkUnSupportAttr(obj) {
   Object.entries(obj).forEach(([attrName, attrValue]) => {
@@ -85,19 +75,8 @@ function checkUnSupportAttr(obj) {
 module.exports = function convertStyleToRN(styles) {
   ctx = this
 
-  function isStableClass(uniqueId) {
-    return !uniqueId.startsWith(ctx.enums.UNIQUE_ID)
-  }
-
-  replaceKey = ctx.enums.ACTIVE_CLASSNAME_WILL_REPLACEBY_STYLESHEET
-
   Object.entries(styles).forEach(([uniqueId, style]) => {
-    !isStableClass(uniqueId) && storeKey(style)
-
-    const result = _transform(style)
-    
-    !isStableClass(uniqueId) && restoreKey(result)
-
+    const result = _transformMain(style)
     styles[uniqueId] = result
   })
 
@@ -105,17 +84,29 @@ module.exports = function convertStyleToRN(styles) {
   return styles
 }
 
-function _transform(obj) {
+function _transformMain(obj) {
   let result = {}
   checkUnSupportAttr(obj)
-
   const arrayStyle = objStyleToTransformArray(obj)
   try {
-    result = transform(arrayStyle)
+    result = _transform(arrayStyle)
   } catch (error) {
-    throw '[ERROR] cssToReactNative error'
+    console.error('[ERROR] cssToReactNative error' + error) 
     return result
   }
+
+  return result
+}
+
+function _transform(arrayStyle) {
+  const caches = {}
+  const deleteIdx = []
+  
+  arrayStyle = arrayStyle.filter((_, idx) => !deleteIdx.includes(idx))
+  const result = transform(arrayStyle)
+  Object.entries(caches).forEach(([k, v]) => {
+    result[k] = v
+  })
 
   return result
 }
