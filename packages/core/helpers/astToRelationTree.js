@@ -59,7 +59,7 @@ module.exports = function astToRelationTree(ast, currentPath) {
     let base = ctx.hashHelper(currentPath) + '-'
 
     if (path.isJSXElement()) {
-      base += getJSXUniqueId(path) + '-' + 'JSXElement-' + path.get('openingElement').get('name').node.name
+      base += getJSXUniqueId(path) + '-' + 'JSXElement-' + ctx.jsxUtils.getTagName(path)
     } else if (path.isClassMethod()) {
       const classMethodPrefix = getClassMethodPrefix(path)
       base += classMethodPrefix + path.get('key').node.name
@@ -166,7 +166,7 @@ module.exports = function astToRelationTree(ast, currentPath) {
   }
 
   function getAttrValueExactly(attrValuePath) {
-    let staticExpression = '', activeExpression = ''
+    let staticExpression = '', activeExpression = []
     // className="title" or className="title1 title2"
     if (attrValuePath.isStringLiteral()) {
       staticExpression = attrValuePath.node.value.trim()
@@ -193,6 +193,24 @@ module.exports = function astToRelationTree(ast, currentPath) {
           staticExpression = getQuasisStaticValueInTemplateLiteral(validValue).trim()
           activeExpression = getQuasisActiveValueInTemplateLiteral(validValue)
         }
+      }
+      // className={xx.classnames("title1", { 'title2-x': x === y })}
+      if (expression.isCallExpression() && expression.get('arguments').length) {
+        expression.get('arguments').forEach(item => {
+          if (item.isLiteral()) {
+            staticExpression += item.node.value + ' '
+          } else if (item.isObjectExpression()) {
+            item.get('properties').forEach(prop => {
+              activeExpression.push(
+                t.conditionalExpression(
+                  prop.get('value').node,
+                  prop.get('key').node,
+                  t.stringLiteral('')
+                )
+              )
+            })
+          }
+        })
       }
     }
     return {

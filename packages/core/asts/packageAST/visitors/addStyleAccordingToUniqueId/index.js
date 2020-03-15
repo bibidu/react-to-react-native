@@ -9,8 +9,7 @@ module.exports = function addStyleAccordingToUniqueId({ ctx, t }) {
     const removeUnUseAttributeFn = ctx.distTagName[uniqueId] === 'Text' ?
       ctx.enums.EXTRACT_CAN_INHERIT_STYLE_NAME_FUNC : ctx.enums.OMIT_CAN_INHERIT_STYLE_NAME_FUNC
 
-      
-    // distTagName
+      // distTagName
     const notInheritStylesheetAst = activeExpressionArray.map(item => {
       return (
         t.CallExpression(
@@ -21,7 +20,7 @@ module.exports = function addStyleAccordingToUniqueId({ ctx, t }) {
           [
             t.MemberExpression(
               t.identifier(ctx.enums.STYLESHEET_NAME),
-              item.node,
+              item.node || item,
               true
             )
           ]
@@ -43,7 +42,7 @@ module.exports = function addStyleAccordingToUniqueId({ ctx, t }) {
         .map(([uniqueId, activeAncestorAst]) => {
           const ancestorAstArray = activeAncestorAst.map(ast => t.MemberExpression(
             t.identifier(ctx.enums.STYLESHEET_NAME),
-            ast.node,
+            ast.node || ast,
             true
           ))
           const uniqueIdStylesheetAst = uniqueId ? t.MemberExpression(
@@ -66,7 +65,7 @@ module.exports = function addStyleAccordingToUniqueId({ ctx, t }) {
     }
 
     const mixinsArray = inheritStylesheetAst.concat(notInheritStylesheetAst)
-    
+
     switch(mixinsArray.length) {
       case 0: return null
       case 1: return t.jsxExpressionContainer(mixinsArray[0])

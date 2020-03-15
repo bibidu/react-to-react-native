@@ -327,6 +327,22 @@ class App extends React.Component{
 }
 ```
 
+```jsx
+<!-- D: classnames node包式的写法 -->
+class App extends React.Component{
+
+  render() {
+    const { active } = this.props
+
+    // case 1
+    return <h1 className={classnames("title1", { 'title2': a === b })}>react2RN</h1>
+    
+    // case 2
+    return <h1 className={xx.classnames("title1", { 'title2': a === b })}>react2RN</h1>
+  }
+}
+```
+
 ### 事件(所有形式)
 
 - 成员变量形式
