@@ -1,287 +1,106 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>React-React native在线转换</title>
-    <link rel="stylesheet" href="./css/app.css">
-    <!-- <link rel="manifest" href="/assets/images/icons/manifest.json"> -->
-    <!-- <link rel="shortcut icon" href="/assets/images/icons/favicon.ico"> -->
-    <!-- <meta name="msapplication-TileColor" content="#da532c"> -->
-    <!-- <meta name="msapplication-TileImage" content="/assets/images/icons/mstile-144x144.png">
-    <meta name="msapplication-config" content="/assets/images/icons/browserconfig.xml"> -->
-    <meta name="theme-color" content="#ffffff">
-    <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
-    <style>
-        body{
-            overflow: hidden;
-        }
-        textarea {
-            outline: none;
-            border: none;
-        }
-        pre {
-            border: none;
-            margin: 0;
-            padding: 2px 10px;
-            border-radius: 0;
-        }
-
-        .tag-container {
-            display: flex;
-            position: absolute;
-            top: -38px;
-            left: 0;
-            height: 36px;
-            line-height: 36px;
-            color: #fff;
-        }
-
-        .tag {
-            background: gray;
-            margin-right: 2px;
-            padding: 0 10px;
-            cursor: pointer;
-        }
-        .tag-right{
-            position: absolute;
-            top: -38px;
-            right: 0;
-            height: 36px;
-            line-height: 36px;
-            color: #fff;
-            background: #0074c1;
-            padding: 0 10px;
-            cursor: pointer;
-        }
-
-        .checked {
-            background: #0074c1;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link rel="stylesheet" href="./css/index.css">
+  <link rel="stylesheet" href="./css/codemirror.css" /> 
+  <script src="../../core/example.js"></script>
+  <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script> 
+  <script src="./js/codemirror.js"></script> 
+  <script src="./js/mode/javascript/javascript.js"></script> 
+  <script src="./js/mode/xml/xml.js"></script> 
+  <script src="./js/mode/jsx/jsx.js"></script> 
 </head>
-
 <body>
-    <div id="root">
-        <header>
-            <nav class="navbar navbar-default navbar-fixed-top">
-                <div class="container-fluid">
-                    <!-- <a href="https://github.com/Microsoft/TypeScript">
-                                <img class="fork-me-ribbon pull-right hidden-xs" src="#..">
-                            </a> -->
-                    <div style="position:relative;" class="collapse navbar-collapse navbar_center" id="navbar-collapse-div">
-                            <a href="http://localhost:3000/docs" class="docs">转译文档</a>
-                            <ul class="nav navbar-nav">
-                            <li>
-                                <a href="#">
-                                    React ——> React native
-                                </a>
-                            </li>
-                        </ul>
-
-                    </div>
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle pull-left collapsed" data-toggle="collapse"
-                            data-target="#navbar-collapse-div">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-                        <!-- <a class="navbar-brand" href="/index.html"><img class="navbar-logo" src=""></a> -->
-                    </div>
-                </div>
-            </nav>
-        </header>
-        <div class="container-fluid update-banner">
-            <div class="container" v-for="t in tips">{{t}}</div>
+  <div id="app">
+    <!-- 顶部bar -->
+    <div class="top-bar">
+      <div class="top-list">
+        <div class="blue-item top-list-item" v-for="item in ['转译文档']">
+          <a href="http://localhost:3000/docs">{{item}}</a>
         </div>
-        <main id="main-content" class="content">
-            <div id="playground-host">
-                <div class="playground-options-container">
-                </div>
-                <div>
-                    <div id="wrapper" style="padding-right: 20px; padding-left: 20px;">
-                        <div style="padding-left: 50px; float: left;">
-                            <select id="examples" style="display: none;">
-                                <option value="">选择...</option>
-                                <option value="walkthrough1.ts">经典JavaScript</option>
-                                <option value="walkthrough1.1.ts">添加类型</option>
-                                <option value="walkthrough2.ts">使用类</option>
-                                <option value="inheritance_1.ts">使用继承</option>
-                                <option value="walkthrough2.1.ts">使用泛型</option>
-                                <option value="union_types_1.ts">联合类型及类型守卫</option>
-                                <option value="raytracer.ts">构建Raytracer</option>
-                            </select>
-                            <!-- <span class="frame-title">TypeScript</span>
-                                    <button class="playground-button" id="share">分享</button>
-                                    <button class="playground-button" id="options-button">编译项</button> -->
-                            <!-- <span id="share-message"></span> -->
-                        </div>
-                        <!-- <div id="rundiv">
-                                    <button class="playground-button" id="execute">运行</button>
-                                    <span class="frame-title">React</span>
-                                </div> -->
-                        <div style="display: flex;justify-content: space-between;border:1px solid;height:700px;">
-                            <div
-                                style="padding:10px;box-sizing:border-box;border: 1px solid grey;flex:1;height:100%;position: relative;">
-                                <div class="tag-container">
-                                    <div @click="toggleFileType(idx)" v-for="(type, idx) in fileTypes" :index="type"
-                                        :class="{tag: true, checked: currentTagIndex === idx}">{{type}}</div>
-                                </div>
-                                <div @click="tapCompile" class="tag-right">compile</div>
-                                <div @click="copy" class="tag-right" style="right:-50px;">copy</div>
-                                <!-- <div id="tag" class="frame-title" style="">scss</div>
-                                        <button id="tag" class="frame-title" style="background:#0074c1;position: absolute;top: -38px;right: 0;height:36px;">
-                                            转换
-                                        </button> -->
-                                <textarea autofocus @input="inputChange" :value="file[fileTypes[currentTagIndex]]" id="textarea"
-                                    style="width:100%;height:100%;font-family: Consolas;font-size:16px;"></textarea>
-                            </div>
-                            <div id="tag" class="frame-title" style="position: absolute;top: -38px;left: 0;">React Native</div>
-                            <div style="padding:10px;box-sizing:border-box;flex:1;height:100%;position: relative;overflow-y:scroll;">
-                                <pre v-for="r of results">{{r}}</pre>
-                            </div>
-                               
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
-        <!-- inject:footer:html -->
-        <footer style="position: fixed; z-index: 100;bottom: 0;left: 0;width: 100%;right:0;">
-            <div class="container-fluid signature-container">
-                <div class="container">
-                    <div class="row signature">
-                        <div class="col-sm-7 col-xs-12">
-                            <!-- <p class="pull-left">制作 <span class="glyphicon glyphicon-heart"></span> 于北京</p> -->
-                            <div class="twitter-buttons pull-left"><a class="twitter-follow-button" href="#">同镇前端</a>
-                            </div>
-                            <div class="twitter-buttons pull-left hidden"><a class="twitter-follow-button"
-                                    href="https://twitter.com/typescriptlang">Twitter @Typescriptlang</a></div>
-                            <!-- <div class="github-buttons pull-left">
-                                        <iframe allowtransparency="true" scrolling="no" frameborder="0" src="https://buttons.github.io/buttons.html#href=https%3A%2F%2Fgithub.com%2FMicrosoft%2FTypeScript&aria-label=Star%20Microsoft%2FTypeScript%20on%20GitHub&data-text=Star&data-show-count=true"
-                                            style="width: 107px; height: 20px; border: none;"></iframe>
-                                    </div> -->
-                        </div>
-                        <!-- <div class="col-sm-5 col-xs-12">
-                                    <img class="ms-logo-footer pull-right" src="#">
-                                    <p class="copyright pull-right" style="margin-left: 6px;">©2012-2018 Microsoft</p>
-                                    <p class="privacy pull-right"><a href="https://go.microsoft.com/fwlink/?LinkId=521839" data-mscc-ic="false">Privacy</a></p>
-                                </div> -->
-                    </div>
-                    <!-- <div class="row signature">
-                                <div class="col-sm-4 col-xs-12">
-                                    <p>推动TypeScript语言在中国的发展</p>
-                                </div>
-                                <div class="col-sm-4 col-xs-12 text-center">
-                                    <p>保持和<a href="http://www.typescriptlang.org/">TypeScript官网</a>基本一致</p>
-                                </div>
-                                <div class="col-sm-4 col-xs-12 text-right">
-                                    <p>© 京ICP备15040086号-2</p>
-                                </div>
-                            </div> -->
-                </div>
-            </div>
-        </footer>
+      </div>
+      <div class="title">react-to-react-native</div>
     </div>
 
-    <script>
-        const input = document.querySelector('#textarea')
-        const output = document.querySelector('#result')
-        const defaultJSX = `import React from 'react'
+    <!-- example -->
+    <div class="example-container">
+      <div class="blue-item example-title">当前测试代码</div>
+      <div
+        :class="[
+          'example-item',
+          { 'example-item-check': currentExampleIndex === index }
+        ]"
+        v-for="(item, index) in examples"
+        @click="toggleExample(index)"
+      >
+        {{item.title}}
+      </div>
+    </div>
 
-const H1 = () => <h1 className="green_color">h1</h1>
-const H2 = () => <h2>h2</h2>
-
-const App = () => {
-  return <>
-    <H1 />
-    <H2 />
-  </>
-}
-
-export default App`
-        const defaultCSS = `h1{
-  color: red;
-}
-.green_color{
-    color: green;
-}`
-        function compile(js, css) {
-            return new Promise(resolve => {
-                fetch('http://localhost:3000/compile', {
-                    body: JSON.stringify({
-                        reactCompString: js,
-                        cssString: css,
-                    }),
-                    headers:{
-                        'content-type':'application/json'
-                    },
-                    method: 'POST'
-                }).then(res => res.json()).then(res => {
-                    resolve(res.data)
-                })
-            })
-        }
-        new Vue({
-            el: '#root',
-            data: {
-                currentTagIndex: 0,
-                fileTypes: ['React.JSX', 'CSS'],
-                file: {
-                    'React.JSX': defaultJSX,
-                    CSS: defaultCSS
-                },
-                result: '',
-                results: [],
-                tips: []
-            },
-            computed: {
-                encodeResult() {
-                    return decodeURIComponent(this.result)
-                }
-            },
-            methods: {
-                toggleFileType(idx) {
-                    this.currentTagIndex = idx
-                },
-                inputChange(e) {
-                    const value = e.target.value
-
-                    this.file[this.fileTypes[this.currentTagIndex]] = value
-                },
-                tapCompile() {
-                    const js = this.file['React.JSX']
-                    if (!js) {
-                        return alert('React.JSX can not be null or undefined!')
-                    }
-                    const css = this.file['CSS'] || ''
-                    compile(js, css).then(({ result }) => {
-                        this.results = result.map((item, idx) => {
-                            const [type, value] = [Object.keys(item)[0], Object.values(item)[0]]
-                            return `${idx !== 0 ? '\n' : ''}████████████████ ${type.toUpperCase()} ████████████████\n` + value
-                        })
-                    })
-                },
-                copy() {
-                    Copy(this.results.join('\n'))
-                }
-            }
-        })
-    function Copy(str) {
-        var save = function(e) {
-            e.clipboardData.setData('text/plain', str);
-            e.preventDefault();
-        };
-        document.addEventListener('copy', save);
-        document.execCommand('copy');
-        document.removeEventListener('copy', save);
-        console.log('复制成功');
-    }
-    </script>
+    <!-- 代码编辑 -->
+    <div class="code-container">
+        <div class="code-container-item pre-code-container">
+          <div class="code-top-bar">
+            <div
+              :class="[
+                'code-top-bar-item',
+                'left',
+                { 'code-top-bar-item-select': inputFileType === index }
+              ]"
+              v-for="(item, index) in inputFileTypes"
+              @click="toggleFileTypes('input', index)"
+            >
+              {{item}}
+            </div>
+            <div class="code-top-bar-item right compile-btn" @click="compile">
+              编译
+            </div>
+          </div>
+          <div class="code-main-area">
+            <textarea class="pre-code"></textarea>
+          </div>
+        </div>
+        <div class="code-container-item after-code-container">
+          <div class="code-top-bar">
+            <div
+              :class="[
+                'code-top-bar-item',
+                'left',
+                { 'code-top-bar-item-select': index === outputFileType }
+              ]"
+              v-for="(item, index) in outputFileTypes"
+              @click="toggleFileTypes('output', index)"
+              v-if="!Array.isArray(outputs[index]) || outputs[index].length > 0"
+            >
+              <div v-if="Array.isArray(outputs[index]) && outputs[index].length" class="count">
+                {{outputs[index].length}}
+              </div>
+              {{item}}
+            </div>
+          </div>
+          <div class="code-main-area">
+            <div class="loading" v-show="loading">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <textarea class="after-code"></textarea>
+          </div>
+        </div>
+    </div>
+    <!-- footer -->
+    <div class="footer">
+      <div class="footer-item">
+        <a href="">同镇前端</a>
+      </div>
+    </div>
+  </div>
+  <script src="./js/index.js"></script>
 </body>
-
 </html>
