@@ -1,13 +1,13 @@
 {
-  "name": "core",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "react-to-react-native",
+  "version": "0.0.2",
+  "description": "react组件转换react-native组件",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "bibidu",
   "license": "ISC",
   "dependencies": {
     "@babel/parser": "^7.7.7",
@@ -24,5 +24,13 @@
   },
   "devDependencies": {
     "@babel/generator": "^7.7.7"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bibidu/react-to-react-native.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bibidu/react-to-react-native/issues"
+  },
+  "homepage": "https://github.com/bibidu/react-to-react-native#readme"
 }
