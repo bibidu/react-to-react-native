@@ -29,8 +29,8 @@ module.exports = function generatePureHtmlString(info, key = 'ROOT', tabSize = 0
 
     currentArray = fsRelations[`${filePathHash}-Class-${rootClassName}`] ||
       fsRelations[`${filePathHash}-VariableDecl-${rootClassName}`]
-    
-    if (!currentArray || !currentArray.length) {
+
+      if (!currentArray || !currentArray.length) {
       throw Error('generatePureHtmlString找不到入口render')
     }
   }
@@ -44,13 +44,13 @@ module.exports = function generatePureHtmlString(info, key = 'ROOT', tabSize = 0
         const idAttr = id ? ` id="${id}"` : ''
         const activeTextAttr = activeAddText ? ` ${activeAddTextMark}="${activeAddText}"` : ''
 
-        if (!ctx.isUserComponent(tagName)) {
+        if (['Fragment', 'React.Fragment'].every(item => item !== tagName) && !ctx.isUserComponent(tagName)) {
           html += `${block}<${tagName} ${uniqueIdName}="${uniqueId}"${classAttr}${idAttr}${activeTextAttr}>\n`
         }
 
         html += generatePureHtmlString(info, item, tabSize + TAB_SIZE)
 
-        if (!ctx.isUserComponent(tagName)) {
+        if (['Fragment', 'React.Fragment'].every(item => item !== tagName) && !ctx.isUserComponent(tagName)) {
           html += `${block}</${tagName}>\n`
         }
       } else {
