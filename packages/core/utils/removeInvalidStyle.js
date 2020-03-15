@@ -14,12 +14,13 @@ module.exports = function removeInvalidStyle(styles) {
     // uniqueNodeInfo中不含有stable selector
     if (info) {
       const { tagName } = info
+      
       if (!this.isUserComponent(tagName)) {
         const fnName = isStaticText(tagName) ? 'extract' : 'omit'
-        this[fnName](styles, ctx.constants.canInheritStyleName)
+        styles = this[fnName](styles, ctx.constants.canInheritStyleName)
       }
       if (!isStaticText(tagName) && !this.isUserComponent(tagName)) {
-        this.omit(styles, ctx.constants.canInheritStyleName)
+        styles = this.omit(styles, ctx.constants.canInheritStyleName)
       }
     }
   })

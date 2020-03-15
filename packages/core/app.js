@@ -231,12 +231,6 @@ module.exports = class ReactToReactNative {
 
     // 计算继承样式
     this.inheritStyle = this.getInheritStyle()
-    // console.log(this.pureHtmlString);
-    // console.log(this.externalToInlineStyle);
-    // 移除无效样式（行内的非继承样式、非行内的继承样式）
-    // this.removedInvalidStyle = {
-    //   exceptInherit: this.removeInvalidStyle(this.mixinedStyleExceptInherit),
-    // }
     // 转换成RN的stylesheet结果
     this.convertedStyleToRN = {
       exceptInherit: this.convertStyleToRN(this.mixinedStyleExceptInherit),
