@@ -66,6 +66,7 @@ module.exports = class ReactToReactNative {
     this.addDistTagName = (uniqueId, distTagName) => this.distTagName[uniqueId] = distTagName
     
     this.warnings = new Set() /* 保存编译过程的警告 */
+    this.errors = new Set() /* 保存编译过程的报错 */
 
     this.initAsts()
     this.initCompilers()
@@ -230,17 +231,16 @@ module.exports = class ReactToReactNative {
 
     // 计算继承样式
     this.inheritStyle = this.getInheritStyle()
-
+    // console.log(this.pureHtmlString);
+    // console.log(this.externalToInlineStyle);
     // 移除无效样式（行内的非继承样式、非行内的继承样式）
-    this.removedInvalidStyle = {
-      exceptInherit: this.removeInvalidStyle(this.mixinedStyleExceptInherit),
-    }
-
+    // this.removedInvalidStyle = {
+    //   exceptInherit: this.removeInvalidStyle(this.mixinedStyleExceptInherit),
+    // }
     // 转换成RN的stylesheet结果
     this.convertedStyleToRN = {
-      exceptInherit: this.convertStyleToRN(this.removedInvalidStyle.exceptInherit),
+      exceptInherit: this.convertStyleToRN(this.mixinedStyleExceptInherit),
     }
-
     // package
     Object.entries(this.graph).forEach(([filePath, component]) => {
       this.currentCompilePath = filePath
@@ -309,6 +309,7 @@ module.exports = class ReactToReactNative {
     const stylesheetContent = sortAndStringify(this.finalStyleObject)
     const rnUtilsContent = require('./config/distUtils').call(this)
     const warnings = Array.from(this.warnings)
+    const errors = Array.from(this.errors)
 
     if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {
       const fs = require('fs')
@@ -326,6 +327,8 @@ module.exports = class ReactToReactNative {
         utils: rnUtilsContent
       }, {
         warnings: warnings
+      }, {
+        errors: errors
       })
     }
     
