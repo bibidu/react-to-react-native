@@ -52,7 +52,7 @@ const vue = new Vue({
       this.initCodeMirror()
     },
     initCodeMirror() {
-      this.examples = window.examples || []
+      this.examples = examples || []
 
       this.preCodeMir = this.createCodeMirror(exampleEl)
       this.afterCodeMir = this.createCodeMirror(resultEl, { readOnly: true })
