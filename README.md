@@ -483,6 +483,49 @@ class App extends React.Component{
 
 ## ⚠️ 注意项
 
+### ⚠️ 动态样式的标记
+- 对于运行时动态计算的类名，需要进行标记(在css中的动态类名下添加"stable: xxx" 标记)
+
+  ```scss
+  .primary-btn{
+    /* stable: primary-btn */
+    background: blue; 
+  }
+  .danger-btn{
+    /* stable: danger-btn */
+    background: red;
+  }
+  ```
+
+  ```jsx
+  activeClass = (type) => `${type}-btn`
+
+  render() {
+    const { type } = this.props
+    return <button className={`btn ${this.activeClass(type)}`}>react2RN</button>
+  }
+  ```
+
+### ⚠️ 动态文本的标记
+- 对于运行时动态节点的渲染结果为文本时，需要进行标记(在该节点父级添加"rn-text" 标记)
+
+  ```jsx
+  import React from 'react'
+
+  class App extends React.Component {
+
+    bar = (value) => <div rn-text>{value}</div>
+
+    render() {
+      return <div>{this.bar(123)}</div>
+    }
+
+  }
+
+  export default App
+
+  ```
+
 ### ⚠️ 样式的优先级
 - 动态样式和静态样式同时存在时，优先级以动态样式为主。
 
