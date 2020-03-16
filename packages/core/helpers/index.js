@@ -3,6 +3,7 @@ const createGraph = require('./createGraph')
 const uniqueId = require('./uniqueId')
 const astToRelationTree = require('./astToRelationTree')
 const convertTagReference = require('./convertTagReference')
+const styleFixer = require('./styleFixer')
 
 module.exports = function () {
   ;[
@@ -11,5 +12,6 @@ module.exports = function () {
     uniqueId,
     astToRelationTree,
     convertTagReference,
+    styleFixer,
   ].forEach(helper => this[helper.name + 'Helper'] = helper)
 }

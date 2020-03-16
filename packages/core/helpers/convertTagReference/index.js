@@ -38,7 +38,7 @@ module.exports = function convertTagReference(ast, {
     if (ctx.isUserComponent(tagName)) return
 
     const { tag, styles = {} } = resolves({path, t, ctx})
-    
+
     addUsingComponent(tag) // 收集使用到的React Native组件
     replaceTagName(path, t, tag) // 替换标签名
     saveStyleFromTagName(path, styles) // 保存标签自带样式

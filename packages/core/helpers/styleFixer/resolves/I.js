@@ -1,10 +1,11 @@
 module.exports = function({path, ctx, t, constant}) {
+  let uniqueId
 
   function getBgUrlPathAst(path, activeBgUrlValue) {
     const uniqueIdPath = ctx.jsxUtils.getJSXAttributeValue(path, ctx.enums.UNIQUE_ID)
-    const uniqueId = uniqueIdPath.node.value
+    uniqueId = uniqueIdPath.node.value
 
-    const staticBgUrlPath = ctx.externalToInlineStyle[uniqueId]['backgroundUrl']
+    const staticBgUrlPath = ctx.externalToInlineStyle[uniqueId][ctx.enums.MIDWAY_BGURL]
     // console.log(ctx.cssObject.stableClassNames);
     const isHttpOrHttps = (path) => /^(http|https)\:/.test(path)
     
@@ -55,10 +56,7 @@ module.exports = function({path, ctx, t, constant}) {
   const bgUrlPathAst = getBgUrlPathAst(path)
 
   if (!bgUrlPathAst) {
-    return {
-      tag: 'View',
-      styles: {}
-    }
+    return
   }
 
   const attrValueIsAst = t.JSXExpressionContainer(
@@ -74,14 +72,12 @@ module.exports = function({path, ctx, t, constant}) {
   )
   ctx.jsxUtils.addJSXAttribute(path, 'source', attrValueIsAst, { attrValueIsAst: true })
   
-  return {
-    tag: 'Image',
-    styles: {}
+  // 替换标签名
+  path.get('openingElement.name').replaceWith(t.JSXIdentifier('Image'))
+  if (path.get('closingElement')) {
+    path.get('closingElement.name').replaceWith(t.JSXIdentifier('Image'))
   }
-  // } else {
-  //   return {
-  //     tag: 'View',
-  //     styles: {}
-  //   }
-  // }
+  
+  // 删除backgroundUrl中间变量
+  delete ctx.convertedStyleToRN.exceptInherit[uniqueId][ctx.enums.MIDWAY_BGURL]
 }

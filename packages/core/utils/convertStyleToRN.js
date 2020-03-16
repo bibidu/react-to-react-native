@@ -70,7 +70,7 @@ const shouldPreprocessAttr = [
         // 暂只支持url
         const matches = value.match(/url\(['"]([\w\W]+)['"]\)/)
         if (matches && matches.length > 1) {
-          attrs['backgroundUrl'] = matches[1]
+          attrs[ctx.enums.MIDWAY_BGURL] = matches[1]
         }
       })
       delete obj[attrName]

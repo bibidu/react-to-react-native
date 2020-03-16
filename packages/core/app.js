@@ -195,29 +195,6 @@ module.exports = class ReactToReactNative {
       collections: this.collections,
     })
 
-    // 外联转对象
-    this.externalToInlineStyle = this.convertExternalToInline({
-      html: this.pureHtmlString,
-      css: this.cssObject,
-      uniqueIdName: this.enums.HTML_UNIQUE_ID_ATTRNAME,
-      activeAddTextMark: this.enums.ACTIVE_ADD_TEXT_MARK,
-    })
-
-    // 混合所有样式（除继承样式）
-    this.mixinedStyleExceptInherit = this.mixinStyleExceptInherit({
-      external: this.externalToInlineStyle,
-      inline: this.initialInlineStyle,
-      self: this.tagSelfStyle,
-      cssObject: this.cssObject,
-    })
-
-    // 计算继承样式
-    this.inheritStyle = this.getInheritStyle()
-    // 转换成RN的stylesheet结果
-    this.convertedStyleToRN = {
-      exceptInherit: this.convertStyleToRN(this.mixinedStyleExceptInherit),
-    }
-    
     // 转换标签、事件
     Object.entries(this.graph).forEach(([filePath, component]) => {
       this.currentCompilePath = filePath
@@ -237,6 +214,41 @@ module.exports = class ReactToReactNative {
       }
     })
     
+    // 外联转对象
+    this.externalToInlineStyle = this.convertExternalToInline({
+      html: this.pureHtmlString,
+      css: this.cssObject,
+      uniqueIdName: this.enums.HTML_UNIQUE_ID_ATTRNAME,
+      activeAddTextMark: this.enums.ACTIVE_ADD_TEXT_MARK,
+    })
+
+    // 混合所有样式（除继承样式）
+    this.mixinedStyleExceptInherit = this.mixinStyleExceptInherit({
+      external: this.externalToInlineStyle,
+      inline: this.initialInlineStyle,
+      self: this.tagSelfStyle,
+      cssObject: this.cssObject,
+    })
+
+    // 计算继承样式
+    this.inheritStyle = this.getInheritStyle()
+
+    // 转换成RN的stylesheet结果
+    this.convertedStyleToRN = {
+      exceptInherit: this.convertStyleToRN(this.mixinedStyleExceptInherit),
+    }
+    
+    // 修改标签、样式相关
+    Object.entries(this.graph).forEach(([filePath, component]) => {
+      const {
+        ast,
+        fileType,
+      } = component
+      if (fileType === 'react') {
+        this.styleFixerHelper(ast)
+      }
+    })
+
     // package
     Object.entries(this.graph).forEach(([filePath, component]) => {
       this.currentCompilePath = filePath
@@ -331,15 +343,16 @@ module.exports = class ReactToReactNative {
     // 额外需要拷贝的资源
     const extraCopyResources = Array.from(this.copyResources)
 
-    if (extraCopyResources.length) {
-      const fs = require('fs-extra')
-      const path = require('path')
-      extraCopyResources.forEach(resourcePath => {
-        const entryRelativePath = path.relative(this.entryPath, resourcePath)
-        const exportPath = path.resolve(this.exportPath, entryRelativePath)
-        console.log(`exportPath ${exportPath}`);
-        fs.copySync(resourcePath, exportPath)
-      })
+    if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {
+      if (extraCopyResources.length) {
+        const fs = require('fs-extra')
+        const path = require('path')
+        extraCopyResources.forEach(resourcePath => {
+          const entryRelativePath = path.relative(this.entryPath, resourcePath)
+          const exportPath = path.resolve(this.exportPath, entryRelativePath)
+          fs.copySync(resourcePath, exportPath)
+        })
+      }
     }
 
     if (this.compileType === this.enums.SINGLE_FILE) {

@@ -16,4 +16,5 @@ module.exports = {
   EVENT_TARGET_FUNC: 'eventPolyfill', // 最终生成的rnUtils中的eventTarget函数
   CAN_INHERIT_STYLE_NAMES: 'canInheritStyleName', // 最终生成的rnUtils中‘可继承的文本css属性名’
   RNUTILS_FILE_NAME: 'tools',
+  MIDWAY_BGURL: 'backgroundUrl'// 中间产物(用于描述backgroundUrl的图片地址)
 }

@@ -114,10 +114,6 @@ module.exports = function resolves({
     return resolve('TouchableOpacity', true)
   }
 
-  if (tagName === 'i') {
-    return resolve('I', true)
-  }
-
   if (tagName === 'img') {
     return resolve('Image', true)
   }
