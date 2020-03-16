@@ -60,7 +60,7 @@ const jsxUtils = {
   } = {
     attrValueIsAst: false
   }) {
-    if (typeof attrValue === 'object') {
+    if (typeof attrValue === 'object' && attrValueIsAst === false) {
       throw Error('不支持添加对象类型的JSXAttribute')
     }
     const jsxAttributePath = t.jsxAttribute(

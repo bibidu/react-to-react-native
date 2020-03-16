@@ -59,6 +59,23 @@ const shouldPreprocessAttr = [
     actions: (obj, attrName, attrValue) => {
       delete obj[attrName]
     }
+  },
+  {
+    match: (attrName, attrValue) => attrName === 'background' && /\s*:*url\(/.test(attrValue),
+    warnings: [],
+    actions: (obj, attrName, attrValue) => {
+      const attrs = {}
+      const backgroundValues = attrValue.split(' ')
+      backgroundValues.forEach(value => {
+        // 暂只支持url
+        const matches = value.match(/url\(['"]([\w\W]+)['"]\)/)
+        if (matches && matches.length > 1) {
+          attrs['backgroundUrl'] = matches[1]
+        }
+      })
+      delete obj[attrName]
+      Object.assign(obj, attrs)
+    }
   }
 ]
 
@@ -103,7 +120,7 @@ function _transformMain(obj) {
 function _transform(arrayStyle) {
   const caches = {}
   const deleteIdx = []
-  
+
   arrayStyle = arrayStyle.filter((_, idx) => !deleteIdx.includes(idx))
   const result = transform(arrayStyle)
   Object.entries(caches).forEach(([k, v]) => {

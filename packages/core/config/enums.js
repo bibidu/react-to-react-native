@@ -4,6 +4,7 @@ module.exports = {
   STYLESHEET_NAME: 'styles', // 生成stylesheet的name
   STYLESHEET_FILE_NAME: 'stylesheet', // 生成stylesheet文件名
   STATIC_MARK: 'rn-text', // 子元素是静态文本的标记
+  BGURL_ATTR_MARK: 'rn-bgurl', // 当前元素含有background: url(path)属性的标记
   ACTIVE_ADD_TEXT_MARK: '__active', // 动态添加的文本标签属性名
   SINGLE_FILE: 'single_file', // 编译类型为单文件
   MULTIPLE_FILE: 'multiple_file', // 编译类型为多文件

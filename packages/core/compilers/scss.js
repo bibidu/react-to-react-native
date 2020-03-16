@@ -3,7 +3,7 @@ const sass = require('node-sass')
 module.exports = function scss(code, filePath) {
   return new Promise((resolve, reject) => {
     this.log('scssCompiler')
-    console.log(code);
+
     if (!code.trim()) {
       return resolve('')
     }

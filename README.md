@@ -39,6 +39,54 @@
 
 ## ✌️支持写法
 
+### 支持的html标签
+- div
+- span
+- h1 - h6
+- p
+- button
+- textarea
+- image
+- Fragment/React.Fragment
+- i
+
+### 支持继承的属性名
+- line-height
+- color
+- font-size
+- text-align
+- font-weight
+
+### 支持的事件
+- onClick
+- onChange
+
+### 支持的scss写法
+- 变量声明
+
+  ```scss
+  $BASE_COLOR: red;
+  .foo {
+    color: $BASE_COLOR;
+  }
+  ```
+- 样式嵌套
+
+  ```scss
+  .foo {
+    color: red;
+    &:after{
+      content: '!';
+    }
+    .bar { /* ... */ }
+  }
+  ```
+- 引入其他scss文件
+
+  ```scss
+  @import '../../libs/assets/rem.scss';
+  ```
+
 ### React引入
 - `import React from 'react'`
 
@@ -408,51 +456,29 @@ class App extends React.Component{
   const wxImg = require('./imgs/wx.png') // commonJs引入
   ```
 
-### 支持的html标签
-- div
-- span
-- h1 - h6
-- p
-- button
-- textarea
-- image
-- Fragment/React.Fragment
+### background: url的支持
 
-### 支持继承的属性名
-- line-height
-- color
-- font-size
-- text-align
-- font-weight
-
-### 支持的事件
-- onClick
-- onChange
-
-### 支持的scss写法
-- 变量声明
+- i标签的静态background-url
 
   ```scss
-  $BASE_COLOR: red;
-  .foo {
-    color: $BASE_COLOR;
+  .tz-toast-icon-base{
+    background: url('./static/img/tz-toast-success.png') center no-repeat;
   }
   ```
-- 样式嵌套
 
-  ```scss
-  .foo {
-    color: red;
-    &:after{
-      content: '!';
-    }
-    .bar { /* ... */ }
+  ```jsx
+  render() {
+    return <i className={classNames("tz-toast-icon-base", iconClass)}></i>
   }
   ```
-- 引入其他scss文件
 
-  ```scss
-  @import '../../libs/assets/rem.scss';
+  ```jsx
+  <!-- 编译后: -->
+  render() {
+    return <Image source={_util.imgPolyfill(
+      require('./static/img/tz-toast-success.png')
+    )}></Image>
+  }
   ```
 
 ## ⚠️ 注意项

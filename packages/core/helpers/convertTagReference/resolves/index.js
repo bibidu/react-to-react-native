@@ -83,16 +83,18 @@ module.exports = function resolves({
   const hasTapEvent = constant.tapEvents.some(eventName =>
     ctx.jsxUtils.getJSXAttributeValue(path, eventName)
   )
-  
+
   function resolve(newTagName, hasExtraAction) {
     if (hasExtraAction) {
       // extraAction：对节点进行（除替换标签名、替换事件名）额外的操作，如添加新的子节点
-      require(`./extraAction/${newTagName}`)({
+      const value = require(`./extraAction/${newTagName}`)({
         path,
         t,
         ctx,
         constant,
       })
+
+      if (value) return value
     }
     return {
       tag: newTagName,
@@ -110,6 +112,10 @@ module.exports = function resolves({
 
   if (hasTapEvent) {
     return resolve('TouchableOpacity', true)
+  }
+
+  if (tagName === 'i') {
+    return resolve('I', true)
   }
 
   if (tagName === 'img') {

@@ -67,6 +67,7 @@ module.exports = class ReactToReactNative {
     
     this.warnings = new Set() /* 保存编译过程的警告 */
     this.errors = new Set() /* 保存编译过程的报错 */
+    this.copyResources = new Set() /* 保存需要额外拷贝的资源绝对路径 */
 
     this.initAsts()
     this.initCompilers()
@@ -194,25 +195,6 @@ module.exports = class ReactToReactNative {
       collections: this.collections,
     })
 
-    // 转换标签、事件
-    Object.entries(this.graph).forEach(([filePath, component]) => {
-      this.currentCompilePath = filePath
-      const {
-        ast,
-        fileType,
-      } = component
-      if (fileType === 'react') {
-        this.convertTagReferenceHelper(ast, {
-          addUsingComponent: (name) => {
-            component.usingComponent = (component.usingComponent || [])
-            if (!component.usingComponent.includes(name)) {
-              component.usingComponent.push(name)
-            }
-          }
-        })
-      }
-    })
-    
     // 外联转对象
     this.externalToInlineStyle = this.convertExternalToInline({
       html: this.pureHtmlString,
@@ -235,6 +217,26 @@ module.exports = class ReactToReactNative {
     this.convertedStyleToRN = {
       exceptInherit: this.convertStyleToRN(this.mixinedStyleExceptInherit),
     }
+    
+    // 转换标签、事件
+    Object.entries(this.graph).forEach(([filePath, component]) => {
+      this.currentCompilePath = filePath
+      const {
+        ast,
+        fileType,
+      } = component
+      if (fileType === 'react') {
+        this.convertTagReferenceHelper(ast, {
+          addUsingComponent: (name) => {
+            component.usingComponent = (component.usingComponent || [])
+            if (!component.usingComponent.includes(name)) {
+              component.usingComponent.push(name)
+            }
+          }
+        })
+      }
+    })
+    
     // package
     Object.entries(this.graph).forEach(([filePath, component]) => {
       this.currentCompilePath = filePath
@@ -326,6 +328,20 @@ module.exports = class ReactToReactNative {
       })
     }
     
+    // 额外需要拷贝的资源
+    const extraCopyResources = Array.from(this.copyResources)
+
+    if (extraCopyResources.length) {
+      const fs = require('fs-extra')
+      const path = require('path')
+      extraCopyResources.forEach(resourcePath => {
+        const entryRelativePath = path.relative(this.entryPath, resourcePath)
+        const exportPath = path.resolve(this.exportPath, entryRelativePath)
+        console.log(`exportPath ${exportPath}`);
+        fs.copySync(resourcePath, exportPath)
+      })
+    }
+
     if (this.compileType === this.enums.SINGLE_FILE) {
       return this.tasks
     } else {

@@ -6,6 +6,7 @@ module.exports = function clean({ ctx, t }) {
       const marks = [
         ctx.enums.ACTIVE_ADD_TEXT_MARK,
         ctx.enums.STATIC_MARK,
+        ctx.enums.BGURL_ATTR_MARK,
         ctx.enums.UNIQUE_ID,
         'className',
         'id',
