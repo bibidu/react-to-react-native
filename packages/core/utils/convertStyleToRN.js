@@ -40,14 +40,16 @@ const shouldPreprocessAttr = [
     match: (attrName, attrValue) => attrName === 'position' && attrValue === 'fixed',
     warnings: [
       'rn 不支持position: fixed属性，请将超出屏幕的部分使用ScrollView包裹',
-      'rn中绝对定位的所有父级必须均为绝对定位，可通过添加父级style为position: absolute;top:0;left:0;width:100%;height:100%;'
+      'rn中绝对定位的所有父级必须均为绝对定位，可通过添加父级style为position: absolute;top:0;left:0;width:100%;height:100%;',
+      '添加的绝对定位父级位置错误时，可通过设置justifyContent、alignItems、flexDirection解决'
     ],
     actions: (obj) => obj['position'] = 'absolute'
   },
   {
     match: (attrName, attrValue) => attrName === 'position' && attrValue === 'absolute',
     warnings: [
-      'rn中绝对定位的所有父级必须均为绝对定位，可通过添加父级style为position: absolute;top:0;left:0;width:100%;height:100%;'
+      'rn中绝对定位的所有父级必须均为绝对定位，可通过添加父级style为position: absolute;top:0;left:0;width:100%;height:100%;',
+      '添加的绝对定位父级位置错误时，可通过设置justifyContent、alignItems、flexDirection解决'
     ],
     actions: (obj) => {}
   },
