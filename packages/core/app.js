@@ -282,11 +282,11 @@ module.exports = class ReactToReactNative {
         usingComponent,
         getResourceRelativePath: (currentResoucePath) => {
           if (!exportPath) {
-            this.errors.add(`不存在${exportPath}`)
-            return
+            return `./${currentResoucePath}`
           }
           const path = require('path')
           const resourceDist = path.join(path.dirname(this.exportPath), currentResoucePath)
+          // 单文件模式时不存在exportPath
           const currentDist = exportPath
           const relativePath = path.relative(path.dirname(currentDist), resourceDist)
       
