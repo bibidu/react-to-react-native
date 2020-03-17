@@ -282,8 +282,10 @@ module.exports = class ReactToReactNative {
         usingComponent,
         getResourceRelativePath: (currentResoucePath) => {
           const path = require('path')
-          const resourcePath = path.resolve(path.dirname(this.entryPath), currentResoucePath)
-          const relativePath = path.relative(path.dirname(filePath), resourcePath)
+          const resourceDist = path.join(path.dirname(this.exportPath), currentResoucePath)
+          const currentDist = exportPath
+          const relativePath = path.relative(path.dirname(currentDist), resourceDist)
+      
           return relativePath.startsWith('.') ? relativePath : `./${relativePath}`
         },
       })
