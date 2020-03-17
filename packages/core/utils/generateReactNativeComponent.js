@@ -19,11 +19,11 @@ module.exports = function generateReactNativeComponent({
   }
   
   function genRuntimeUtils() {
-    return `import * as ${ctx.enums.RNUTILS_USE_NAME} from '${getResourceRelativePath('./' + ctx.enums.RNUTILS_FILE_NAME + '.js')}'`
+    return `import * as ${ctx.enums.RNUTILS_USE_NAME} from '${getResourceRelativePath(ctx.enums.RNUTILS_FILE_NAME + '.js')}'`
   }
 
   function genStyleSheet(finalStyleObject) {
-    return `import ${this.enums.STYLESHEET_NAME} from '${getResourceRelativePath('./' + this.enums.STYLESHEET_FILE_NAME + '.js')}'`
+    return `import ${this.enums.STYLESHEET_NAME} from '${getResourceRelativePath(this.enums.STYLESHEET_FILE_NAME + '.js')}'`
   }
 
   function genTopBanner() {
