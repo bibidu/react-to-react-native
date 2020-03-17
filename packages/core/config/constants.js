@@ -13,6 +13,7 @@ const resolves = {
   '.js': 'react',
   '.ts': 'react',
   '.tsx': 'react',
+  '.css': 'css',
   '.scss': 'css',
   '.sass': 'css',
   '.png': 'img',
