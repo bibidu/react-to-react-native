@@ -39,7 +39,7 @@ module.exports = function astToRelationTree(ast, currentPath) {
     const expressionCodeArr = templateLiteralPath.get('expressions')
     return expressionCodeArr
   }
-
+  
   function getParentNodeName(path) {
     const parentNode = path.findParent((p) => (
       p.isJSXElement() ||
@@ -261,6 +261,19 @@ module.exports = function astToRelationTree(ast, currentPath) {
       }
     }
 
+    function getExportDefaultType() {
+      const parent = path.findParent((p) => p.isProgram())
+
+      for (let i = 0; i < parent.get('body').length; i++) {
+        const item = parent.get(`body.${i}`)
+        if (item.type === 'ExportDefaultDeclaration') {
+          if (item.get('declaration.id').isIdentifier({ name: tagName })) {
+            return getCurrentFileUniqueName(item.get('declaration'))
+          }
+        }
+      }      
+    }
+
     // 1. import Foo from './foo'
     let mapName = ''
     if (mapName = getImportType()) {
@@ -274,7 +287,12 @@ module.exports = function astToRelationTree(ast, currentPath) {
     if (mapName = getPureFunctionType()) {
       return mapName
     }
-  
+
+    // 4. export default class T4
+    if (mapName = getExportDefaultType()) {
+      return mapName
+    }
+    
     // TODO: add 支持当前文件的纯函数类型组件
     const msg = `未识别到引用的组件 ${tagName}`
     throw Error(msg)
@@ -326,7 +344,12 @@ module.exports = function astToRelationTree(ast, currentPath) {
     ExportDefaultDeclaration(path) {
       if (!atLeastOneJSXElement) {
         const filePathHash = ctx.hashHelper(currentPath)
-        const rootClassName = path.get('declaration').node.name
+        let rootClassName
+        if (path.get('declaration').isIdentifier()) {
+          rootClassName = path.get('declaration').node.name
+        } else if (path.get('declaration').isClassDeclaration()) {
+          rootClassName = path.get('declaration.id').node.name
+        }
         const currentClassNodeName = `${filePathHash}-Class-${rootClassName}`
         ctx.addFsRelation(currentClassNodeName, getComponentMapName(rootClassName, currentPath, path))
       }
