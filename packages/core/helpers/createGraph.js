@@ -42,8 +42,10 @@ async function _analysisEntry(
 
   async function _findGraph(entryPath, info) {
     let code = fs.readFileSync(entryPath, 'utf8')
-    const {
+    let {
       fileType,
+    } = info
+    const {
       importSource = '',
       exportPath,
     } = info
@@ -54,6 +56,9 @@ async function _analysisEntry(
       exportPath,
       importSource,
     }
+    // if (!/import.+from[\s'"]+react/.test(code)) {
+    //   fileType = graph[entryPath].fileType = 'js'
+    // }
     if (fileType === 'react') {
       if (['.ts', '.tsx'].some(prefix => entryPath.endsWith(prefix))) {
         code = await ctx.typescriptCompiler(code)
@@ -109,13 +114,13 @@ async function _analysisEntry(
       importSource: null,
     }
   }
-  
+
   return graph
 }
 
 function resolveFile(entryPath, importSource) {
   const path = require('path')
-
+  
   const importAbsolutePath = path.resolve(path.dirname(entryPath), importSource)
   const file = ctx.isFile(importAbsolutePath)
   if (!file) {
