@@ -1,4 +1,4 @@
-module.exports = function({path, ctx, t, constant}) {
+module.exports = function({path, ctx, t, constant, addUsingComponent}) {
   let uniqueId
 
   function getBgUrlPathAst(path, activeBgUrlValue) {
@@ -80,4 +80,6 @@ module.exports = function({path, ctx, t, constant}) {
   
   // 删除backgroundUrl中间变量
   delete ctx.convertedStyleToRN.exceptInherit[uniqueId][ctx.enums.MIDWAY_BGURL]
+
+  addUsingComponent('Image')
 }
