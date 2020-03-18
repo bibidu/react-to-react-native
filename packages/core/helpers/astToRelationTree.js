@@ -26,20 +26,57 @@ module.exports = function astToRelationTree(ast, currentPath) {
   ctx = this
 
   function getQuasisStaticValueInTemplateLiteral(templateLiteralPath){
+    let static = ''
     const quasis = templateLiteralPath.get('quasis')
-    let value = ''
-    for (let item of quasis) {
-      const current = item.get('value').node.raw
-      current && (value += `${current} `)
-    }
-    return value
-  }
+    quasis.forEach((item, index) => {
+      const startWithEmpty = /^\s/.test(item.node.value.raw)
+      const endWithEmpty = /\s$/.test(item.node.value.raw)
+      const tpls = item.node.value.raw.split(' ').filter(Boolean)
 
-  function getQuasisActiveValueInTemplateLiteral(templateLiteralPath) {
-    const expressionCodeArr = templateLiteralPath.get('expressions')
-    return expressionCodeArr
+      if (tpls.length) {
+        const first = tpls.shift()
+        if (startWithEmpty || index === 0) {
+          static += first
+        }
+        if (tpls.length) {
+          !endWithEmpty && tpls.pop()
+          static += tpls.join(' ')
+        }
+      }
+    })
+    return static
   }
   
+  function getQuasisActiveValueInTemplateLiteral(templateLiteralPath) {
+    const active = []
+    const expressionCodeArr = templateLiteralPath.get('expressions')
+    const quasis = templateLiteralPath.get('quasis')
+    expressionCodeArr.forEach((item, index) => {
+      const isLast = expressionCodeArr.length - 1 === index
+      const prefix = /\s$/.test(quasis[index].node.value.raw) ?
+        [] : [quasis[index].node.value.raw.split(' ').pop()]
+      const suffix = !isLast && !/^\s/.test(quasis[index + 1].node.value.raw) ?
+        [quasis[index + 1].node.value.raw.split(' ').shift()] : []
+
+      const newQuasis = prefix.concat(suffix).concat('')
+      active.push(
+        t.TemplateLiteral(
+          newQuasis.map((item, idx) => (
+            t.TemplateElement(
+              {
+                raw: item,
+                value: item,
+              },
+              Boolean(newQuasis.length - 1 === idx)
+            )
+          )),
+          [item.node]
+        )
+      )
+    })
+    return active
+  }
+
   function getParentNodeName(path) {
     const parentNode = path.findParent((p) => (
       p.isJSXElement() ||
@@ -189,8 +226,9 @@ module.exports = function astToRelationTree(ast, currentPath) {
           staticExpression = validValue.node.value.trim()
         }
         // className={[`title1 ${other} title2`]}
+        // className={`title1 title-${activeIndex}`}
         if (validValue.isTemplateLiteral()) {
-          staticExpression = getQuasisStaticValueInTemplateLiteral(validValue).trim()
+          staticExpression = getQuasisStaticValueInTemplateLiteral(validValue)
           activeExpression = getQuasisActiveValueInTemplateLiteral(validValue)
         }
       }
