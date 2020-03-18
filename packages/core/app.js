@@ -43,6 +43,7 @@ module.exports = class ReactToReactNative {
 
     this.fsRelations = {} /* 节点间关系 */
     this.addFsRelation = (k, v) => {
+      if (k === v) return
       const sons = this.fsRelations[k]
       if (!sons) {
         this.fsRelations[k] = []
@@ -194,7 +195,7 @@ module.exports = class ReactToReactNative {
       hashHelper: this.hashHelper,
       collections: this.collections,
     })
-
+    
     // 转换标签、事件
     Object.entries(this.graph).forEach(([filePath, component]) => {
       this.currentCompilePath = filePath
@@ -221,7 +222,7 @@ module.exports = class ReactToReactNative {
       uniqueIdName: this.enums.HTML_UNIQUE_ID_ATTRNAME,
       activeAddTextMark: this.enums.ACTIVE_ADD_TEXT_MARK,
     })
-
+    
     // 混合所有样式（除继承样式）
     this.mixinedStyleExceptInherit = this.mixinStyleExceptInherit({
       external: this.externalToInlineStyle,
@@ -245,7 +246,14 @@ module.exports = class ReactToReactNative {
         fileType,
       } = component
       if (fileType === 'react') {
-        this.styleFixerHelper(ast)
+        this.styleFixerHelper(ast, {
+          addUsingComponent: (name) => {
+            component.usingComponent = (component.usingComponent || [])
+            if (!component.usingComponent.includes(name)) {
+              component.usingComponent.push(name)
+            }
+          }
+        })
       }
     })
 
@@ -273,7 +281,7 @@ module.exports = class ReactToReactNative {
         result,
         usingComponent,
       } = info
-
+    
       // 输出react native.jsx
       const finalResult = this.generateReactNativeComponent({
         importReactCode: this.astUtils.ast2code(this.collections.importReactPath),
