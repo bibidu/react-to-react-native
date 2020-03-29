@@ -13,7 +13,13 @@ module.exports = function collectInfo({ ctx, t }) {
     },
 
     ExportDefaultDeclaration(path) {
-      const { name } = path.get('declaration').node
+      let name
+      const declaration = path.get('declaration')
+      if (declaration.isIdentifier()) {
+        name = declaration.node.name
+      } else if (declaration.isClassDeclaration() && declaration.get('id').isIdentifier()) {
+        name = declaration.get('id').node.name
+      }
       // 收集导出的组件名
       console.log(`正在编译的组件路径 ${ctx.currentCompilePath}`)
       ctx.collections.exports[ctx.hashHelper(ctx.currentCompilePath)] = name
