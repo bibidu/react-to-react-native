@@ -19,7 +19,10 @@ const resolves = {
   '.png': 'img',
   '.jpeg': 'img',
   '.jpg': 'img',
-  '/index.js': 'react'
+  '/index.js': 'react',
+  '/index.jsx': 'react',
+  '/index.ts': 'react',
+  '/index.tsx': 'react',
 }
 
 const baseInheritStyleName = [
