@@ -36,9 +36,11 @@ const jsxUtils = {
   replaceJSXAttributeKey(path, rawAttrName, targetAttrName) {
     const attributes = path.get('openingElement').get('attributes')
     for (let attribute of attributes) {
-      const attrName = attribute.get('name').node.name
-      if (attrName === rawAttrName) {
-        attribute.get('name').replaceWith(t.JSXIdentifier(targetAttrName))
+      if (attribute.isJSXAttribute()) {
+        const attrName = attribute.get('name').node.name
+        if (attrName === rawAttrName) {
+          attribute.get('name').replaceWith(t.JSXIdentifier(targetAttrName))
+        }
       }
     }
   },

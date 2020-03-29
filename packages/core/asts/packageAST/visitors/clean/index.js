@@ -13,9 +13,11 @@ module.exports = function clean({ ctx, t }) {
       ]
       const attributes = path.get('openingElement').get('attributes')
       for (let attribute of attributes) {
-        const attrName = attribute.get('name').node.name
-        if (marks.includes(attrName)) {
-          attribute.remove()
+        if (attribute.isJSXAttribute()) {
+          const attrName = attribute.get('name').node.name
+          if (marks.includes(attrName)) {
+            attribute.remove()
+          }
         }
       }
     }
