@@ -111,9 +111,8 @@ module.exports = function astToRelationTree(ast, currentPath) {
     } else {
       ctx.error('JSXElement父级不合法')
     }
-
-    // const uniqueName = uniquePrefix + base
     const uniqueName = base
+    // const uniqueName = config.isDefault ? base.split('-')[0] + '-Default' : base
     return uniqueName
   }
 
@@ -258,7 +257,7 @@ module.exports = function astToRelationTree(ast, currentPath) {
   }
 
   function getComponentMapName(tagName, currentPath, path) {
-
+    
     function getImportType() {
       const parent = path.findParent((p) => p.isProgram())
 
@@ -270,7 +269,8 @@ module.exports = function astToRelationTree(ast, currentPath) {
             const name = item.get('specifiers.0.local').node.name
             if (name === tagName) {
               const file = resolveFile(currentPath, importPath)
-              return `${ctx.hashHelper(file.entirePath)}-Class-${tagName}`
+              return `${ctx.hashHelper(file.entirePath)}-Default`
+              // return `${ctx.hashHelper(file.entirePath)}-Class-${tagName}`
             }
           }
         }
@@ -289,7 +289,7 @@ module.exports = function astToRelationTree(ast, currentPath) {
     }
 
     // TODO: update 同getClassType，可逐级查找。
-    function getPureFunctionType() {
+    function getVariableFunctionType() {
       const parent = path.findParent((node) => node.isProgram())
       const VariableDecls = parent.get('body').filter(child => (
         child.isVariableDeclaration() && child.get('declarations.0').get('id').isIdentifier({ name: tagName })
@@ -297,6 +297,12 @@ module.exports = function astToRelationTree(ast, currentPath) {
       if (VariableDecls.length === 1) {
         return getCurrentFileUniqueName(VariableDecls[0].get('declarations.0'))
       }
+    }
+
+    function getES5FunctionType() {
+      const parent = path.findParent((node) => node.isProgram())
+      const FunctionNode = parent.get('body').filter(child => child.isFunctionDeclaration())
+      return getCurrentFileUniqueName(FunctionNode[0])
     }
 
     function getExportDefaultType() {
@@ -322,11 +328,16 @@ module.exports = function astToRelationTree(ast, currentPath) {
       return mapName
     }
     // 3. const T3 = () => <>xxx</>
-    if (mapName = getPureFunctionType()) {
+    if (mapName = getVariableFunctionType()) {
       return mapName
     }
 
-    // 4. export default class T4
+    // 4. function T4() {}
+    if (mapName = getES5FunctionType()) {
+      return mapName
+    }
+
+    // 5. export default class T4
     if (mapName = getExportDefaultType()) {
       return mapName
     }
@@ -336,12 +347,12 @@ module.exports = function astToRelationTree(ast, currentPath) {
     throw Error(msg)
   }
 
-  let atLeastOneJSXElement = false
+  // let atLeastOneJSXElement = false
   traverse(ast, {
     JSXElement(path) {
-      if (!atLeastOneJSXElement) {
-        atLeastOneJSXElement = true
-      }
+      // if (!atLeastOneJSXElement) {
+      //   atLeastOneJSXElement = true
+      // }
       const parentNodeName = getParentNodeName(path)
       ctx.addFsRelation(parentNodeName, getCurrentFileUniqueName(path))
 
@@ -380,17 +391,18 @@ module.exports = function astToRelationTree(ast, currentPath) {
     },
 
     ExportDefaultDeclaration(path) {
-      if (!atLeastOneJSXElement) {
-        const filePathHash = ctx.hashHelper(currentPath)
-        let rootClassName
-        if (path.get('declaration').isIdentifier()) {
-          rootClassName = path.get('declaration').node.name
-        } else if (path.get('declaration').isClassDeclaration()) {
-          rootClassName = path.get('declaration.id').node.name
-        }
-        const currentClassNodeName = `${filePathHash}-Class-${rootClassName}`
-        ctx.addFsRelation(currentClassNodeName, getComponentMapName(rootClassName, currentPath, path))
+      // if (!atLeastOneJSXElement) {
+      const filePathHash = ctx.hashHelper(currentPath)
+      let rootClassName
+      if (path.get('declaration').isIdentifier()) {
+        rootClassName = path.get('declaration').node.name
+      } else if (path.get('declaration').isClassDeclaration()) {
+        rootClassName = path.get('declaration.id').node.name
       }
+      // const currentClassNodeName = `${filePathHash}-Class-${rootClassName}`
+      const currentClassNodeName = `${filePathHash}-Default`
+      ctx.addFsRelation(currentClassNodeName, getComponentMapName(rootClassName, currentPath, path))
+      // }
     }
   })
 }
