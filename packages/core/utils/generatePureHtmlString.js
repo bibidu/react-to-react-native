@@ -28,11 +28,12 @@ module.exports = function generatePureHtmlString(info, key = 'ROOT', tabSize = 0
     const expName = collectExports[filePathHash]
 
     currentArray = fsRelations[`${filePathHash}-Class-${rootClassName}`] ||
-      fsRelations[`${filePathHash}-VariableDecl-${rootClassName}`]
+      fsRelations[`${filePathHash}-VariableDecl-${rootClassName}`] || 
+      fsRelations[`${filePathHash}-Function-${rootClassName}`]
 
       if (!currentArray || !currentArray.length) {
-      throw Error('generatePureHtmlString找不到入口render')
-    }
+        throw Error('generatePureHtmlString找不到入口render')
+      }
   }
   if (currentArray) {
     for (let item of currentArray) {
