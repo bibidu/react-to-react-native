@@ -86,8 +86,8 @@ module.exports = function astToRelationTree(ast, currentPath) {
       p.isVariableDeclarator() ||
       p.isClassProperty()
     ))
-
-    return getCurrentFileUniqueName(parentNode)
+    
+    return parentNode && getCurrentFileUniqueName(parentNode)
   }
 
   function getCurrentFileUniqueName(path) {
@@ -354,7 +354,9 @@ module.exports = function astToRelationTree(ast, currentPath) {
       //   atLeastOneJSXElement = true
       // }
       const parentNodeName = getParentNodeName(path)
-      ctx.addFsRelation(parentNodeName, getCurrentFileUniqueName(path))
+      if (parentNodeName) {
+        ctx.addFsRelation(parentNodeName, getCurrentFileUniqueName(path))
+      }
 
       const nodeInfo = extractJSXNodeInfo(path)
       const {
