@@ -9,6 +9,7 @@ const unSupportStyles = [
   ':active',
   ':last-child',
   ':first-child',
+  ':root',
 ]
 
 function removeUnSupportStyle(style) {
