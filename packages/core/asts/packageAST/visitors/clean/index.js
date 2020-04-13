@@ -8,6 +8,7 @@ module.exports = function clean({ ctx, t }) {
         ctx.enums.STATIC_MARK,
         ctx.enums.BGURL_ATTR_MARK,
         ctx.enums.UNIQUE_ID,
+        ctx.enums.SCROLL_MARK,
         'className',
         'id',
       ]

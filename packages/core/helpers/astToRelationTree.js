@@ -26,13 +26,13 @@ module.exports = function astToRelationTree(ast, currentPath) {
   ctx = this
 
   function getQuasisStaticValueInTemplateLiteral(templateLiteralPath){
+    console.log('into');
     let static = ''
     const quasis = templateLiteralPath.get('quasis')
     quasis.forEach((item, index) => {
       const startWithEmpty = /^\s/.test(item.node.value.raw)
       const endWithEmpty = /\s$/.test(item.node.value.raw)
       const tpls = item.node.value.raw.split(' ').filter(Boolean)
-
       if (tpls.length) {
         const first = tpls.shift()
         if (startWithEmpty || index === 0) {
@@ -58,7 +58,7 @@ module.exports = function astToRelationTree(ast, currentPath) {
       const suffix = !isLast && !/^\s/.test(quasis[index + 1].node.value.raw) ?
         [quasis[index + 1].node.value.raw.split(' ').shift()] : []
 
-      const newQuasis = prefix.concat(suffix).concat('')
+      const newQuasis = prefix.concat(suffix).concat('').concat('').slice(0, 2)
       active.push(
         t.TemplateLiteral(
           newQuasis.map((item, idx) => (
@@ -91,8 +91,6 @@ module.exports = function astToRelationTree(ast, currentPath) {
   }
 
   function getCurrentFileUniqueName(path) {
-    const { start, end } = path.node
-    
     let base = ctx.hashHelper(currentPath) + '-'
 
     if (path.isJSXElement()) {
@@ -250,6 +248,10 @@ module.exports = function astToRelationTree(ast, currentPath) {
         })
       }
     }
+    // console.log({
+    //   staticExpression,
+    //   activeExpression,
+    // })
     return {
       staticExpression,
       activeExpression,

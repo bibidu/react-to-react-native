@@ -83,6 +83,11 @@ module.exports = function resolves({
   const hasTapEvent = constant.tapEvents.some(eventName =>
     ctx.jsxUtils.getJSXAttributeValue(path, eventName)
   )
+  // 是否有rn-scroll标签
+  const hasRNScrollMark = path => {
+    const rnScrollMark = ctx.enums['SCROLL_MARK']
+    return ctx.jsxUtils.getJSXAttribute(path, rnScrollMark)
+  }
 
   function resolve(newTagName, hasExtraAction) {
     if (hasExtraAction) {
@@ -109,6 +114,10 @@ module.exports = function resolves({
 
   // 替换所有点击事件
   ctx.jsxUtils.replaceJSXAttributeKey(path, 'onClick', 'onPress')
+
+  if (hasRNScrollMark(path)) {
+    return resolve('ScrollView', true)
+  }
 
   if (hasTapEvent) {
     return resolve('TouchableOpacity', true)
