@@ -1,4 +1,4 @@
-module.exports = function({path, ctx, t, constant}) {
+module.exports = function({path, ctx, t, constant}, options) {
   ctx.jsxUtils.replaceJSXAttributeKey(path, 'onChange', 'onChangeText')
   ctx.jsxUtils.removeJSXAttributeByKey(path, [
     'id',
@@ -6,14 +6,16 @@ module.exports = function({path, ctx, t, constant}) {
     'rows',
     'name',
   ])
-  ctx.jsxUtils.addJSXAttribute(
-    path,
-    'multiline',
-    t.JSXExpressionContainer(
-      t.BooleanLiteral(true)
-    ).node,
-    {
-      attrValueIsAst: true,
-    }
-  )
+  if (options.isMultiple) {
+    ctx.jsxUtils.addJSXAttribute(
+      path,
+      'multiline',
+      t.JSXExpressionContainer(
+        t.BooleanLiteral(true)
+      ).node,
+      {
+        attrValueIsAst: true,
+      }
+    )
+  }
 }

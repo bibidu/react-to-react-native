@@ -111,10 +111,21 @@ class SearchBar extends React.Component {
           value={inputValue}
           onChange={this.isInput}
         />
-        {inputValue.length ? this.renderClearIcon() : null}
+        {/* TODO: 闭包内嵌套闭包场景的fsRelations case */}
+        {/* {inputValue.length ? this.renderClearIcon() : null} */}
+        {inputValue.length ? <img
+          className="search-close-img"
+          src={CloseImg}
+          alt=""
+          onClick={() => {
+            this.clearInput()
+            this.props.onClear()
+          }}
+        /> : null}
+        
       </div>
       {
-        showCancel ? <div className="cancel-btn" onClick={this.clearInput}>{cancelText}</div> : null
+        showCancel ? <div className="cancel-btn" onClick={this.clearInput} rn-text>{cancelText}</div> : null
       }
     </div>
   }

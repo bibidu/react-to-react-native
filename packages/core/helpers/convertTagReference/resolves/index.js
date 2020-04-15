@@ -89,7 +89,7 @@ module.exports = function resolves({
     return ctx.jsxUtils.getJSXAttribute(path, rnScrollMark)
   }
 
-  function resolve(newTagName, hasExtraAction) {
+  function resolve(newTagName, hasExtraAction, options) {
     if (hasExtraAction) {
       // extraAction：对节点进行（除替换标签名、替换事件名）额外的操作，如添加新的子节点
       const value = require(`./extraAction/${newTagName}`)({
@@ -97,7 +97,7 @@ module.exports = function resolves({
         t,
         ctx,
         constant,
-      })
+      }, options)
 
       if (value) return value
     }
@@ -119,16 +119,20 @@ module.exports = function resolves({
     return resolve('ScrollView', true)
   }
 
-  if (hasTapEvent) {
-    return resolve('TouchableOpacity', true)
+  if (tagName === 'input') {
+    return resolve('TextInput', true, { isMultiple: false })
   }
 
   if (tagName === 'img') {
     return resolve('Image', true)
   }
 
+  if (hasTapEvent) {
+    return resolve('TouchableOpacity', true, { tagName })
+  }
+  
   if (tagName === 'textarea') {
-    return resolve('TextInput', true)
+    return resolve('TextInput', true, { isMultiple: false })
   }
 
   if (constant.mapViewTags.includes(tagName)) {

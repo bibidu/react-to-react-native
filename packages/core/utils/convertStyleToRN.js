@@ -27,6 +27,18 @@ const shouldPreprocessAttr = [
     actions: (obj) => delete obj['boxSizing']
   },
   {
+    match: (_, $, obj) => {
+      const hasDisplay = Object.keys(obj).includes('display')
+      const displayIsFlex = obj['display'] === 'flex'
+      const hasFlexDirection = Boolean(obj['flexDirection'])
+      return hasDisplay && displayIsFlex && !hasFlexDirection
+    },
+    warnings: [],
+    actions: (obj, attrName, attrValue) => {
+      obj['flexDirection'] = 'row'
+    }
+  },
+  {
     match: (attrName, attrValue) => attrName === 'display',
     warnings: [],
     actions: (obj) => delete obj['display']
@@ -75,18 +87,6 @@ const shouldPreprocessAttr = [
       })
       delete obj[attrName]
       Object.assign(obj, attrs)
-    }
-  },
-  {
-    match: (_, $, obj) => {
-      const hasDisplay = Object.keys(obj).includes('display')
-      const displayIsFlex = obj['display'] === 'flex'
-      const hasFlexDirection = Boolean(obj['flexDirection'])
-      return hasDisplay && displayIsFlex && !hasFlexDirection
-    },
-    warnings: [],
-    actions: (obj, attrName, attrValue) => {
-      obj['flexDirection'] = 'row'
     }
   },
   {
