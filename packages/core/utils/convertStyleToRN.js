@@ -76,6 +76,18 @@ const shouldPreprocessAttr = [
       delete obj[attrName]
       Object.assign(obj, attrs)
     }
+  },
+  {
+    match: (_, __, obj) => {
+      const hasDisplay = Object.keys(obj).includes('display')
+      const displayIsFlex = obj['display'] === 'flex'
+      const hasFlexDirection = Boolean(obj['flexDirection'])
+      return hasDisplay && displayIsFlex && !hasFlexDirection
+    },
+    warnings: [],
+    actions: (obj, attrName, attrValue) => {
+      obj['flexDirection'] = 'row'
+    }
   }
 ]
 
@@ -83,7 +95,7 @@ function checkUnSupportAttr(obj) {
   Object.entries(obj).forEach(([attrName, attrValue]) => {
     shouldPreprocessAttr.forEach((item) => {
       const { match, warnings, actions} = item
-      if (match(attrName, attrValue)) {
+      if (match(attrName, attrValue, obj)) {
         warnings.forEach(item => ctx.warnings.add(item))
         actions(obj, attrName, attrValue)
       }
