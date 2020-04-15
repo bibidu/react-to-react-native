@@ -9,7 +9,7 @@ module.exports = function addStyleAccordingToUniqueId({ ctx, t }) {
     const removeUnUseAttributeFn = ctx.distTagName[uniqueId] === 'Text' ?
       ctx.enums.EXTRACT_CAN_INHERIT_STYLE_NAME_FUNC : ctx.enums.OMIT_CAN_INHERIT_STYLE_NAME_FUNC
 
-      // distTagName
+    // distTagName
     const notInheritStylesheetAst = activeExpressionArray.map(item => {
       return (
         t.CallExpression(
@@ -40,11 +40,13 @@ module.exports = function addStyleAccordingToUniqueId({ ctx, t }) {
     } else {
       inheritStylesheetAst = inheritStylesheetAst
         .map(([uniqueId, activeAncestorAst]) => {
-          const ancestorAstArray = activeAncestorAst.map(ast => t.MemberExpression(
-            t.identifier(ctx.enums.STYLESHEET_NAME),
-            ast.node || ast,
-            true
-          ))
+          // 忽略动态的继承类型
+          const ancestorAstArray = []
+          // const ancestorAstArray = activeAncestorAst.map(ast => t.MemberExpression(
+          //   t.identifier(ctx.enums.STYLESHEET_NAME),
+          //   ast.node || ast,
+          //   true
+          // ))
           const uniqueIdStylesheetAst = uniqueId ? t.MemberExpression(
             t.identifier(ctx.enums.STYLESHEET_NAME),
             t.stringLiteral(uniqueId),
