@@ -78,7 +78,7 @@ const shouldPreprocessAttr = [
     }
   },
   {
-    match: (_, __, obj) => {
+    match: (_, $, obj) => {
       const hasDisplay = Object.keys(obj).includes('display')
       const displayIsFlex = obj['display'] === 'flex'
       const hasFlexDirection = Boolean(obj['flexDirection'])
@@ -88,7 +88,36 @@ const shouldPreprocessAttr = [
     actions: (obj, attrName, attrValue) => {
       obj['flexDirection'] = 'row'
     }
-  }
+  },
+  {
+    match: (_, $, obj) => {
+      const isAbsolute = obj['position'] === 'absolute'
+      const widthIs100Percent = obj['width'] === '100%'
+      const dontHaveLeftOrRight = !obj['left'] || !obj['right']
+      const heightIs100Percent = obj['width'] === '100%'
+      const dontHaveTopOrBottom = !obj['top'] || !obj['bottom']
+
+      const needPerfectWidth = widthIs100Percent && dontHaveLeftOrRight
+      const needPerfectHeight = heightIs100Percent && dontHaveTopOrBottom
+      return isAbsolute && (needPerfectWidth || needPerfectHeight)
+    },
+    warnings: [],
+    actions: (obj, attrName, attrValue) => {
+      const widthIs100Percent = obj['width'] === '100%'
+      const heightIs100Percent = obj['width'] === '100%'
+
+      if (widthIs100Percent) {
+        if (!obj['left']) obj['left'] = '0'
+        if (!obj['right']) obj['right'] = '0'
+        delete obj['width']
+      }
+      if (heightIs100Percent) {
+        if (!obj['top']) obj['top'] = '0'
+        if (!obj['bottom']) obj['bottom'] = '0'
+        delete obj['height']
+      }
+    }
+  },
 ]
 
 function checkUnSupportAttr(obj) {
