@@ -39,10 +39,10 @@ module.exports = function convertTagReference(ast, {
 
     const { tag, styles = {} } = resolves({path, t, ctx})
 
-    addUsingComponent(tag) // 收集使用到的React Native组件
+    tag && addUsingComponent(tag) // 收集使用到的React Native组件
     replaceTagName(path, t, tag) // 替换标签名
     saveStyleFromTagName(path, styles) // 保存标签自带样式
-    saveDistTagName(path, tag) // 保存当前元素的输出标签
+    tag && saveDistTagName(path, tag) // 保存当前元素的输出标签
   }
 
   return traverse(ast, {
