@@ -14,8 +14,10 @@ const astUtils = {
     for (let property of properties) {
       const key = property.get('key').node.name
       const valuePath = property.get('value')
-      const value = valuePath.isNumericLiteral() ? Number(valuePath.node.value) : valuePath.node.value
-      obj[key] = value
+      if (valuePath.isNumericLiteral() || valuePath.isStringLiteral()) {
+        const value = valuePath.isNumericLiteral() ? Number(valuePath.node.value) : valuePath.node.value
+        obj[key] = value
+      }
     }
     return obj
   },
