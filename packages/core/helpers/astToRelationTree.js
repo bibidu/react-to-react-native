@@ -107,15 +107,7 @@ module.exports = function astToRelationTree(ast, currentPath) {
     } else if (path.isClassProperty()) {
       base += 'ClassProperty-' + path.get('key').node.name
     } else if (path.isArrowFunctionExpression()) {
-      const functionAncestor = path.findParent((p) => p.isClassMethod())
-      const parent = path.findParent(() => true)
-      const functionAncestorName = functionAncestor.get('key').node.name
-      let name = ''
-      if (parent.get('left').isMemberExpression()) {
-        const prefix = parent.get('left').get('object').isThisExpression() ? '-this-' : parent.get('left').get('object').node.name + '-'
-        name = prefix + parent.get('left').get('property').node.name
-      }
-      base += (functionAncestorName === 'constructor' ? functionAncestorName : '') + `-ArrowFunction` + name
+      base += 'ArrowFunction' +`${path.node.start}_${path.node.end}`
     } else {
       ctx.error('JSXElement父级不合法')
     }
@@ -412,7 +404,10 @@ module.exports = function astToRelationTree(ast, currentPath) {
       const classMethodAncestor = path.findParent((p) => p.isClassMethod())
       if (classMethodAncestor) {
         const parentNodeName = getParentNodeName(path)
-        ctx.addFsRelation(parentNodeName, getCurrentFileUniqueName(path))
+        const name =  getCurrentFileUniqueName(path)
+        if (name) {
+          ctx.addFsRelation(parentNodeName, name)
+        }
       }
     },
 
