@@ -7,7 +7,7 @@ module.exports = function collectInfo({ ctx, t }) {
       // 收集import xxx from 'react'并在转译时移除
       const isReactImport = path.get('source').isStringLiteral({ value: 'react' })
       if (isReactImport) {
-        ctx.collections.importReactPath = path.node
+        ctx.collections.importReactPath[ctx.currentCompilePath] = path.node
         path.remove()
       }
     },

@@ -284,7 +284,7 @@ module.exports = class ReactToReactNative {
     
       // 输出react native.jsx
       const finalResult = this.generateReactNativeComponent({
-        importReactCode: this.astUtils.ast2code(this.collections.importReactPath),
+        importReactCode: this.astUtils.ast2code(this.collections.importReactPath[filePath]),
         fileType,
         code: result,
         usingComponent,
