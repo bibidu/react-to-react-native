@@ -89,6 +89,19 @@ module.exports = function resolves({
     return ctx.jsxUtils.getJSXAttribute(path, rnScrollMark)
   }
 
+  // 是否是Fragment
+  const isFragment = path => {
+    if (path.isJSXFragment())
+      return true
+
+    const nameNode = path.get('openingElement').get('name')
+    if (nameNode.isIdentifier({ name: 'Fragment' }))
+      return true
+
+    if (nameNode.isJSXMemberExpression() && nameNode.get('property').isJSXIdentifier({ name: 'Fragment' }))
+      return true
+  }
+
   function resolve(newTagName, hasExtraAction, options) {
     if (hasExtraAction) {
       // extraAction：对节点进行（除替换标签名、替换事件名）额外的操作，如添加新的子节点
@@ -117,6 +130,11 @@ module.exports = function resolves({
 
   if (hasRNScrollMark(path)) {
     return resolve('ScrollView', true)
+  }
+
+  // Fragment
+  if (isFragment(path)) {
+    return resolve('', false)
   }
 
   if (tagName === 'input') {
