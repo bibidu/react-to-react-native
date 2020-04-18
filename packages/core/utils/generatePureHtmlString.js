@@ -24,12 +24,6 @@ module.exports = function generatePureHtmlString(info, key = 'ROOT', tabSize = 0
     // 组件暴露的根入口, 暂时只考虑单入口
     const rootComponentPath = this.compileType === this.enums.MULTIPLE_FILE ? this.entryPath : 'react'
     const filePathHash = hashHelper(rootComponentPath)
-    const rootClassName = collections.exports[filePathHash]
-    const expName = collectExports[filePathHash]
-
-    // currentArray = fsRelations[`${filePathHash}-Class-${rootClassName}`] ||
-    //   fsRelations[`${filePathHash}-VariableDecl-${rootClassName}`] || 
-    //   fsRelations[`${filePathHash}-Function-${rootClassName}`]
     currentArray = fsRelations[`${filePathHash}-Default`]
     
       if (!currentArray || !currentArray.length) {
@@ -40,6 +34,7 @@ module.exports = function generatePureHtmlString(info, key = 'ROOT', tabSize = 0
     for (let item of currentArray) {
       const [uniqueId, type, tagName] = item.slice(9).split('-')
       const block = ' '.repeat(tabSize)
+      // console.log(item)
       if (isTag(item)) {
         const { id, className, activeAddText,  } = uniqueNodeInfo[uniqueId]
         const classAttr = className ? ` class="${className}"` : ''
