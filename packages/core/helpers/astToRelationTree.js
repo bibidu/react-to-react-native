@@ -316,7 +316,9 @@ module.exports = function astToRelationTree(ast, currentPath) {
     function getES5FunctionType() {
       const parent = path.findParent((node) => node.isProgram())
       const FunctionNode = parent.get('body').filter(child => child.isFunctionDeclaration())
-      return getCurrentFileUniqueName(FunctionNode[0])
+      if (FunctionNode.length) {
+        return getCurrentFileUniqueName(FunctionNode[0])
+      }
     }
 
     function getExportDefaultType() {
