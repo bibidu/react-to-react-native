@@ -1,0 +1,26 @@
+$paddingLeft: 20px;
+
+.preview-container{
+  background-color: #eee;
+  box-sizing: border-box;
+  h2{
+    padding-left: $paddingLeft;
+    margin: 0;
+    padding-top: 20px;
+  }
+  .title{
+    padding-left: $paddingLeft;
+    color: #909090;
+    font-weight: bold;
+    font-size: 14px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+  }
+  .playground{
+    // padding: 20px;
+    background-color: #fff;
+    // box-sizing: border-box;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+  }
+}

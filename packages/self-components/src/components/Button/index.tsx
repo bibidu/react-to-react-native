@@ -4,7 +4,6 @@ import './index.scss'
 const noop = () => {}
 
 class Button extends React.Component {
-
   static defaultProps = {
     type: '',
     size: 'md',
