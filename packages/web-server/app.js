@@ -24,7 +24,7 @@ app.use(bodyParser.json())
 
 function _compile(request) {
   return new Promise(resolve => {
-    new r2rn().init(request).start().then(res => {
+    r2rn.init(request).start().then(res => {
         resolve(res)
       })
   })

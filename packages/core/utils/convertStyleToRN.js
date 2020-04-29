@@ -27,7 +27,6 @@ const shouldPreprocessAttr = [
     actions: (obj, attrName, attrValue) => {
       const direction = attrName.split('border-')[1]
       const firstCharUpper = direction.charAt(0).toUpperCase() + direction.slice(1)
-      console.log(attrValue)
       const [borderWidth, borderStyle, borderColor] = attrValue.split(' ').filter(Boolean)
       if (borderWidth !== 'none') {
         obj[`border${firstCharUpper}Width`] = borderWidth

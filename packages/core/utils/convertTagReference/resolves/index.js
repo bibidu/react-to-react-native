@@ -4,6 +4,7 @@ const constant = {
   tapEvents: [
     'onClick',
     'onChange',
+    'onBlur',
   ],
   mapViewTags: [
     'div',
@@ -146,13 +147,13 @@ module.exports = function resolves({
   if (tagName === 'img') {
     return resolve('Image', true)
   }
+  
+  if (tagName === 'textarea') {
+    return resolve('TextInput', true, { isMultiple: true })
+  }
 
   if (hasTapEvent) {
     return resolve('TouchableOpacity', true, { tagName })
-  }
-  
-  if (tagName === 'textarea') {
-    return resolve('TextInput', true, { isMultiple: false })
   }
 
   if (constant.mapViewTags.includes(tagName)) {

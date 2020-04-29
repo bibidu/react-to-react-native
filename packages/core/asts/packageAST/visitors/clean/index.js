@@ -11,6 +11,8 @@ module.exports = function clean({ ctx, t }) {
         ctx.enums.SCROLL_MARK,
         'className',
         'id',
+        'cols',
+        'rows',
       ]
       const attributes = path.get('openingElement').get('attributes')
       for (let attribute of attributes) {

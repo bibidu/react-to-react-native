@@ -7,6 +7,7 @@ const removeInvalidStyle = require('./removeInvalidStyle')
 const createGraph = require('./createGraph')
 const convertTagReference = require('./convertTagReference')
 const astToRelationTree = require('./astToRelationTree')
+const calcStaticNodeInheritStyle = require('./calcStaticNodeInheritStyle')
 const styleFixer = require('./styleFixer')
 const logger = require('./logger')
 const utils = require('./utils')
@@ -29,6 +30,7 @@ module.exports = function () {
     astToRelationTree,
     utils,
     styleFixer,
+    calcStaticNodeInheritStyle,
   ].forEach(util => {
     this[util.name] = bindContext(util, this)
   })

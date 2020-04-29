@@ -88,15 +88,16 @@ async function _analysisEntry(
     }
   }
   
-  if (__NODE__) {
+  if (entryPath) {
     await _findGraph(entryPath, {
       fileType: 'react',
       exportPath,
     })
   } else {
+    const code = await ctx.typescriptCompiler(reactCompString)
     graph['react'] = {
-      code: reactCompString,
-      ast: code2ast(reactCompString),
+      code,
+      ast: code2ast(code),
       fileType: 'react',
       exportPath: null,
       importSource: null,

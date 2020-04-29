@@ -65,10 +65,13 @@ module.exports = new class ReactToReactNative {
         this.usingRNComponentNames.push(componentName)
       }
     }
-    this.initialInlineStyle = {} /* 组件最初的内联样式 */
+    this.initialInlineStyle = {} /* 节点最初的内联样式 */
     this.addInitialInlineStyle = (uniqueId, inlineStyle) => this.initialInlineStyle[uniqueId] = inlineStyle
 
-    this.generateStyle = {} /* 计算多种来源后的样式 */
+    this.inheritStyle = {} /* 文本节点继承的样式 */
+    this.addInitialInlineStyle = (uniqueId, style) => this.inheritStyle[uniqueId] = style
+
+    this.generateStyle = {} /* 新生成的样式 */
     this.addGenerateStyle = (key, style) => this.generateStyle[key] = style
   
     this.distTagName = {} /* uniqueId对应的输出标签名 */
@@ -137,7 +140,7 @@ module.exports = new class ReactToReactNative {
 
   async start() {
     this.utils.logStart('compile')
-
+    
     if (__NODE__) {
       this.outputDir = path.dirname(this.exportPath)
     }
@@ -151,7 +154,7 @@ module.exports = new class ReactToReactNative {
       reactCompString: this.reactCompString,
       cssString: this.cssString,
     })
-
+    
     if (__NODE__) {
       // 添加输出路径 importSource
       Object.entries(this.graph).forEach(([filePath, component]) => {
@@ -238,6 +241,9 @@ module.exports = new class ReactToReactNative {
       cssObject: this.cssObject, /* static */
     })
 
+    // 计算静态节点的继承样式
+    this.inheritStyle = this.calcStaticNodeInheritStyle()
+
     // 转换成RN的stylesheet结果
     this.convertedStyleToRN = this.convertStyleToRN(this.mixinedStyle)
 
@@ -301,7 +307,7 @@ module.exports = new class ReactToReactNative {
         useRuntimeUtil: Boolean(this.useRuntimeUtilByFilepath[filePath]),
       })
       
-      if (__NODE__) {
+      if (this.entryPath) {
         if (exportPath) {
           this.tasks.push(() => {
             if (fileType === 'react') {
@@ -335,7 +341,7 @@ module.exports = new class ReactToReactNative {
     const warnings = Array.from(this.warnings)
     const errors = Array.from(this.errors)
 
-    if (__NODE__) {
+    if (this.entryPath) {
       this.tasks.push(() => {
         const stylesheetPath = this.outputDir + `/${this.enums.STYLESHEET_FILE_NAME}.js`
         fs.writeFileSync(stylesheetPath, `export default ` + stylesheetContent, 'utf8')
@@ -360,7 +366,7 @@ module.exports = new class ReactToReactNative {
     // 额外需要拷贝的资源
     const extraCopyResources = Array.from(this.copyResources)
 
-    if (__NODE__) {
+    if (this.entryPath) {
       if (extraCopyResources.length) {
         extraCopyResources.forEach(resourcePath => {
           const entryRelativePath = path.relative(this.entryPath, resourcePath)
@@ -371,7 +377,7 @@ module.exports = new class ReactToReactNative {
       }
     }
 
-    if (this.compileType === this.enums.SINGLE_FILE) {
+    if (!this.entryPath) {
       return this.tasks
     } else {
       await Promise.all(this.tasks.map(task => task()))

@@ -5,8 +5,7 @@
   require('./collectInfo'),
 ]
 
-global.__NODE__ = typeof process !== undefined
-if (__NODE__) {
+if (this.entryPath) {
   visitors.unshift(require('./resolveCssPath'))
 }
 
