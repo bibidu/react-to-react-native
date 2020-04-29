@@ -36,23 +36,6 @@ module.exports = function({path, ctx, t, constant, addUsingComponent}) {
     }
   }
 
-  function getBgUrlValue(bgUrlAttr) {
-    let activeBgUrlValue = ''
-    if (!bgUrlAttr.isStringLiteral()) {
-      const errorMsg = `${ctx.enums.BGURL_ATTR_MARK}的属性值只支持String类型, 如${ctx.enums.BGURL_ATTR_MARK}="activePath"`
-      ctx.errors.add(errorMsg)
-      ctx.error(errorMsg)
-    } else {
-      activeBgUrlValue = bgUrlAttr.node.value
-    }
-    return activeBgUrlValue
-  }
-
-  // const bgUrlAttr = ctx.jsxUtils.getJSXAttributeValue(path, ctx.enums.BGURL_ATTR_MARK)
-
-  // if (bgUrlAttr) {
-  // const activeBgUrlValue = getBgUrlValue(bgUrlAttr)
-  // const bgUrlPathAst = getBgUrlPathAst(path, activeBgUrlValue)
   const bgUrlPathAst = getBgUrlPathAst(path)
 
   if (!bgUrlPathAst) {
@@ -70,6 +53,9 @@ module.exports = function({path, ctx, t, constant, addUsingComponent}) {
       ]
     )
   )
+  // 添加运行时使用到的工具方法名
+  ctx.addRuntimeUseUtil(ctx.enums.IMG_POLYFILL_FUNC)
+
   ctx.jsxUtils.addJSXAttribute(path, 'source', attrValueIsAst, { attrValueIsAst: true })
   
   // 替换标签名

@@ -1,6 +1,5 @@
-const t = require('@babel/types')
+const fs = require('fs')
 const traverse = require('@babel/traverse').default
-// const gen = require('@babel/generator').default
 
 let ctx
 
@@ -22,8 +21,7 @@ module.exports = async function createGraph({
     cssString,
     this.astUtils.code2ast,
   )
-
-  this.log(`createGraph ${compileType}`)
+  this.logger.log({ type: 'flow', msg: 'createGraph' })
   
   return graph
 }
@@ -36,8 +34,6 @@ async function _analysisEntry(
   cssString,
   code2ast,
 ) {
-  // TODO: add 添加process.env.COMPILE_ENV环境判断，用于隔离node环境和浏览器环境
-  const fs = require('fs')
   const graph = {}
 
   async function _findGraph(entryPath, info) {
@@ -56,15 +52,13 @@ async function _analysisEntry(
       exportPath,
       importSource,
     }
-    // if (!/import.+from[\s'"]+react/.test(code)) {
-    //   fileType = graph[entryPath].fileType = 'js'
-    // }
+    
     if (fileType === 'react') {
-      if (['.ts', '.tsx'].some(prefix => entryPath.endsWith(prefix))) {
+      if (isTsFile(entryPath)) {
         code = await ctx.typescriptCompiler(code)
       }
       const ast = graph[entryPath].ast = code2ast(code)
-      // 逐个文件查找，便于定位错误
+      
       const newGraph = {}
       traverse(ast, {
         ImportDeclaration(path) {
@@ -93,7 +87,8 @@ async function _analysisEntry(
       })
     }
   }
-  if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {
+  
+  if (__NODE__) {
     await _findGraph(entryPath, {
       fileType: 'react',
       exportPath,
@@ -122,7 +117,7 @@ function resolveFile(entryPath, importSource) {
   const path = require('path')
   
   const importAbsolutePath = path.resolve(path.dirname(entryPath), importSource)
-  const file = ctx.isFile(importAbsolutePath)
+  const file = ctx.utils.isFile(importAbsolutePath)
   if (!file) {
     const msg = `不存在该文件: ${importAbsolutePath}`
     throw Error(msg)
@@ -134,3 +129,6 @@ function isNpm(importSource) {
   return /^[a-zA-Z]/.test(importSource)
 }
 
+function isTsFile(filepath) {
+  return ['.ts', '.tsx'].some(prefix => filepath.endsWith(prefix))
+}

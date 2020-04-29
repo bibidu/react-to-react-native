@@ -9,6 +9,8 @@ module.exports = {
   ACTIVE_ADD_TEXT_MARK: '__active', // 动态添加的文本标签属性名
   SINGLE_FILE: 'single_file', // 编译类型为单文件
   MULTIPLE_FILE: 'multiple_file', // 编译类型为多文件
+
+  // <!-------------- runtime start-------------->
   ACTIVE_CLASSNAME_WILL_REPLACEBY_STYLESHEET: 'activeClassName$$', // 最终替换成stylesheet.xxx的动态类名
   RNUTILS_USE_NAME: '_util', // 最终生成的rnUtils调用名
   OMIT_CAN_INHERIT_STYLE_NAME_FUNC: 'omit', // 最终生成的rnUtils中的omitInheritStyleName函数
@@ -16,6 +18,8 @@ module.exports = {
   IMG_POLYFILL_FUNC: 'imgPolyfill', // 最终生成的rnUtils中的imgPolyfill函数
   EVENT_TARGET_FUNC: 'eventPolyfill', // 最终生成的rnUtils中的eventTarget函数
   CAN_INHERIT_STYLE_NAMES: 'canInheritStyleName', // 最终生成的rnUtils中‘可继承的文本css属性名’
+  // <!-------------- runtime end-------------->
+
   RNUTILS_FILE_NAME: 'tools',
   MIDWAY_BGURL: 'backgroundUrl'// 中间产物(用于描述backgroundUrl的图片地址)
 }

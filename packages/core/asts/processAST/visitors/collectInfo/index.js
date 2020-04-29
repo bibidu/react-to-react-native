@@ -21,24 +21,42 @@ module.exports = function collectInfo({ ctx, t }) {
         name = declaration.get('id').node.name
       }
       // 收集导出的组件名
-      console.log(`正在编译的组件路径 ${ctx.currentCompilePath}`)
-      ctx.collections.exports[ctx.hashHelper(ctx.currentCompilePath)] = name
+      ctx.logger.log({ type: 'entry', msg: ctx.currentCompilePath })
+      
+      ctx.collections.exports[ctx.utils.hash(ctx.currentCompilePath)] = name
     },
 
     JSXElement(path) {
       const styleAttr = ctx.jsxUtils.getJSXAttributeValue(path, 'style')
       if (styleAttr) {
+        const uniqueIdPrefix = ctx.enums.UNIQUE_ID
+        const uniqueId = ctx.jsxUtils.getJSXAttributeValue(path, uniqueIdPrefix)
+        const uniqueIdValue = uniqueId.node.value
+
         const isExpression = styleAttr.isJSXExpressionContainer()
         const isObjectExpression = isExpression && styleAttr.get('expression').isObjectExpression()
-        // 1. style={{[string]: string | any}}内联样式。
+        let valueTypeIsNumberOrString = false
         if (isObjectExpression) {
-          const objStyle = ctx.astUtils.objAstToObj(styleAttr.get('expression'))
-          const uniqueIdPrefix = ctx.enums.UNIQUE_ID
-          const uniqueId = ctx.jsxUtils.getJSXAttributeValue(path, uniqueIdPrefix)
-          ctx.addInitialInlineStyle(uniqueId.node.value, objStyle)
+          valueTypeIsNumberOrString = styleAttr.get('expression').get('properties').every(prop => {
+            return prop.get('value').isStringLiteral() || prop.get('value').NumericLiteral()
+          })
         }
-        // 2. 形如style={obj}, 暂不支持(需要逐级向父级查找)
-        // 删除style属性
+        const isConstantStyle = isObjectExpression && valueTypeIsNumberOrString
+
+        // style={{[string]: string | number}}
+        if (isConstantStyle) {
+          const objStyle = ctx.astUtils.objAstToObj(styleAttr.get('expression'))
+          ctx.addInitialInlineStyle(uniqueIdValue, objStyle)
+        } else {
+          let nodeInfo = ctx.uniqueNodeInfo[uniqueIdValue]
+          if (!nodeInfo) {
+            nodeInfo = {}
+          }
+          nodeInfo.isActive = true
+          nodeInfo.activeStyle = [styleAttr.get('expression').node]
+          ctx.addUniqueNodeInfo(uniqueIdValue, nodeInfo)
+        }
+        // 移除原style属性，最终生成新的style
         ctx.jsxUtils.getJSXAttribute(path, 'style').remove()
       }
     },

@@ -1,13 +1,5 @@
-const merge = require('./mergeByKey')
-
-
-module.exports = function removeInvalidStyle(styles) {
-  const ctx = this
-  const key = ctx.enums.ACTIVE_CLASSNAME_WILL_REPLACEBY_STYLESHEET
-
-  function isStaticText (tagName) {
-    return ctx.constants.textNames.includes(tagName)
-  }
+exports = function removeInvalidStyle(styles) {
+  isStaticText = isStaticText.bind(this)
 
   Object.entries(styles).forEach(([uniqueId, styles]) => {
     const info = this.uniqueNodeInfo[uniqueId]
@@ -15,15 +7,20 @@ module.exports = function removeInvalidStyle(styles) {
     if (info) {
       const { tagName } = info
       
-      if (!this.isUserComponent(tagName)) {
+      if (!this.utils.isUserComponent(tagName)) {
         const fnName = isStaticText(tagName) ? 'extract' : 'omit'
-        styles = this[fnName](styles, ctx.constants.canInheritStyleName)
+        styles = this[fnName](styles, this.constants.canInheritStyleName)
       }
-      if (!isStaticText(tagName) && !this.isUserComponent(tagName)) {
-        styles = this.omit(styles, ctx.constants.canInheritStyleName)
+      if (!isStaticText(tagName) && !this.utils.isUserComponent(tagName)) {
+        styles = this.omit(styles, this.constants.canInheritStyleName)
       }
     }
   })
   
   return styles
 }
+
+function isStaticText (tagName) {
+  return this.constants.textNames.includes(tagName)
+}
+

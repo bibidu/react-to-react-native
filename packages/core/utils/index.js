@@ -1,39 +1,51 @@
-const log = require('./log')
-const error = require('./error')
 const cssToObject = require('./cssToObject')
 const convertStyleToRN = require('./convertStyleToRN')
 const generatePureHtmlString = require('./generatePureHtmlString')
-const astUtils = require('./astUtils')
-const jsxUtils = require('./jsxUtils')
 const generateReactNativeComponent = require('./generateReactNativeComponent')
-const mixinStyleExceptInherit = require('./mixinStyleExceptInherit')
 const convertExternalToInline = require('./convertExternalToInline')
 const removeInvalidStyle = require('./removeInvalidStyle')
-const mergeByKey = require('./mergeByKey')
-const getInheritStyle = require('./getInheritStyle')
-const omit = require('./omit')
-const extract = require('./extract')
-const isUserComponent = require('./isUserComponent')
-const isFile = require('./isFile')
+const createGraph = require('./createGraph')
+const convertTagReference = require('./convertTagReference')
+const astToRelationTree = require('./astToRelationTree')
+const styleFixer = require('./styleFixer')
+const logger = require('./logger')
+const utils = require('./utils')
+const astUtils = require('./astUtils')
+const jsxUtils = require('./jsxUtils')
 
 module.exports = function () {
   ;[
-    log,
-    error,
+    logger,
     cssToObject,
     convertStyleToRN,
     generatePureHtmlString,
     astUtils,
     jsxUtils,
     generateReactNativeComponent,
-    mixinStyleExceptInherit,
     convertExternalToInline,
     removeInvalidStyle,
-    mergeByKey,
-    getInheritStyle,
-    omit,
-    extract,
-    isUserComponent,
-    isFile,
-  ].forEach(util => this[util.name] = util)
+    createGraph,
+    convertTagReference,
+    astToRelationTree,
+    utils,
+    styleFixer,
+  ].forEach(util => {
+    this[util.name] = bindContext(util, this)
+  })
+}
+
+function isFunction(maybeFunction) {
+  return typeof maybeFunction === 'function'
+}
+
+function bindContext(objOrFn, context) {
+  if (isFunction(objOrFn)) {
+    return objOrFn.bind(context)
+  }
+
+  const bindedContextObj = {}
+  for (let key in objOrFn) {
+    bindedContextObj[key] = isFunction(objOrFn[key]) ? objOrFn[key].bind(context) : objOrFn[key]
+  }
+  return bindedContextObj
 }

@@ -41,13 +41,13 @@ module.exports = function generatePureHtmlString(info, key = 'ROOT', tabSize = 0
         const idAttr = id ? ` id="${id}"` : ''
         const activeTextAttr = activeAddText ? ` ${activeAddTextMark}="${activeAddText}"` : ''
 
-        if (['Fragment', 'React.Fragment'].every(item => item !== tagName) && !ctx.isUserComponent(tagName)) {
+        if (['Fragment', 'React.Fragment'].every(item => item !== tagName) && !ctx.utils.isUserComponent(tagName)) {
           html += `${block}<${tagName} ${uniqueIdName}="${uniqueId}"${classAttr}${idAttr}${activeTextAttr}>\n`
         }
 
         html += generatePureHtmlString(info, item, tabSize + TAB_SIZE)
 
-        if (['Fragment', 'React.Fragment'].every(item => item !== tagName) && !ctx.isUserComponent(tagName)) {
+        if (['Fragment', 'React.Fragment'].every(item => item !== tagName) && !ctx.utils.isUserComponent(tagName)) {
           html += `${block}</${tagName}>\n`
         }
       } else {

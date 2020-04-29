@@ -7,9 +7,8 @@ module.exports = function addUniqueId({ ctx, t }) {
 
   return {
     JSXElement(path) {
-      const attributes = path.get('openingElement').get('attributes')
       path.node.openingElement.attributes.unshift(
-        createJSXAttribute(ctx.enums.UNIQUE_ID, ctx.uniqueIdHelper(path))
+        createJSXAttribute(ctx.enums.UNIQUE_ID, ctx.utils.uniqueId(path))
       )
     }
   }

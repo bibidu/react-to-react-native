@@ -1,124 +1,130 @@
 module.exports = function addStyleAccordingToUniqueId({ ctx, t }) {
-  const key = ctx.enums.ACTIVE_CLASSNAME_WILL_REPLACEBY_STYLESHEET
 
-  function createArrayCallInJSXExpression({
-    activeExpressionArray, // 动态属性
-    ancestorStylesheetKey, // 继承而来的父级所有属性(需要去除不能继承的属性，如父级的border等)
-    uniqueId,
-  }) {
-    const removeUnUseAttributeFn = ctx.distTagName[uniqueId] === 'Text' ?
-      ctx.enums.EXTRACT_CAN_INHERIT_STYLE_NAME_FUNC : ctx.enums.OMIT_CAN_INHERIT_STYLE_NAME_FUNC
+  function createRuntimeUtilWrapper({ utilName, childNode }) {
+    const {
+      RNUTILS_USE_NAME,
+    } = ctx.enums
 
-    // distTagName
-    const notInheritStylesheetAst = activeExpressionArray.map(item => {
-      return (
-        t.CallExpression(
-          t.MemberExpression(
-            t.identifier(ctx.enums.RNUTILS_USE_NAME),
-            t.identifier(removeUnUseAttributeFn),
-          ),
-          [
-            t.MemberExpression(
-              t.identifier(ctx.enums.STYLESHEET_NAME),
-              item.node || item,
-              true
-            )
-          ]
-        )
+    return t.CallExpression(
+      // 'utils.omit()' or 'utils.extend()'
+      t.MemberExpression(
+        t.identifier(RNUTILS_USE_NAME),
+        t.identifier(utilName),
+      ),
+      [childNode]
+    )
+  }
+
+  function createDynamicStyle(uniqueId) {
+    const {
+      STYLESHEET_NAME,
+      OMIT_CAN_INHERIT_STYLE_NAME_FUNC,
+      EXTRACT_CAN_INHERIT_STYLE_NAME_FUNC,
+    } = ctx.enums
+    const isTextNode = ctx.distTagName[uniqueId] === 'Text'
+
+    const { activeClassName, activeId, activeStyle = [] } = ctx.uniqueNodeInfo[uniqueId]
+    const styleNodes = []
+    
+    // external < activeClass < activeId < inline
+    // 1. external
+    const hasValidExternalStyle = Boolean(ctx.externalToInlineStyle[uniqueId])
+    hasValidExternalStyle && styleNodes.push(
+      t.MemberExpression(
+        t.identifier(STYLESHEET_NAME),
+        t.identifier(uniqueId),
       )
+    )
+    // 2. activeClass activeId inline
+    ;[].concat(
+      activeClassName,
+      activeId,
+      activeStyle
+    ).forEach(node => {
+      ctx.warnings.add(`动态样式中可能存在RN不支持的属性，需自行检查并删除`)
+
+      let expressionNode
+      if (node.type.endsWith('Expression')) {
+        expressionNode = node
+      } else {
+        expressionNode = t.MemberExpression(
+          t.identifier(STYLESHEET_NAME),
+          node,
+          true
+        )
+      }
+      const utilName = isTextNode ? OMIT_CAN_INHERIT_STYLE_NAME_FUNC : EXTRACT_CAN_INHERIT_STYLE_NAME_FUNC
+      styleNodes.push(
+        createRuntimeUtilWrapper({
+          utilName,
+          childNode: expressionNode,
+        })
+      )
+      ctx.addRuntimeUseUtil(utilName)
     })
     
-    let inheritStylesheetAst = ancestorStylesheetKey.filter(
-      ([uniqueId, ancestorAst]) => uniqueId && Array.isArray(ancestorAst)
+    if (!styleNodes.length) {
+      return null
+    }
+
+    return (
+      t.JSXAttribute(
+        t.JSXIdentifier('style'),
+        t.jsxExpressionContainer(
+          styleNodes.length === 1 ? styleNodes[0] : t.ArrayExpression(styleNodes)
+        )
+      )
     )
+  }
 
-    const isInheritStylesheetAstValid = Boolean(ancestorStylesheetKey.length) &&
-      Boolean(inheritStylesheetAst.length)
-    
-    if (!isInheritStylesheetAstValid) {
-      inheritStylesheetAst = []
+  function createStaticStyle(uniqueId,styleObject) {
+    const { canInheritStyleName } = ctx.constants
+    const isTextNode = ctx.distTagName[uniqueId] === 'Text'
+
+    const {
+      extract,
+      omit,
+    } = ctx.utils
+    if (isTextNode) {
+      styleObject = extract(styleObject, canInheritStyleName)
     } else {
-      inheritStylesheetAst = inheritStylesheetAst
-        .map(([uniqueId, activeAncestorAst]) => {
-          // 忽略动态的继承类型
-          const ancestorAstArray = []
-          // const ancestorAstArray = activeAncestorAst.map(ast => t.MemberExpression(
-          //   t.identifier(ctx.enums.STYLESHEET_NAME),
-          //   ast.node || ast,
-          //   true
-          // ))
-          const uniqueIdStylesheetAst = uniqueId ? t.MemberExpression(
-            t.identifier(ctx.enums.STYLESHEET_NAME),
-            t.stringLiteral(uniqueId),
-            true
-          ) : null
-
-          if (uniqueIdStylesheetAst) ancestorAstArray.unshift(uniqueIdStylesheetAst)
-          if (!ancestorAstArray.length) return null
-
-          return t.CallExpression(
-            t.MemberExpression(
-              t.identifier(ctx.enums.RNUTILS_USE_NAME),
-              t.identifier(ctx.enums.EXTRACT_CAN_INHERIT_STYLE_NAME_FUNC),
-            ),
-            ancestorAstArray
-          )
-      })
+      styleObject = omit(styleObject, canInheritStyleName)
     }
 
-    const mixinsArray = inheritStylesheetAst.concat(notInheritStylesheetAst)
+    if (!Object.keys(styleObject).length) return null
 
-    switch(mixinsArray.length) {
-      case 0: return null
-      case 1: return t.jsxExpressionContainer(mixinsArray[0])
-      default: return t.jsxExpressionContainer(t.ArrayExpression(mixinsArray))
-    }
+    return t.JSXAttribute(
+      t.JSXIdentifier('style'),
+      t.jsxExpressionContainer(
+        t.MemberExpression(
+          t.identifier(ctx.enums.STYLESHEET_NAME),
+          t.identifier(uniqueId),
+        )
+      )
+    )
   }
 
   return {
     JSXElement(path) {
-      const tagName = path.get('openingElement').get('name').node.name
       const uniqueIdPrefix = ctx.enums.UNIQUE_ID
       const uniqueIdPath = ctx.jsxUtils.getJSXAttributeValue(path, uniqueIdPrefix)
       const uniqueId = uniqueIdPath.node.value
 
-      let {
-        activeClassName,
-        activeId,
-      } = ctx.uniqueNodeInfo[uniqueId]
+      const { isActive } = ctx.uniqueNodeInfo[uniqueId]
+      const styleObject = ctx.convertedStyleToRN[uniqueId]
       
-      const {
-        exceptInherit, // 除了继承样式的混合结果
-      } = ctx.convertedStyleToRN
+      let styleNode
+      if (isActive) {
+        styleNode = createDynamicStyle(uniqueId)
+      } else {
+        styleNode = createStaticStyle(uniqueId,styleObject)
+      }
 
-      const ancestorStylesheetKey = ctx.inheritStyle[uniqueId] || []
-      
-      if (!activeClassName) activeClassName = []
-      if (!activeId) activeId = []
-      
-      const mixinExceptInheritExpression = exceptInherit[uniqueId] ? [{
-        node: t.stringLiteral(uniqueId)
-      }] : []
-
-      // TODO: update 当前方案是将动态样式放在最后，处于高优先级。
-      // （原因是react样式可运行时计算，当前rn的样式处理为编译时计算，如果改成运行时计算，会造成最终样式过长。）
-      const activeExpressionArray = mixinExceptInheritExpression.concat(activeClassName.concat(activeId))
-
-      // 拥有继承而来的属性或本身有属性
-      if (ancestorStylesheetKey.length || activeExpressionArray.length) {
-        const attributeValuePath = createArrayCallInJSXExpression({
-          activeExpressionArray,
-          ancestorStylesheetKey,
-          uniqueId,
-        })
-
-        if (attributeValuePath) {
-          const jsxAttributePath = t.JSXAttribute(
-            t.JSXIdentifier('style'),
-            attributeValuePath
-          )
-          path.get('openingElement').pushContainer('attributes', jsxAttributePath)
-        }
+      if (styleNode) {
+        path.get('openingElement').pushContainer(
+          'attributes',
+          styleNode
+        )
       }
     }
   }

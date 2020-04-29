@@ -3,11 +3,10 @@
   require('./addTextWrapper'),
   require('./addUniqueId'),
   require('./collectInfo'),
-  // require('./astToRelationTree'),
-  // require('./convertReactTagToRN'),
 ]
 
-if (!process.env.COMPILE_ENV || process.env.COMPILE_ENV === 'node') {
+global.__NODE__ = typeof process !== undefined
+if (__NODE__) {
   visitors.unshift(require('./resolveCssPath'))
 }
 

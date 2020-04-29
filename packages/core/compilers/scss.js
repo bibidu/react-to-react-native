@@ -1,8 +1,8 @@
 const sass = require('node-sass')
 
 module.exports = function scss(code, filePath) {
-  return new Promise((resolve, reject) => {
-    this.log('scssCompiler')
+  return new Promise((resolve) => {
+  this.logger.log({ type: 'flow', msg: 'scss compile' })
 
     if (!code.trim()) {
       return resolve('')
@@ -13,7 +13,7 @@ module.exports = function scss(code, filePath) {
     }, (err, r) => {
       if (err) {
         this.errors.add(err && err.message)
-        this.error(err)
+        thislogger.error(err)
         resolve('')
       } else {
         const css = r.css.toString()

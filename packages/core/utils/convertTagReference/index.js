@@ -16,7 +16,7 @@ function saveStyleFromTagName(path, styles) {
   if (Object.keys(styles).length) {
     const uniqueId = ctx.jsxUtils.getJSXAttributeValue(path, ctx.enums.UNIQUE_ID)
     if (!uniqueId || !uniqueId.node || !uniqueId.node.value) {
-      ctx.error('不存在uniqueId')
+      ctxlogger.error('不存在uniqueId')
     }
     ctx.addTagSelfStyle(uniqueId.node.value, styles)
   }
@@ -35,7 +35,7 @@ module.exports = function convertTagReference(ast, {
 
   function replacement(path) {
     const tagName = ctx.jsxUtils.getTagName(path)
-    if (ctx.isUserComponent(tagName)) return
+    if (ctx.utils.isUserComponent(tagName)) return
 
     const { tag, styles = {} } = resolves({path, t, ctx})
 

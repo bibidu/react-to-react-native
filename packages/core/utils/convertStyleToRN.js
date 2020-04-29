@@ -3,17 +3,38 @@ let ctx = null
 
 const shouldPreprocessAttr = [
   {
+    match: (attrName, attrValue) => {
+      return [
+        'border',
+        'border-top',
+        'border-bottom',
+        'border-left',
+        'border-right',
+      ].includes(attrName) && attrValue.split(' ').length === 2
+    },
+    warnings: [],
+    actions: (obj, attrName, attrValue) => {
+      const [borderLength, borderStyle, _borderColor] = attrValue.split(' ')
+      if (!_borderColor) {
+        const borderColor = obj[`${attrName}Color`] || obj.borderColor || '#111'
+        obj[attrName] = `${obj[attrName]} ${borderColor}`
+      }
+    }
+  },
+  {
     match: (attrName, attrValue) => /^border\-(top|left|right|bottom)/.test(attrName),
     warnings: [],
     actions: (obj, attrName, attrValue) => {
       const direction = attrName.split('border-')[1]
       const firstCharUpper = direction.charAt(0).toUpperCase() + direction.slice(1)
+      console.log(attrValue)
       const [borderWidth, borderStyle, borderColor] = attrValue.split(' ').filter(Boolean)
       if (borderWidth !== 'none') {
         obj[`border${firstCharUpper}Width`] = borderWidth
         obj['borderStyle'] = borderStyle
         obj['borderColor'] = borderColor
       }
+      delete obj[attrName]
     }
   },
   {
@@ -121,9 +142,12 @@ const shouldPreprocessAttr = [
 ]
 
 function checkUnSupportAttr(obj) {
-  Object.entries(obj).forEach(([attrName, attrValue]) => {
+  Object.entries(obj).forEach(([attrName]) => {
     shouldPreprocessAttr.forEach((item) => {
       const { match, warnings, actions} = item
+      // 使用obj[attrName]的原因：
+      //  在match的过程中会对attrValue的做出修改，但attrValue始终是初次的值
+      const attrValue = obj[attrName]
       if (match(attrName, attrValue, obj)) {
         warnings.forEach(item => ctx.warnings.add(item))
         actions(obj, attrName, attrValue)
@@ -151,7 +175,8 @@ function _transformMain(obj) {
   try {
     result = _transform(arrayStyle)
   } catch (error) {
-    console.error('[ERROR] cssToReactNative error' + error) 
+    console.log(error)
+    ctx.logger.error('cssToReactNative error' + error) 
     return result
   }
 

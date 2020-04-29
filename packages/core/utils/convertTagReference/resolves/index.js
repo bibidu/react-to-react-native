@@ -20,8 +20,9 @@ module.exports = function resolves({
 }) {
 
   function addEventPolyfill(path, eventName) {
-    const createEventTargetPolyfill = (value) => (
-      t.CallExpression(
+    const createEventTargetPolyfill = (value) => {
+      ctx.addRuntimeUseUtil(ctx.enums.EVENT_TARGET_FUNC)
+      return t.CallExpression(
         t.MemberExpression(
           t.identifier(ctx.enums.RNUTILS_USE_NAME),
           t.identifier(ctx.enums.EVENT_TARGET_FUNC),
@@ -30,7 +31,7 @@ module.exports = function resolves({
           t.identifier(value)
         ]
       )
-    )
+    }
 
     const eventValue = ctx.jsxUtils.getJSXAttributeValue(path, eventName)
     if (!eventValue) return
@@ -79,6 +80,7 @@ module.exports = function resolves({
 
   // 标签名
   const tagName = path.get('openingElement').get('name').node.name
+
   // 是否有tap事件
   const hasTapEvent = constant.tapEvents.some(eventName =>
     ctx.jsxUtils.getJSXAttributeValue(path, eventName)
@@ -95,7 +97,7 @@ module.exports = function resolves({
       return true
 
     const nameNode = path.get('openingElement').get('name')
-    if (nameNode.isIdentifier({ name: 'Fragment' }))
+    if (nameNode.isJSXIdentifier({ name: 'Fragment' }))
       return true
 
     if (nameNode.isJSXMemberExpression() && nameNode.get('property').isJSXIdentifier({ name: 'Fragment' }))

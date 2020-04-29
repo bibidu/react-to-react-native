@@ -5,7 +5,8 @@ module.exports = function cssToObject(css) {
   let stableClassNames = {}
 
   return new Promise((resolve, reject) => {
-    this.log('cssToObject')
+  this.logger.log({ type: 'flow', msg: 'transform css to object' })
+
     postcss()
     .use(css2obj({
       callback: (_externalStyle, _stableClassNames) => {

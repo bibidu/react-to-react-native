@@ -91,7 +91,7 @@ module.exports = function astToRelationTree(ast, currentPath) {
   }
 
   function getCurrentFileUniqueName(path) {
-    let base = ctx.hashHelper(currentPath) + '-'
+    let base = ctx.utils.hash(currentPath) + '-'
 
     if (path.isJSXElement()) {
       base += getJSXUniqueId(path) + '-' + 'JSXElement-' + ctx.jsxUtils.getTagName(path)
@@ -109,7 +109,7 @@ module.exports = function astToRelationTree(ast, currentPath) {
     } else if (path.isArrowFunctionExpression()) {
       base += 'ArrowFunction' +`${path.node.start}_${path.node.end}`
     } else {
-      ctx.error('JSXElement父级不合法')
+      ctxlogger.error('JSXElement父级不合法')
     }
     const uniqueName = base
     // const uniqueName = config.isDefault ? base.split('-')[0] + '-Default' : base
@@ -169,9 +169,10 @@ module.exports = function astToRelationTree(ast, currentPath) {
       className: '',
       activeClassName: [],
       id: '',
-      activeId: '',
+      activeId: [],
       uniqueId: '',
-      activeAddText: ''
+      activeAddText: '',
+      isActive: false, /* 是否是动态节点。如是动态节点，则启用运行时样式混合，否则，进行编译时混合。 */
     }
     const attributes = openingElement.get('attributes')
     for (let attr of attributes) {
@@ -184,14 +185,16 @@ module.exports = function astToRelationTree(ast, currentPath) {
           const { staticExpression, activeExpression } = getAttrValueExactly(attr.get('value'))
           const activeKey = 'active' + attrName.replace(/^\w/, (_) => _.toUpperCase())
           result[attrName] = staticExpression
-          result[activeKey] = activeExpression || []
+          if (activeExpression) {
+            result.isActive = true
+            result[activeKey] = activeExpression
+          }
         }
       })
 
       if (attr.get('name').isJSXIdentifier({ name: ctx.enums.UNIQUE_ID })) {
         const name = 'uniqueId'
         const { staticExpression } = getAttrValueExactly(attr.get('value'))
-        const activeKey = 'active' + name.replace(/^\w/, (_) => _.toUpperCase())
         result[name] = staticExpression
       }
 
@@ -275,8 +278,7 @@ module.exports = function astToRelationTree(ast, currentPath) {
             const name = item.get('specifiers.0.local').node.name
             if (name === tagName) {
               const file = resolveFile(currentPath, importPath)
-              return `${ctx.hashHelper(file.entirePath)}-Default`
-              // return `${ctx.hashHelper(file.entirePath)}-Class-${tagName}`
+              return `${ctx.utils.hash(file.entirePath)}-Default`
             }
           }
         }
@@ -374,7 +376,7 @@ module.exports = function astToRelationTree(ast, currentPath) {
       ctx.addUniqueNodeInfo(uniqueId, nodeInfo)
 
       // 临时方案：对于自定义的组件，默认从当前文件的Class中进行匹配
-      if (ctx.isUserComponent(tagName)) {
+      if (ctx.utils.isUserComponent(tagName)) {
         ctx.addFsRelation(getCurrentFileUniqueName(path), getComponentMapName(tagName, currentPath, path))
       }
     },
@@ -413,7 +415,7 @@ module.exports = function astToRelationTree(ast, currentPath) {
 
     ExportDefaultDeclaration(path) {
       // if (!atLeastOneJSXElement) {
-      const filePathHash = ctx.hashHelper(currentPath)
+      const filePathHash = ctx.utils.hash(currentPath)
       let rootClassName
       if (path.get('declaration').isIdentifier()) {
         rootClassName = path.get('declaration').node.name
@@ -432,7 +434,7 @@ function resolveFile(entryPath, importSource) {
   const path = require('path')
   
   const importAbsolutePath = path.resolve(path.dirname(entryPath), importSource)
-  const file = ctx.isFile(importAbsolutePath)
+  const file = ctx.utils.isFile(importAbsolutePath)
   if (!file) {
     const msg = `不存在该文件: ${importAbsolutePath}`
     throw Error(msg)

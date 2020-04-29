@@ -16,7 +16,7 @@ module.exports = function styleFixer(ast, {
       const uniqueId = uniqueIdPath.node.value
       const { tagName: rawTagName } = ctx.uniqueNodeInfo[uniqueId]
 
-      if (ctx.isUserComponent(rawTagName)) return
+      if (ctx.utils.isUserComponent(rawTagName)) return
 
       if (rawTagName === 'i') {
         return load('I')({path, t, ctx, addUsingComponent})

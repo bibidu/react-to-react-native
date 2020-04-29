@@ -7,14 +7,13 @@ module.exports = function generateReactNativeComponent({
   usingComponent,
   code,
   getResourceRelativePath,
+  useRuntimeUtil,
 }) {
   const ctx = this
 
   function genUsingComponentCode(usingComponent) {
     const componentStr = (usingComponent || []).join(',\n  ')
     return `import {
-  AppRegistry,
-  StyleSheet,
   ${componentStr}\n} from 'react-native'`
   }
   
@@ -53,7 +52,7 @@ module.exports = function generateReactNativeComponent({
   const topBanner = genTopBanner()
   const reactImport = genReactImport()
   const usingCode = fileType === 'react' ? genUsingComponentCode(usingComponent) : ''
-  const runtimeUtils = genRuntimeUtils()
+  const runtimeUtils = useRuntimeUtil ? genRuntimeUtils() : ''
   const styleSheet = genStyleSheet.call(this, finalStyleObject)
   const component = fileType === 'react' ? formatCode(code) : ''
   const result = [
