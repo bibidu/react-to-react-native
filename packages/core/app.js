@@ -69,7 +69,6 @@ module.exports = class ReactToReactNative {
     this.addInitialInlineStyle = (uniqueId, inlineStyle) => this.initialInlineStyle[uniqueId] = inlineStyle
 
     this.inheritStyle = {} /* 文本节点继承的样式 */
-    this.addInitialInlineStyle = (uniqueId, style) => this.inheritStyle[uniqueId] = style
 
     this.generateStyle = {} /* 新生成的样式 */
     this.addGenerateStyle = (key, style) => this.generateStyle[key] = style
