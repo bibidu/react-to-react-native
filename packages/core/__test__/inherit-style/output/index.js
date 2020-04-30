@@ -16,8 +16,8 @@ class App extends React.Component {
     return (
       <>
         <View>
-          <View style={[styles.$inherit1, styles.$merge2]}>
-            <Text style={styles.$inherit3}>h1</Text>
+          <View style={styles.$merge1}>
+            <Text style={styles.$inherit2}>h1</Text>
           </View>
         </View>
       </>

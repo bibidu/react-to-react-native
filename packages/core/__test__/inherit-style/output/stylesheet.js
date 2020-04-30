@@ -1,15 +1,11 @@
 export default {
-  "$inherit1": {
-    "line-height": "10px",
-    "fontWeight": "bold"
-  },
-  "$inherit3": {
+  "$inherit2": {
     "fontSize": "36px",
     "fontWeight": "bold",
     "color": "red",
     "line-height": "10px"
   },
-  "$merge2": {
+  "$merge1": {
     "backgroundColor": "red"
   }
 }

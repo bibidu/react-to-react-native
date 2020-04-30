@@ -80,17 +80,19 @@ module.exports = function addStyleAccordingToUniqueId({ ctx, t }) {
 
     // <!----------------- 继承style start----------------->
 
-    const inheritStyle = ctx.inheritStyle[uniqueId] || {}
-    if (Object.keys(inheritStyle).length) {
-      const id = ctx.utils.generateId('inherit')
-      ctx.addGenerateStyle(id, inheritStyle)
-
-      styleArrayNodes.push(
-        t.MemberExpression(
-          t.identifier(ctx.enums.STYLESHEET_NAME),
-          t.identifier(id),
+    if (isTextNode) {
+      const inheritStyle = ctx.inheritStyle[uniqueId] || {}
+      if (Object.keys(inheritStyle).length) {
+        const id = ctx.utils.generateId('inherit')
+        ctx.addGenerateStyle(id, inheritStyle)
+  
+        styleArrayNodes.push(
+          t.MemberExpression(
+            t.identifier(ctx.enums.STYLESHEET_NAME),
+            t.identifier(id),
+          )
         )
-      )
+      }
     }
 
     // <!----------------- 继承style start----------------->
