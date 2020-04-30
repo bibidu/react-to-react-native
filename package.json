@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "install-all": "node scripts/install-all.js"
+    "install-all": "node scripts/install-all.js",
+    "precommit": "node task.js"
   },
   "repository": {
     "type": "git",
@@ -20,5 +21,13 @@
   "bugs": {
     "url": "https://github.com/bibidu/react-to-react-native/issues"
   },
-  "homepage": "https://github.com/bibidu/react-to-react-native#readme"
+  "homepage": "https://github.com/bibidu/react-to-react-native#readme",
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run precommit"
+    }
+  },
+  "devDependencies": {
+    "husky": "^4.2.5"
+  }
 }
