@@ -52,6 +52,7 @@ publicIp.v4().then(ip => {
     cnpm i &&
     echo "install core dependencies success!"
   `).toString())
+  resolve()
 }).then(() => {
   return writeExample()
 })
