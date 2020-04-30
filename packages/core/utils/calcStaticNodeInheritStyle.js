@@ -21,7 +21,9 @@ module.exports = function calcStaticNodeInheritStyle() {
       // 只继承祖先的静态样式
       const externalStyle = ctx.externalToInlineStyle[uniqueId] || {}
       const tagStyle = ctx.tagSelfStyle[uniqueId] || {}
-      const inlineStyle = ctx.externalToInlineStyle[uniqueId] || {}
+      const nodeInfo = ctx.uniqueNodeInfo[uniqueId]
+      const inlineStyle = nodeInfo.activeStyle && nodeInfo.activeStyle.length
+        ? {} : (ctx.initialInlineStyle[uniqueId] || {})
 
       Object.assign(
         mixedAncestorStyle,
