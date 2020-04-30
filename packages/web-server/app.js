@@ -2,7 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const express = require('express')
 const app = express()
-const r2rn = require('../core/app')
+const R2RN = require('../core/app')
 const bodyParser = require('body-parser')
 const autoSh = require('./autoSh')
 const {
@@ -24,7 +24,7 @@ app.use(bodyParser.json())
 
 function _compile(request) {
   return new Promise(resolve => {
-    r2rn.init(request).start().then(res => {
+    new R2RN().init(request).start().then(res => {
         resolve(res)
       })
   })

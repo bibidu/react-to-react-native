@@ -7,7 +7,7 @@ const utils = require('./utils')
 const enums = require('./config/enums')
 const constants = require('./config/constants')
 
-module.exports = new class ReactToReactNative {
+module.exports = class ReactToReactNative {
   constructor() {
     global.__NODE__ = typeof process !== undefined
 
@@ -386,7 +386,7 @@ module.exports = new class ReactToReactNative {
     const compileTime = this.utils.logEnd('compile')
     this.logger.log({ type: 'spendTime', msg: `共 ${compileTime}s`})
   }
-}()
+}
 
 function sortAndStringify(styleObj) {
   const result = {}
