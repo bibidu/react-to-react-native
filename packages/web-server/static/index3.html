@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>react-to-react-native</title>
+  <link rel="shortcut icon" href="./imgs/favicon.ico">
+  <link rel="stylesheet" href="./css/index.css">
+  <link rel="stylesheet" href="./css/codemirror.css" /> 
+  <script src="./js/example.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/vue/2.6.10/vue.min.js"></script> 
+  <script src="./js/codemirror.js"></script> 
+  <script src="./js/mode/javascript/javascript.js"></script> 
+  <script src="./js/mode/xml/xml.js"></script> 
+  <script src="./js/mode/jsx/jsx.js"></script> 
+</head>
+<body>
+  <div id="app">
+    <!-- 顶部bar -->
+    <div class="top-bar">
+      <div class="top-list">
+        <div class="blue-item top-list-item" v-for="item in ['转译文档']">
+          <a href="http://localhost:3000/docs">{{item}}</a>
+        </div>
+      </div>
+      <div class="title">react-to-react-native</div>
+    </div>
+
+    <!-- example -->
+    <div class="example-container">
+      <div class="blue-item example-title">当前测试代码</div>
+      <div
+        :class="[
+          'example-item',
+          { 'example-item-check': currentExampleIndex === index }
+        ]"
+        v-for="(item, index) in examples"
+        @click="toggleExample(index)"
+      >
+        {{item.title}}
+      </div>
+    </div>
+
+    <!-- 代码编辑 -->
+    <div class="code-container">
+        <div class="code-container-item pre-code-container">
+          <div class="code-top-bar">
+            <div
+              :class="[
+                'code-top-bar-item',
+                'left',
+                { 'code-top-bar-item-select': inputFileType === index }
+              ]"
+              v-for="(item, index) in inputFileTypes"
+              @click="toggleFileTypes('input', index)"
+            >
+              {{item}}
+            </div>
+            <div class="code-top-bar-item right compile-btn" @click="compile">
+              编译
+            </div>
+          </div>
+          <div class="code-main-area">
+            <textarea class="pre-code"></textarea>
+          </div>
+        </div>
+        <div class="code-container-item after-code-container">
+          <div class="code-top-bar">
+            <div
+              :class="[
+                'code-top-bar-item',
+                'left',
+                { 'code-top-bar-item-select': index === outputFileType }
+              ]"
+              v-for="(item, index) in outputFileTypes"
+              @click="toggleFileTypes('output', index)"
+              v-if="!Array.isArray(outputs[index]) || outputs[index].length > 0"
+            >
+              <div v-if="Array.isArray(outputs[index]) && outputs[index].length" class="count">
+                {{outputs[index].length}}
+              </div>
+              {{item}}
+            </div>
+          </div>
+          <div class="code-main-area">
+            <div class="loading" v-show="loading">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <textarea class="after-code"></textarea>
+          </div>
+        </div>
+    </div>
+    <!-- footer -->
+    <div class="footer">
+      <div class="footer-item">
+        <a href="">同镇前端</a>
+      </div>
+    </div>
+  </div>
+  <script src="./js/index.js"></script>
+</body>
+</html>
