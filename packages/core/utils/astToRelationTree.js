@@ -352,9 +352,9 @@ module.exports = function astToRelationTree(ast, currentPath) {
       return mapName
     }
     
-    // TODO: add 支持当前文件的纯函数类型组件
     const msg = `未识别到引用的组件 ${tagName}`
-    throw Error(msg)
+    console.log(msg)
+    return ''
   }
 
   // let atLeastOneJSXElement = false
@@ -377,7 +377,10 @@ module.exports = function astToRelationTree(ast, currentPath) {
 
       // 临时方案：对于自定义的组件，默认从当前文件的Class中进行匹配
       if (ctx.utils.isUserComponent(tagName)) {
-        ctx.addFsRelation(getCurrentFileUniqueName(path), getComponentMapName(tagName, currentPath, path))
+        const childName = getComponentMapName(tagName, currentPath, path)
+        if (childName) {
+          ctx.addFsRelation(getCurrentFileUniqueName(path), childName)
+        }
       }
     },
 
@@ -424,7 +427,10 @@ module.exports = function astToRelationTree(ast, currentPath) {
       }
       // const currentClassNodeName = `${filePathHash}-Class-${rootClassName}`
       const currentClassNodeName = `${filePathHash}-Default`
-      ctx.addFsRelation(currentClassNodeName, getComponentMapName(rootClassName, currentPath, path))
+      const childName = getComponentMapName(rootClassName, currentPath, path)
+      if (childName) {
+        ctx.addFsRelation(currentClassNodeName, childName)
+      }
       // }
     }
   })
