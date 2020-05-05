@@ -62,6 +62,28 @@ export default Demo`,
           },
 
 {
+            title: `active-style`,
+            inputJs: `import React from 'react'
+
+class App extends React.Component {
+
+  
+  render() {
+    const { activeStyle } = this.props
+
+    return <div className="container">
+      <h1 style={activeStyle}>
+        123
+      </h1>
+    </div>
+  }
+}
+
+export default App`,
+            inputCss: ``,
+          },
+
+{
             title: `class`,
             inputJs: `import React from 'react'
 import './app.scss'
