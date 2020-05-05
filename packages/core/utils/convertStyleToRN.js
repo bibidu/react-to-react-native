@@ -47,6 +47,11 @@ const shouldPreprocessAttr = [
     actions: (obj) => delete obj['boxSizing']
   },
   {
+    match: (attrName, attrValue) => attrName === 'background' && attrValue.includes('linear-gradient'),
+    warnings: ['暂不支持linear-gradient'],
+    actions: (obj) => delete obj['background']
+  },
+  {
     match: (_, $, obj) => {
       const hasDisplay = Object.keys(obj).includes('display')
       const displayIsFlex = obj['display'] === 'flex'
