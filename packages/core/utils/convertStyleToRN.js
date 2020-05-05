@@ -198,7 +198,11 @@ function _transform(arrayStyle) {
 const objStyleToTransformArray = (obj) => {
   const array = []
   for (let key of Object.keys(obj)) {
-    const value = obj[key]
+    let value = obj[key]
+
+    // pretransform
+    // To fix '{ top: 5 }', transform to '{ top: "5px" }'
+    value = typeof value === 'number' ? value + 'px' : value
     array.push([key, value])
   }
   return array
