@@ -38,7 +38,7 @@ module.exports = function collectInfo({ ctx, t }) {
         let valueTypeIsNumberOrString = false
         if (isObjectExpression) {
           valueTypeIsNumberOrString = styleAttr.get('expression').get('properties').every(prop => {
-            return prop.get('value').isStringLiteral() || prop.get('value').NumericLiteral()
+            return prop.get('value').isStringLiteral() || prop.get('value').isNumericLiteral()
           })
         }
         const isConstantStyle = isObjectExpression && valueTypeIsNumberOrString

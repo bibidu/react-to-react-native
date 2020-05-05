@@ -10,19 +10,12 @@ import * as _util from './tools.js'
 import styles from './stylesheet.js'
 
 class App extends React.Component {
-  activeCls = type => `tz-${type}-btn`;
-
   render() {
-    const { type } = this.props;
+    const { activeStyle } = this.props;
     return (
       <View>
-        <View
-          style={[
-            styles.$merge1,
-            _util.extend(styles[`${this.activeCls(type)}`])
-          ]}
-        >
-          <Text style={styles.$inherit2}>123</Text>
+        <View style={_util.extend(activeStyle)}>
+          <Text style={styles.$inherit1}>123</Text>
         </View>
       </View>
     );

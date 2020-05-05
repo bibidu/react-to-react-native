@@ -119,22 +119,30 @@ module.exports = function addStyleAccordingToUniqueId({ ctx, t }) {
     // <!----------------- 动态(class样式 + id样式 + 内联样式) start----------------->
 
     const { activeClassName, activeId, activeStyle = [] } = ctx.uniqueNodeInfo[uniqueId]
-    ;[].concat(
+    const activeBundles = [].concat(
       activeClassName,
       activeId,
       activeStyle
-    ).forEach(node => {
+    )
+    // activeStyle 不需要添加 style.xx 包裹
+    const hasActiveStyle = Boolean(activeStyle.length)
+    activeBundles.forEach((node, idx) => {
       ctx.warnings.add(`动态样式中可能存在RN不支持的属性，需自行检查并删除`)
 
       let expressionNode
-      if (node.type.endsWith('Expression')) {
+      // activeStyle 不需要添加 style.xx 包裹
+      if (hasActiveStyle && (idx === activeBundles.length - 1)) {
         expressionNode = node
       } else {
-        expressionNode = t.MemberExpression(
-          t.identifier(STYLESHEET_NAME),
-          node,
-          true
-        )
+        if (node.type.endsWith('Expression')) {
+          expressionNode = node
+        } else {
+          expressionNode = t.MemberExpression(
+            t.identifier(STYLESHEET_NAME),
+            node,
+            true
+          )
+        }
       }
       const utilName = isTextNode ? OMIT_CAN_INHERIT_STYLE_NAME_FUNC : EXTRACT_CAN_INHERIT_STYLE_NAME_FUNC
       styleArrayNodes.push(

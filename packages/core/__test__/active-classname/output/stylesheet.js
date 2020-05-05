@@ -1,7 +1,9 @@
 export default {
-  "UIH1": {
-    "fontSize": 36,
-    "fontWeight": "600",
+  "$inherit2": {
+    "fontSize": "36px",
+    "fontWeight": "600"
+  },
+  "$merge1": {
     "backgroundColor": "#fff",
     "borderWidth": 1,
     "borderColor": "#ccc",

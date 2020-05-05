@@ -70,7 +70,7 @@ exports.isFile = function(filePath, currentResolves) {
   }
 
   if (!info) {
-    logger.error('isFile can not find path: ', filePath);
+    this.logger.error('isFile can not find path: ', filePath);
   }
   return info
 }
