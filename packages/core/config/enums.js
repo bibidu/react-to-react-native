@@ -9,6 +9,7 @@ module.exports = {
   ACTIVE_ADD_TEXT_MARK: '__active', // 动态添加的文本标签属性名
   SINGLE_FILE: 'single_file', // 编译类型为单文件
   MULTIPLE_FILE: 'multiple_file', // 编译类型为多文件
+  CLASS_ALIAS: 'className', // 获取类名的字段名（react为className、其他为class）
 
   // <!-------------- runtime start-------------->
   ACTIVE_CLASSNAME_WILL_REPLACEBY_STYLESHEET: 'activeClassName$$', // 最终替换成stylesheet.xxx的动态类名

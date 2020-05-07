@@ -163,6 +163,7 @@ module.exports = function astToRelationTree(ast, currentPath) {
   function extractJSXNodeInfo(JSXElementPath) {
     const openingElement = JSXElementPath.get('openingElement')
     const tagName = ctx.jsxUtils.getTagName(JSXElementPath)
+    const classAlias = ctx.enums.CLASS_ALIAS
 
     const result = {
       tagName,
@@ -177,14 +178,14 @@ module.exports = function astToRelationTree(ast, currentPath) {
     const attributes = openingElement.get('attributes')
     for (let attr of attributes) {
       ;[
-        'className',
+        classAlias,
         'id',
       ].forEach(attrName => {
 
         if (attr.get('name').isJSXIdentifier({ name: attrName })) {
           const { staticExpression, activeExpression } = getAttrValueExactly(attr.get('value'))
-          const activeKey = 'active' + attrName.replace(/^\w/, (_) => _.toUpperCase())
-          result[attrName] = staticExpression
+          const activeKey = attrName === 'id' ? 'activeId' : 'activeClassName'
+          result[attrName === 'id' ? 'id' : 'className'] = staticExpression
           if (activeExpression) {
             result.isActive = true
             result[activeKey] = activeExpression
