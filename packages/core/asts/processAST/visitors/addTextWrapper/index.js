@@ -55,11 +55,12 @@ module.exports = function addTextWrapper({ ctx, t }) {
               t.JSXText(`\n${' '.repeat(parentBlock)}`),
             ])
           } else {
-            const [before, after] = path.node.value.split(path.node.value.trim())
+            const [before = '', after = ''] = path.node.value.split(path.node.value.trim())
             path.replaceWithMultiple([
-              t.JSXText('' + before),
-              createSpanWrapperWithText(t, path.node.value.trim()),
-              t.JSXText('' + after),
+              // fix: 编译错误 <span> 123</span> -> {" "}<Text>123</Text>
+              // t.JSXText(),
+              createSpanWrapperWithText(t, before + path.node.value.trim() + after),
+              // t.JSXText(),
             ])
           }
           path.skip()
