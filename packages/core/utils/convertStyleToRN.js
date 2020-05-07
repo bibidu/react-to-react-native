@@ -55,7 +55,7 @@ const shouldPreprocessAttr = [
     match: (_, $, obj) => {
       const hasDisplay = Object.keys(obj).includes('display')
       const displayIsFlex = obj['display'] === 'flex'
-      const hasFlexDirection = Boolean(obj['flexDirection'])
+      const hasFlexDirection = Boolean(obj['flex-direction'])
       return hasDisplay && displayIsFlex && !hasFlexDirection
     },
     warnings: [],
