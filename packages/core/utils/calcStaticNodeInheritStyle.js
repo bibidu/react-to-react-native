@@ -17,7 +17,7 @@ module.exports = function calcStaticNodeInheritStyle() {
   function getmixinAncestorStyle (parentsUniqueIds) {
     const mixedAncestorStyle = {}
 
-    parentsUniqueIds.forEach(uniqueId => {
+    parentsUniqueIds.reverse().forEach(uniqueId => {
       // 只继承祖先的静态样式
       const externalStyle = ctx.externalToInlineStyle[uniqueId] || {}
       const tagStyle = ctx.tagSelfStyle[uniqueId] || {}
