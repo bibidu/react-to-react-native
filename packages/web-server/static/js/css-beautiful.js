@@ -414,4 +414,3 @@ function cssbeautify(style, opt) {
 
   return formatted;
 }
-module.exports = cssbeautify
