@@ -5,6 +5,9 @@ const app = express()
 const R2RN = require('../core/app')
 const bodyParser = require('body-parser')
 const autoSh = require('./autoSh')
+const axios = require('axios')
+const qs = require('querystring')
+
 const {
   PORT
 } = require('./config')
@@ -63,6 +66,19 @@ app.post('/compile', (req, res) => {
       data: { result },
     })
   })
+})
+
+app.post('/format/html', (req, res) => {
+  const { html } = req.body
+  const data = qs.stringify({ html })
+  axios.post('https://tool.oschina.net/action/format/html', data)
+    .then((response) => {
+      res.json({
+        code: 0,
+        msg: '成功',
+        data: response.data
+      })
+    })
 })
 
 app.listen(PORT, () => {
