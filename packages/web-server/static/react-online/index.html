@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Playground</title>
+  <link rel="shortcut icon" href="./imgs/favicon.ico">
+  <link rel="stylesheet" href="./index.css" />
+  <link rel="stylesheet" href="./codemirror/codemirror.css" />
+  <script src="./codemirror/codemirror.js"></script>
+  <script src="./codemirror/mode/javascript/javascript.js"></script>
+  <script src="./codemirror/mode/xml/xml.js"></script>
+  <script src="./codemirror/mode/jsx/jsx.js"></script>
+</head>
+<body class="gen1">
+  <div id="root" class="gen3">
+    <div class="app gen4">
+     <div class="logo-cnt gen5">
+      <?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg t="1588854158995" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3770" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20"><defs><style type="text/css"></style></defs><path d="M358.588 733.867h85.333V494.763h-85.333v239.104z m204.424 0h85.334V426.82h-85.334v307.047zM768 358.4v375.467h85.333V358.4H768zM153.6 733.867h85.333V409.6H153.6v324.267z m777.301-597.334H93.1c-51.68 0-93.1 41.353-93.1 92.911v557.517c0 51.098 41.42 92.894 93.099 92.894h232.72V972.8H698.18v-92.928h232.721c51.2 0 92.638-41.796 92.638-92.894l0.461-557.534c0-51.558-41.899-92.91-93.099-92.91z m0 650.428H93.1V229.444h837.8v557.517z" p-id="3771" fill="#1296db"></path></svg>
+     </div>
+     <div class="container gen9">
+      <div class="panel-left gen10">
+        <!-- 屏幕类型 start -->
+        <div class="color-contrast gen36 screen-type">
+          <div class="color-contrast__value color-contrast__value--dark gen37">
+           <span class="gen38">iPhone 6s</span>
+          </div>
+          <div class="color-contrast__value color-contrast__value--light gen39">
+           <span class="gen40">Web</span>
+          </div>
+        </div>
+        <!-- 屏幕类型 end -->
+       <div class="demo-frame gen11">
+        <iframe id="J-demo" title="UI" src="" frameborder="0" class="gen12"></iframe>
+        <div class="navbar gen13">
+         <div class="navbar__btn-back gen14">
+          <svg t="1548917697699" class="icon gen15" viewbox="0 0 1024 1024" version="1.1">
+           <path d="M348.8 512L742.4 118.4c12.8-12.8 12.8-32 0-44.8s-32-12.8-44.8 0l-416 416c-12.8 12.8-12.8 32 0 44.8l416 416c6.4 6.4 16 9.6 22.4 9.6s16-3.2 22.4-9.6c12.8-12.8 12.8-32 0-44.8L348.8 512z" p-id="4990" class="gen16"></path>
+          </svg>
+         </div>
+         <div class="navbar__title gen17">
+          Playground
+         </div>
+        </div>
+        <div class="iphone-frame gen18"></div>
+       </div>
+      </div>
+      <div class="panel-right gen19">
+        <div class="button-group">
+          <button class="button-item" onClick="serilizeCode()">格式化</button>
+          <button class="button-item red" onClick="runCode()">运行</button>
+        </div>
+        <textarea class="code-container"></textarea>
+      
+      </div>
+     </div>
+    </div>
+   </div>    
+   <script src="./index.js"></script>
+</body>
+</html>
