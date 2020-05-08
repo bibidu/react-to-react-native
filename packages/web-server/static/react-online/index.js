@@ -21,6 +21,7 @@ const defaultContent = `<!DOCTYPE html>
 </html>
 `
 let mirror // codemirror实例
+let iframe // 当前的iframe实例
 
 createCodeMirror()
 
@@ -49,17 +50,34 @@ function runCode(value) {
 }
 
 function createAndReplaceIframe(value) {
-  const iframeContainer = document.querySelector('.demo-frame')
+  window.addEventListener('message', (e) => {
+    console.log(e.data);
+  })
+  const iframeContainer = document.querySelector('.iphone-frame-container')
 
-  const iframe = document.createElement('iframe')
+  iframe = document.createElement('iframe')
   iframe.setAttribute('frameborder', '0')
   iframe.setAttribute('id', 'iphone-iframe')
   Array.from(iframeContainer.childNodes).forEach(item => item.tagName === 'IFRAME' && item.remove())
   iframeContainer.appendChild(iframe)
   const ifrw = iframe.contentWindow
+  
+  value = value
+    .replace('</body>', `
+    <script src="http://yushouxiang.com:3000/js/html_clone.js"></script>
+    <script>
+    window.addEventListener('message', (ev) => {
+      parent.postMessage(setup(document.body), '*')
+    })
+    </script>
+    </body>`)
   ifrw.document.open()
   ifrw.document.write(value)
   ifrw.document.close()
+}
+
+function getIframeHtml() {
+  iframe.contentWindow.postMessage({ data: '12x' }, '*')
 }
 
 function setDefaultValue() {
@@ -67,18 +85,25 @@ function setDefaultValue() {
 }
 
 function serilizeCode() {
+  let style
+  const html = mirror.getValue().replace(/\<style\>([\w\W]*)\<\/style\>/m, (_, _style) => {
+    style = _style
+    return '<style></style>'
+  })
+  style = cssbeautify(style)
+  
   fetch('http://39.107.227.103:3000/format/html', {
     method: 'POST',
     headers: { 
       "Content-Type": "application/json",
     }, 
-    body: JSON.stringify({
-      html: mirror.getValue()
-    })
+    body: JSON.stringify({ html })
   }).then(res => res.json()).then((res) => {
     const html = res.data.fhtml
     if (html) {
-      mirror.setValue(html)
+      mirror.setValue(html.replace('<style>', `<style>${style}\n`))
     }
   })
 }
+
+

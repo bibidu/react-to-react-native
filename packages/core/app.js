@@ -204,7 +204,7 @@ module.exports = class ReactToReactNative {
       hashHelper: this.utils.hash,
       collections: this.collections,
     })
-    
+
     // 转换标签、事件
     Object.entries(this.graph).forEach(([filePath, component]) => {
       this.currentCompilePath = filePath
@@ -244,7 +244,15 @@ module.exports = class ReactToReactNative {
     this.inheritStyle = this.calcStaticNodeInheritStyle()
 
     // 转换成RN的stylesheet结果
-    this.convertedStyleToRN = this.convertStyleToRN(this.mixinedStyle)
+    const converted = this.convertedStyleToRN
+    Object.entries(this.mixinedStyle).forEach(([uniqueId, style]) => {
+      const result = this.convertStyleToRN(style)
+      if (!Object.keys(result).length) {
+        delete converted[uniqueId]
+      } else {
+        converted[uniqueId] = result
+      }
+    })
 
     // 修改标签、样式相关
     Object.entries(this.graph).forEach(([, component]) => {

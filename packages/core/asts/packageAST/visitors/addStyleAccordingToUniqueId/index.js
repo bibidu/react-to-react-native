@@ -84,7 +84,7 @@ module.exports = function addStyleAccordingToUniqueId({ ctx, t }) {
       const inheritStyle = ctx.inheritStyle[uniqueId] || {}
       if (Object.keys(inheritStyle).length) {
         const id = ctx.utils.generateId('inherit')
-        ctx.addGenerateStyle(id, inheritStyle)
+        ctx.addGenerateStyle(id, ctx.convertStyleToRN(inheritStyle))
   
         styleArrayNodes.push(
           t.MemberExpression(

@@ -11,6 +11,7 @@
   <script src="./codemirror/mode/javascript/javascript.js"></script>
   <script src="./codemirror/mode/xml/xml.js"></script>
   <script src="./codemirror/mode/jsx/jsx.js"></script>
+  <script src='../js/css-beautiful.js'></script>
 </head>
 <body class="gen1">
   <div id="root" class="gen3">
@@ -31,7 +32,7 @@
         </div>
         <!-- 屏幕类型 end -->
        <div class="demo-frame gen11">
-        <iframe id="J-demo" title="UI" src="" frameborder="0" class="gen12"></iframe>
+        <!-- <iframe id="J-demo" title="UI" src="" frameborder="0" class="gen12"></iframe> -->
         <div class="navbar gen13">
          <div class="navbar__btn-back gen14">
           <svg t="1548917697699" class="icon gen15" viewbox="0 0 1024 1024" version="1.1">
@@ -42,16 +43,18 @@
           Playground
          </div>
         </div>
-        <div class="iphone-frame gen18"></div>
+        <div class="iphone-frame-container">
+          <!-- <div class="iphone-frame gen18"></div> -->
+        </div>
        </div>
       </div>
       <div class="panel-right gen19">
         <div class="button-group">
           <button class="button-item" onClick="serilizeCode()">格式化</button>
+          <button class="button-item" onClick="getIframeHtml()">提取html</button>
           <button class="button-item red" onClick="runCode()">运行</button>
         </div>
         <textarea class="code-container"></textarea>
-      
       </div>
      </div>
     </div>

@@ -37,9 +37,9 @@ const shouldPreprocessAttr = [
     }
   },
   {
-    match: (attrName, attrValue) => attrName === 'text-shadow',
+    match: (attrName, attrValue) => ['text-shadow', 'box-shadow'].includes(attrName),
     warnings: [],
-    actions: (obj) => delete obj['textShadow']
+    actions: (obj, attrName) => delete obj[attrName]
   },
   {
     match: (attrName, attrValue) => attrName === 'box-sizing',
@@ -143,6 +143,24 @@ const shouldPreprocessAttr = [
       }
     }
   },
+  {
+    match: (attrName, attrValue) => attrName === 'text-align' && attrValue === 'start',
+    warnings: [],
+    actions: (obj, attrName, attrValue) => {
+      if (attrValue === 'start') {
+        obj[attrName] = 'left'
+      }
+    }
+  },
+  {
+    match: (attrName, attrValue) => attrName === 'line-height' && (
+      typeof attrValue !== Number && !attrValue.includes('px')
+    ),
+    warnings: [],
+    actions: (obj, attrName) => {
+      delete obj[attrName]
+    }
+  }
 ]
 
 function checkUnSupportAttr(obj) {
@@ -163,13 +181,13 @@ function checkUnSupportAttr(obj) {
 module.exports = function convertStyleToRN(styles) {
   ctx = this
 
-  Object.entries(styles).forEach(([uniqueId, style]) => {
-    const result = _transformMain(style)
-    styles[uniqueId] = result
-  })
-
-  removeEmpty(styles)
-  return styles
+  // Object.entries(styles).forEach(([uniqueId, style]) => {
+  //   const result = _transformMain(style)
+  //   styles[uniqueId] = result
+  // })
+  // removeEmpty(styles)
+  // return styles
+  return  _transformMain(styles)
 }
 
 function _transformMain(obj) {
@@ -213,10 +231,10 @@ const objStyleToTransformArray = (obj) => {
   return array
 }
 
-function removeEmpty(styles) {
-  Object.entries(styles).forEach(([key, value]) => {
-    if (!Object.keys(value).length) {
-      delete styles[key]
-    }
-  })
-}
+// function removeEmpty(styles) {
+//   Object.entries(styles).forEach(([key, value]) => {
+//     if (!Object.keys(value).length) {
+//       delete styles[key]
+//     }
+//   })
+// }
