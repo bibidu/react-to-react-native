@@ -73,7 +73,7 @@
 }
 .screen-type {
   position: absolute;
-  top: 50px;
+  top: 20px;
   left: 50%;
   transform: translateX(-50%);
 }
@@ -83,11 +83,11 @@
 	border-radius: 60px;
 	box-shadow: rgba(4, 59, 85, 0.1) 0px 4px 30px 0px;
 	box-sizing: border-box;
-	height: 806px;
+	/* height: 806px; */
 	overflow: hidden;
-	padding: 58px 20px 18px;
+	padding: 58px 20px 30px;
 	position: relative;
-	width: 415px;
+	/* width: 415px; */
 }
 
 .gen12 {
@@ -337,24 +337,25 @@
 	/* width: 600px; */
 }
 
-.gen37 {
-	background: rgb(0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box;
+/* .gen37 {
 	box-sizing: border-box;
-	color: rgb(97, 144, 232);
 	display: inline-block;
 	font-size: 13px;
 	line-height: 22px;
 	padding: 0px 10px;
 	transform: matrix(1, 0, -0.212557, 1, 0, 0);
 	border: 1px solid rgb(0, 0, 0);
-}
+} */
 
 .gen38 {
 	background: rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box;
   margin: 0px 5px 0px 0px;
   color: #fff;
 }
-
+.dark{
+  background: #111 !important;
+  color: #fff !important;
+}
 .gen39 {
 	background: rgb(255, 255, 255) none repeat scroll 0% 0% / auto padding-box border-box;
 	box-sizing: border-box;
@@ -369,7 +370,7 @@
 }
 
 .gen40 {
-	background: rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box;
+	/* background: rgba(0, 0, 0, 0) none repeat scroll 0% 0% / auto padding-box border-box; */
 	margin: 0px 5px 0px 0px;
 }
 
@@ -521,9 +522,16 @@
   background-color: #fff;
 }
 .iphone-frame-container{
-  width: 375px;
-  height: 667px;
+  width: calc(375px * 0.9);
+  height: calc(667px * 0.9);
   margin-top: 40px;
+}
+.device{
+  cursor: pointer;
+}
+.not-allowed{
+  background: #ccc;
+  cursor: not-allowed;
 }
 #iphone-iframe{
   box-sizing: border-box;

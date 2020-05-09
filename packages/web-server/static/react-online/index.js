@@ -106,4 +106,27 @@ function serilizeCode() {
   })
 }
 
+function toggleDevice(deviceName, index) {
+  const deviceSizeMap = {
+    'iPhone 6s': { width: 375, height: 667 },
+    'iPhone X': { width: 375, height: 812 },
+  }
+  const mapSize = deviceSizeMap[deviceName] || {}
+  if (Object.keys(mapSize).length) {
+    // 设置手机宽高
+    const container = document.querySelector('.iphone-frame-container')
+    container.style.width = mapSize.width * 0.9 + 'px'
+    container.style.height = mapSize.height * 0.9 + 'px'
+    console.log(`切换到 ${mapSize.width}, ${mapSize.height}`)
+    // 切换tab样式
+    const devices = document.querySelectorAll('.device')
+    Array.from(devices).forEach((item, idx) => {
+      const darkCls = idx === index ? ['dark'] : []
+      item.classList = (Array.from(item.classList) || [])
+        .filter(cls => cls !== 'dark')
+        .concat(darkCls)
+        .join(' ')
+    })
+  }
+}
 
