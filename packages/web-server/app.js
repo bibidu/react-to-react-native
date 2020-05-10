@@ -7,12 +7,19 @@ const bodyParser = require('body-parser')
 const autoSh = require('./autoSh')
 const axios = require('axios')
 const qs = require('querystring')
+// const http = require('http')
+const https = require('https')
 
 const {
   PORT
 } = require('./config')
 const markdown = require('markdown-it')
 const md = markdown({})
+
+const options = {
+  key: fs.readFileSync('/keys/https.key'),
+  cert: fs.readFileSync('/keys/https.crt')
+}
 
 app.all('*',function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*'); //当允许携带cookies此处的白名单不能写’*’
@@ -81,9 +88,15 @@ app.post('/format/html', (req, res) => {
     })
 })
 
-app.listen(PORT, () => {
-  console.log(`Web Server listening on port ${PORT}!`)
-})
+// const httpServer = http.createServer(app)
+const httpsServer = https.createServer(options, app)
+
+// httpServer.listen(PORT)
+httpsServer.listen(PORT)
+
+// app.listen(PORT, () => {
+//   console.log(`Web Server listening on port ${PORT}!`)
+// })
 
 process.on('uncaughtException', () => {
   console.log('error');
