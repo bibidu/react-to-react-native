@@ -1,5 +1,5 @@
 const fs = require('fs')
-const publicIp = require('public-ip')
+// const publicIp = require('public-ip')
 const { execSync } = require('child_process')
 
 const ENTRYS = [
@@ -7,13 +7,12 @@ const ENTRYS = [
   './static/js/index.js',
 ]
 
-publicIp.v4().then(ip => {
-  console.log(`ip ${ip}`)
-  return ENTRYS.forEach(ENTRY => {
+// publicIp.v4().then(ip => {
+//   console.log(`ip ${ip}`)
+ENTRYS.forEach(ENTRY => {
     const content = fs.readFileSync(ENTRY, 'utf8')
-    fs.writeFileSync(ENTRY, content.replace(/localhost/g, ip), 'utf8')
-  })
-}).then(() => {
+    fs.writeFileSync(ENTRY, content.replace(/http:\/\/localhost/g, 'https://www.yushouxiang.com'), 'utf8')
+})
   console.log(execSync(`
     echo "installing web-server dependencies" &&
     rm -rf node_modules &&
