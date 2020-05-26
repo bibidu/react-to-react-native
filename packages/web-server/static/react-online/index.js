@@ -92,7 +92,7 @@ function serilizeCode() {
   })
   style = cssbeautify(style)
   
-  fetch('http://39.107.227.103:3000/format/html', {
+  fetch('//r2rn.bib1du.com/format/html', {
     method: 'POST',
     headers: { 
       "Content-Type": "application/json",
