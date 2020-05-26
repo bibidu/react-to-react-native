@@ -87,7 +87,7 @@ const vue = new Vue({
     },
     fetchCompile(js, css) {
       return new Promise(resolve => {
-        fetch('http://localhost:3000/compile', {
+        fetch('http://r2rn.bib1du.com/compile', {
             body: JSON.stringify({
                 reactCompString: js,
                 cssString: css,
