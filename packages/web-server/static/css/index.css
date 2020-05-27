@@ -1,5 +1,5 @@
 #app{
-  font-family: Menlo;
+  font-family: Dank Mono, Menlo;
   font-size: 14px;
 }
 #gen1 {
@@ -765,7 +765,7 @@
   height: 700px !important;
 }
 .CodeMirror-line{
-  font-family: Menlo !important;
+  font-family: Dank Mono, Menlo !important;
   font-size: 15px !important;
 }
 .CodeMirror-lines{
