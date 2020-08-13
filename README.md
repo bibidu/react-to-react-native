@@ -14,12 +14,12 @@
 
 - React（ 转义前 · React ）
 
-  ![](imgs/ReactIMG.png)
+  ![](https://r2rn.bib1du.com/imgs/ReactIMG.png)
 
 
 - React Native （ 转义后 · React Native ）
 
-  ![](imgs/RNIMG.png)
+  ![](https://r2rn.bib1du.com/imgs/RNIMG.png)
 
 ## 🐶 对比Taro
 | | Taro |  react2RN
