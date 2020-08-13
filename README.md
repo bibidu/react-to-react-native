@@ -8,13 +8,13 @@
 
 
 [点击试用](https://r2rn.bib1du.com/)
-
+[转译文档](https://r2rn.bib1du.com/docs)
 
 ## 🌱 转换案例
 
 - React（ 转义前 · React ）
 
-  ![](https://r2rn.bib1du.com/imgs/ReactIMG.png)
+  ![i](https://r2rn.bib1du.com/imgs/ReactIMG.png)
 
 
 - React Native （ 转义后 · React Native ）
