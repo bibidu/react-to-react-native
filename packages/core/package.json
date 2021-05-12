@@ -19,7 +19,7 @@
     "fs-extra": "^8.1.0",
     "node-sass": "^4.13.1",
     "object-hash": "^2.0.1",
-    "postcss": "^7.0.25",
+    "postcss": "^8.2.10",
     "prettier": "^1.19.1",
     "typescript": "^3.7.4"
   },
